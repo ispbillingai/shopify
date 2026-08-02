@@ -1,0 +1,18 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+namespace PrestaShop\PrestaShop\Core\Addon\Theme;
+
+/**
+ * Interface PageLayoutCustomizerInterface.
+ */
+interface ThemePageLayoutsCustomizerInterface
+{
+    /**
+     * @param array $pageLayouts Customized layouts for pages
+     */
+    public function customize(array $pageLayouts);
+}

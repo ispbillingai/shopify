@@ -1,0 +1,34 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+{% trans_default_domain 'Admin.Shopparameters.Feature' %}
+
+{% block content %}
+  {# Product preferences General block #}
+  {{ form_start(generalForm, {attr: {class: 'form', id: 'product_general_form'}, action: path('admin_product_preferences_general_save')}) }}
+    {{ include('@PrestaShop/Admin/Configure/ShopParameters/Blocks/product_preferences_general.html.twig') }}
+  {{ form_end(generalForm) }}
+
+  {# Product preferences Page block #}
+  {{ form_start(pageForm, {attr: {class: 'form', id: 'product_page_form'}, action: path('admin_product_preferences_page_save')}) }}
+    {{ include('@PrestaShop/Admin/Configure/ShopParameters/Blocks/product_preferences_page.html.twig') }}
+  {{ form_end(pageForm) }}
+
+  {# Product preferences Stock block #}
+  {{ form_start(stockForm, {attr: {class: 'form', id: 'product_stock_form'}, action: path('admin_product_preferences_stock_save')}) }}
+    {{ include('@PrestaShop/Admin/Configure/ShopParameters/Blocks/product_preferences_stock.html.twig') }}
+  {{ form_end(stockForm) }}
+
+  {# Product preferences Pagination block #}
+  {{ form_start(paginationForm, {attr: {class: 'form', id: 'product_pagination_form'}, action: path('admin_product_preferences_pagination_save')}) }}
+    {{ include('@PrestaShop/Admin/Configure/ShopParameters/Blocks/product_preferences_pagination.html.twig') }}
+  {{ form_end(paginationForm) }}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/new-theme/public/product_preferences.bundle.js') }}"></script>
+{% endblock %}

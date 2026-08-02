@@ -1,0 +1,26 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block content %}
+  {% block credit_slips_listing %}
+    {{ include('@PrestaShop/Admin/Common/Grid/grid_panel.html.twig', {grid: creditSlipGrid}) }}
+  {% endblock %}
+
+  {% block credit_slips_print_pdf %}
+    {{ include('@PrestaShop/Admin/Sell/Order/CreditSlip/Blocks/pdf_by_date.html.twig') }}
+  {% endblock %}
+
+  {% block credit_slips_options %}
+    {{ include('@PrestaShop/Admin/Sell/Order/CreditSlip/Blocks/credit_slip_options.html.twig') }}
+  {% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/default/js/bundle/pagination.js') }}"></script>
+  <script src="{{ asset('themes/new-theme/public/credit_slip.bundle.js') }}"></script>
+{% endblock %}

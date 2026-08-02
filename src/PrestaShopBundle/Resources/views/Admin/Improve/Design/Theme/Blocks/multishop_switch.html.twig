@@ -1,0 +1,18 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% import '@PrestaShop/Admin/macros.html.twig' as ps %}
+
+<div class="card">
+  <h3 class="card-header">
+    {{ 'Multistore'|trans({}, 'Admin.Global') }}
+  </h3>
+  <div class="card-body">
+    <div class="form-wrapper">
+      {{ ps.multistore_switch(shopLogosForm, {
+        label: 'Multistore'|trans({}, 'Admin.Global'),
+      }) }}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% if customerInformation.lastConnectionsInformation is not empty %}
+  <div class="card customer-last-connections-card">
+    <h3 class="card-header">
+      <i class="material-icons">access_time</i>
+      {{ 'Last connections'|trans({}, 'Admin.Orderscustomers.Feature') }}
+      <span class="badge badge-primary rounded">{{ customerInformation.lastConnectionsInformation|length }}</span>
+    </h3>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>{{ 'ID'|trans({}, 'Admin.Global') }}</th>
+          <th>{{ 'Date'|trans({}, 'Admin.Global') }}</th>
+          <th>{{ 'Pages viewed'|trans({}, 'Admin.Orderscustomers.Feature') }}</th>
+          <th>{{ 'Total time'|trans({}, 'Admin.Orderscustomers.Feature') }}</th>
+          <th>{{ 'Origin'|trans({}, 'Admin.Orderscustomers.Feature') }}</th>
+          <th>{{ 'IP Address'|trans({}, 'Admin.Orderscustomers.Feature') }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for connection in customerInformation.lastConnectionsInformation %}
+          <tr class="customer-last-connection">
+            <td class="customer-last-connection-id">{{ connection.connectionId }}</td>
+            <td class="customer-last-connection-date">{{ connection.connectionDate }}</td>
+            <td class="customer-last-connection-pages-viewed">{{ connection.pagesViewed }}</td>
+            <td class="customer-last-connection-total-time">{{ connection.totalTime }}</td>
+            <td class="customer-last-connection-origin">{{ connection.httpReferer }}</td>
+            <td class="customer-last-connection-ip-address">{{ connection.ipAddress }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}

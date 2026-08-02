@@ -1,0 +1,25 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<tr class="column-filters{% if grid.attributes.is_empty_state %} d-none{% endif %}">
+  {% for column in grid.columns %}
+    <td
+      data-type="{{ column.type }}"
+      data-column-id="{{ column.id }}"
+    >
+      {% if loop.first and grid.actions.bulk|length > 0 %}
+        {{ include('@PrestaShop/Admin/Common/Grid/Blocks/bulk_actions_select_all.html.twig', {grid: grid}) }}
+      {% endif %}
+
+      {% if grid.filter_form|length > 1 %}
+        {% if grid.column_filters[column.id] is defined %}
+          {% for filter_name in grid.column_filters[column.id] %}
+            {{ form_widget(grid.filter_form[filter_name]) }}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+    </td>
+  {% endfor %}
+</tr>

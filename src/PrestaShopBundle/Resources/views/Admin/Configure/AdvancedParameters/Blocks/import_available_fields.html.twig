@@ -1,0 +1,24 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% trans_default_domain 'Admin.Advparameters.Feature' %}
+
+<div class="card">
+  <h3 class="card-header">
+    <i class="material-icons">list</i> {{ 'Available fields'|trans }}
+  </h3>
+  <div class="card-body">
+    <div class="js-available-field-template d-none"></div>
+    {{ include('@Common/HelpBox/helpbox.html.twig', {classes: 'js-available-field-popover-template d-none'}) }}
+    <div
+      class="alert alert-info js-available-fields"
+      role="alert"
+      data-url="{{ path('admin_import_get_available_fields') }}"
+    >
+    </div>
+
+    <p>{{ '* Required field'|trans({}, 'Admin.Advparameters.Feature') }}</p>
+  </div>
+</div>

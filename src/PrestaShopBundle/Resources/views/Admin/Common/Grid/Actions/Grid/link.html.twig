@@ -1,0 +1,16 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% import '@PrestaShop/Admin/macros.html.twig' as ps %}
+
+<a id="{{ grid.id }}-grid-action-{{ action.id }}"
+   href="{{ path(action.options.route, action.options.route_params) }}"
+   class="dropdown-item"
+>
+  {% if action.icon is not empty %}
+    <i class="material-icons">{{ action.icon }}</i>
+  {% endif %}
+  {{ action.name }}
+</a>

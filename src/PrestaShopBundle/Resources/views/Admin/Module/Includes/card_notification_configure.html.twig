@@ -1,0 +1,12 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/Module/Includes/card_manage_installed.html.twig' %}
+
+{# Twig extension for "Addons to configure" part in notification page #}
+
+{# Display the warning message instead of the addon description #}
+{% block addon_description %}
+    {{ module.attributes.warning }}
+{% endblock %}

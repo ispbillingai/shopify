@@ -1,0 +1,52 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="row justify-content-center">
+  <div class="col form-horizontal">
+    <div class="card">
+      {% block clear_form_header %}
+        <h3 class="card-header">
+          {{ 'Outdated sessions'|trans({}, 'Admin.Advparameters.Feature') }}
+
+          <span
+            class="help-box"
+            data-container="body"
+            data-toggle="popover"
+            data-trigger="hover"
+            data-placement="right"
+            data-content="{{ 'All outdated sessions will be automatically cleared after the first connection attempt, but you can do it manually now if needed.'|trans({}, 'Admin.Advparameters.Help')|escape('html_attr') }}"
+            title=""
+            data-original-title=""
+          >
+          </span>
+        </h3>
+      {% endblock %}
+
+      {% block clear_form_content %}
+        <div class="card-body">
+          <div class="form-wrapper">
+            <div id="clear-sessions">
+              <div class="form-group row">
+                <label class="form-control-label">
+                  {{ 'Clear outdated sessions manually'|trans({}, 'Admin.Advparameters.Feature') }}
+                </label>
+
+                <div class="col-sm input-container">
+                  <a class="btn btn-primary pointer" href="{{ path(route) }}" title="Clear cache">
+                    <i class="material-icons">delete</i>
+                    {{ 'Clear'|trans({}, 'Admin.Advparameters.Feature') }}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endblock %}
+
+      {% block clear_form_footer %}
+      {% endblock %}
+    </div>
+  </div>
+</div>

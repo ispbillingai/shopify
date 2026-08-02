@@ -1,0 +1,21 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('themes/new-theme/public/customer_threads' ~ rtl_suffix ~ '.css') }}" type="text/css" media="all">
+{% endblock %}
+
+{% block content %}
+  {{ include('@PrestaShop/Admin/Common/Grid/grid_panel.html.twig', {grid: customerThreadGrid}) }}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/new-theme/public/customer_thread.bundle.js') }}"></script>
+  <script src="{{ asset('themes/default/js/bundle/pagination.js') }}"></script>
+{% endblock %}

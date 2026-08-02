@@ -1,0 +1,54 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% block combinations_paginated_list %}
+  <div id="combinations-paginated-list" class="d-none">
+
+    {{ include('@PrestaShop/Admin/Sell/Catalog/Product/Combination/paginated_list_header.html.twig', {
+      productId: productId,
+      isMultistoreActive: isMultistoreActive,
+      shopName: shopName,
+      shopId: shopId,
+    }) }}
+
+    <div class="justify-content-center" id="combinations-list">
+      <div class="spinner-product-combinations-container" id="productCombinationsLoading">
+        <div class="spinner spinner-primary"></div>
+      </div>
+
+      {# **
+        * This div contains the whole list with the input fields, it should contain nothing more because the whole
+        * content may be replaced when invalid form values are detected by the update list API in edition mode.
+      * #}
+      <div id="combinations-list-form-container">
+        {{ form_row(combinationsForm) }}
+      </div>
+
+      {# Empty state when product has no combinations by specified filters #}
+      {{ include('@PrestaShop/Admin/Sell/Catalog/Product/Combination/empty_filters_state.html.twig') }}
+
+      <div id="combinations-list-footer">
+        <span>
+          {{ 'Edition mode'|trans({}, 'Admin.Catalog.Feature') }}
+        </span>
+        <div id="combinations-list-footer-buttons">
+          <button type="button" id="cancel-combinations-edition" class="btn btn-secondary">
+            {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+          </button>
+          <button type="button" id="save-combinations-edition" class="btn btn-primary">
+            {{ 'Save list'|trans({}, 'Admin.Catalog.Feature') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center" id="combinations-pagination">
+      {{ include('@PrestaShop/Admin/Common/javascript_pagination.html.twig', {
+        limit: combinationsLimit,
+        limitChoices: combinationLimitChoices,
+      }) }}
+    </div>
+  </div>
+{% endblock %}

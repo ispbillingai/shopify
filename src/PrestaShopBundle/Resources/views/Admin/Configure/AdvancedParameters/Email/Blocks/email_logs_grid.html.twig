@@ -1,0 +1,17 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% embed '@PrestaShop/Admin/Common/Grid/grid_panel.html.twig' with {grid: emailLogsGrid} %}
+  {% trans_default_domain 'Admin.Advparameters.Feature' %}
+
+  {% block grid_footer %}
+    <div class="card-footer">
+      <a href="{{ getAdminLink('AdminDashboard') }}" class="btn btn-outline-secondary">
+        <i class="material-icons rtl-flip">arrow_back</i>
+        {{ 'Back to the dashboard'|trans() }}
+      </a>
+    </div>
+  {% endblock %}
+{% endembed %}

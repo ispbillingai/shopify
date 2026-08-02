@@ -1,0 +1,41 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+ <div class="btn-group module-actions">
+  {% if module.attributes.urls|length %}
+    {{ include('@PrestaShop/Admin/Module/Includes/action_button.html.twig', {
+        name: module.attributes.name,
+        classes_form: 'btn-group form-action-button',
+        classes: 'btn btn-primary-reverse btn-outline-secondary',
+        url: module.attributes.urls[module.attributes.url_active],
+        action: module.attributes.url_active,
+        label: module.attributes.urls_labels[module.attributes.url_active],
+        upload_url: module.attributes.upload_url|default(null)},
+    ) }}
+    {% if (module.attributes.urls|length > 1) %}
+        <input type="hidden" class="btn" />
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="caret"></span>
+        </button>
+        <span class="sr-only">{{ 'Toggle dropdown'|trans({}, 'Admin.Modules.Feature') }}</span>
+        <div class="dropdown-menu">
+          {% for module_action, module_url in module.attributes.urls %}
+            {% if module_action != module.attributes.url_active %}
+                <li>
+                    {{ include('@PrestaShop/Admin/Module/Includes/action_button.html.twig', {
+                        name: module.attributes.name,
+                        classes: 'dropdown-item',
+                        url: module_url,
+                        action: module_action,
+                        label: module.attributes.urls_labels[module_action],
+                        upload_url: module.attributes.upload_url|default(null)},
+                    ) }}
+                </li>
+            {% endif %}
+          {% endfor %}
+        </div>
+    {% endif %}
+  {% endif %}
+</div>

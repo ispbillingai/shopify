@@ -1,0 +1,9 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/Module/Includes/grid.html.twig' %}
+
+{% block addon_card %}
+  {{ include('@PrestaShop/Admin/Module/Includes/card_manage_installed.html.twig', {display_type: display_type, module: module, origin: origin|default('none'), category: id}) }}
+{% endblock %}

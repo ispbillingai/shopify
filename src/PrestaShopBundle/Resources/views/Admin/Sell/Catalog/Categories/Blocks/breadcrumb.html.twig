@@ -1,0 +1,39 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="card">
+  <div class="card-body">
+    <nav>
+      <ol class="breadcrumb">
+        {% for category in currentCategoryView.breadcrumb_tree %}
+          {% set isRootCategory = (category.id_parent == 0) %}
+          <li class="breadcrumb-item">
+            {% if isRootCategory and isSingleShopContext %}
+              {% if category.id_category == currentCategoryView.id %}
+                <span>{{ category.name }}</span>
+              {% else %}
+                <a href="{{ path('admin_categories_index') }}">
+                  {{ category.name }}
+                </a>
+              {% endif %}
+            {% elseif category.id_category == currentCategoryView.id %}
+              <span>{{ category.name }}</span>
+                {% if not isRootCategory %}
+                  <a href="{{ path('admin_categories_edit', {categoryId: category.id_category}) }}">
+                    <i style="font-size: 16px;" class="material-icons">edit</i>
+                    {{ 'Edit'|trans({}, 'Admin.Actions') }}
+                  </a>
+                {% endif %}
+            {% else %}
+              <a href="{{ path('admin_categories_index', {categoryId: category.id_category}) }}">
+                {{ category.name }}
+              </a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ol>
+    </nav>
+  </div>
+</div>

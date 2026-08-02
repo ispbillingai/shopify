@@ -1,0 +1,166 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
+namespace PrestaShop\PrestaShop\Core\Grid\Query;
+
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
+use PrestaShop\PrestaShop\Core\Grid\Search\SearchCriteriaInterface;
+
+/**
+ * Builds search & count queries for customer's address grid.
+ */
+final class CustomerAddressQueryBuilder extends AbstractDoctrineQueryBuilder
+{
+    /**
+     * @var DoctrineSearchCriteriaApplicatorInterface
+     */
+    private $searchCriteriaApplicator;
+
+    /**
+     * @var int
+     */
+    private $contextLangId;
+
+    /**
+     * @var int[]
+     */
+    private $contextShopIds;
+
+    /**
+     * @param Connection $connection
+     * @param string $dbPrefix
+     * @param DoctrineSearchCriteriaApplicatorInterface $searchCriteriaApplicator
+     * @param int $contextLangId
+     * @param array $contextShopIds
+     */
+    public function __construct(
+        Connection $connection,
+        string $dbPrefix,
+        DoctrineSearchCriteriaApplicatorInterface $searchCriteriaApplicator,
+        int $contextLangId,
+        array $contextShopIds
+    ) {
+        parent::__construct($connection, $dbPrefix);
+        $this->searchCriteriaApplicator = $searchCriteriaApplicator;
+        $this->contextLangId = $contextLangId;
+        $this->contextShopIds = $contextShopIds;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSearchQueryBuilder(SearchCriteriaInterface $searchCriteria): QueryBuilder
+    {
+        $qb = $this->getQueryBuilder($searchCriteria->getFilters());
+
+        $qb
+            ->select(
+                'a.`id_address`,
+                CONCAT(a.`firstname`, " ", a.`lastname`) AS full_name,
+                CONCAT(a.`address1`, " ", a.`address2`, " ", a.`postcode`, " ", a.`city`) AS full_address,
+                IF(
+                  a.`company` IS NULL or a.`company` = "",
+                  "--",
+                  a.`company`
+                ) AS company,
+                IF(
+                  a.`phone` IS NULL or a.`phone` = "",
+                  IF(a.`phone_mobile` IS NULL or a.`phone_mobile` = "", "--",  a.`phone_mobile`),
+                  a.`phone`
+                ) AS phone_number'
+            )
+            ->addSelect('cl.`name` as country_name')
+        ;
+
+        $this->searchCriteriaApplicator
+            ->applyPagination($searchCriteria, $qb)
+            ->applySorting($searchCriteria, $qb)
+        ;
+
+        return $qb;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCountQueryBuilder(SearchCriteriaInterface $searchCriteria): QueryBuilder
+    {
+        return $this->getQueryBuilder($searchCriteria->getFilters())
+            ->select('COUNT(DISTINCT a.`id_address`)');
+    }
+
+    /**
+     * Gets query builder with the common sql used for displaying addresses list and applying filter actions.
+     *
+     * @param array $filters
+     *
+     * @return QueryBuilder
+     */
+    private function getQueryBuilder(array $filters): QueryBuilder
+    {
+        $qb = $this->connection
+            ->createQueryBuilder()
+            ->from($this->dbPrefix . 'address', 'a')
+            ->where('a.`id_customer` != 0')
+            ->andWhere('a.`deleted` = 0');
+
+        $qb->leftJoin(
+            'a',
+            $this->dbPrefix . 'country',
+            'c',
+            'a.`id_country` = c.`id_country`'
+        );
+
+        $qb->leftJoin(
+            'c',
+            $this->dbPrefix . 'country_lang',
+            'cl',
+            'c.`id_country` = cl.`id_country` AND cl.`id_lang` = :idLang'
+        );
+
+        $qb->leftJoin(
+            'a',
+            $this->dbPrefix . 'customer',
+            'customer',
+            'a.`id_customer` = customer.`id_customer`'
+        );
+
+        $qb->andWhere('customer.id_shop IN (:context_shop_ids)')
+            ->setParameter('context_shop_ids', $this->contextShopIds, Connection::PARAM_INT_ARRAY)
+            ->setParameter('idLang', $this->contextLangId);
+
+        $this->applyFilters($qb, $filters);
+
+        return $qb;
+    }
+
+    /**
+     * Apply filters to address query builder.
+     *
+     * @param array $filters
+     * @param QueryBuilder $qb
+     */
+    private function applyFilters(QueryBuilder $qb, array $filters)
+    {
+        $allowedFiltersMap = [
+            'id_customer' => 'a.id_customer',
+        ];
+
+        foreach ($filters as $filterName => $value) {
+            if (!array_key_exists($filterName, $allowedFiltersMap) || empty($value)) {
+                continue;
+            }
+
+            if ('id_customer' === $filterName) {
+                $qb->andWhere('a.`id_customer` = :' . $filterName);
+                $qb->setParameter($filterName, $value);
+            }
+        }
+    }
+}

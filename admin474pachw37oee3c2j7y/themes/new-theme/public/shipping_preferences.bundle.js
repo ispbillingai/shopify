@@ -1,0 +1,1 @@
+(()=>{"use strict";var r={428:r=>{r.exports=window.jQuery}},e={};var o=function o(t){var n=e[t];if(void 0!==n)return n.exports;var i=e[t]={exports:{}};return r[t](i,i.exports,o),i.exports}(428);o((()=>{window.prestashop.component.initComponents(["MultistoreConfigField"])})),window.shipping_preferences={}})();

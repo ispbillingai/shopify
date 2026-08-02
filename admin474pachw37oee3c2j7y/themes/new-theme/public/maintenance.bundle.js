@@ -1,0 +1,1 @@
+(()=>{"use strict";var o={428:o=>{o.exports=window.jQuery}},r={};var t=function t(n){var e=r[n];if(void 0!==e)return e.exports;var i=r[n]={exports:{}};return o[n](i,i.exports,t),i.exports}(428);t((()=>{window.prestashop.component.initComponents(["MultistoreConfigField","TinyMCEEditor"])})),window.maintenance={}})();

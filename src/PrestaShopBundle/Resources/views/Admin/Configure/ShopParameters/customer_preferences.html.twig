@@ -1,0 +1,18 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+{% trans_default_domain 'Admin.Shopparameters.Feature' %}
+
+{% block content %}
+    {{ form_start(generalForm, {attr: {class: 'form', id: 'configuration_form'}}) }}
+      {{ include('@PrestaShop/Admin/Configure/ShopParameters/Blocks/customer_preferences_general.html.twig') }}
+    {{ form_end(generalForm) }}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/new-theme/public/customer_preferences.bundle.js') }}"></script>
+{% endblock %}

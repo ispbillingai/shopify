@@ -1,0 +1,37 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% form_theme creditSlipOptionsForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+{% trans_default_domain 'Admin.Orderscustomers.Feature' %}
+
+{{ form_start(creditSlipOptionsForm, {
+  method: 'POST',
+  action: path('admin_credit_slips_process_options'),
+  attr: {id: 'form-credit-slips-options'}})
+}}
+<div class="card">
+
+  <h3 class="card-header">
+    <i class="material-icons">settings</i> {{ 'Credit slip options'|trans({}, 'Admin.Orderscustomers.Feature') }}
+  </h3>
+
+  <div class="card-body">
+    <div class="form-wrapper">
+      {% block credit_slip_options_form %}
+        {{ form_widget(creditSlipOptionsForm) }}
+      {% endblock %}
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-primary" id="save-credit-slip-options-button">
+        {{ 'Save'|trans({}, 'Admin.Actions') }}
+      </button>
+    </div>
+  </div>
+
+</div>
+{{ form_end(creditSlipOptionsForm) }}

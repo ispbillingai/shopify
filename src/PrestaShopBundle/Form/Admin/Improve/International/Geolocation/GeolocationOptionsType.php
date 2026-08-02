@@ -1,0 +1,88 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+namespace PrestaShopBundle\Form\Admin\Improve\International\Geolocation;
+
+use PrestaShop\PrestaShop\Core\ConfigurationInterface;
+use PrestaShopBundle\Form\Admin\Type\Material\MaterialChoiceTableType;
+use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+/**
+ * Class GeolocationOptionsType is responsible for handling "Improve > International > Localization > Geolocation"
+ * geolocation options form.
+ */
+class GeolocationOptionsType extends TranslatorAwareType
+{
+    /**
+     * @var array
+     */
+    private $countryChoices;
+
+    /**
+     * @var ConfigurationInterface
+     */
+    private $configuration;
+
+    /**
+     * @param TranslatorInterface $translator
+     * @param array $locales
+     * @param array $countryChoices
+     * @param ConfigurationInterface $configuration
+     */
+    public function __construct(
+        TranslatorInterface $translator,
+        array $locales,
+        array $countryChoices,
+        ConfigurationInterface $configuration
+    ) {
+        parent::__construct($translator, $locales);
+
+        $this->countryChoices = $countryChoices;
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('geolocation_behaviour', ChoiceType::class, [
+                'label' => $this->trans(
+                    'Geolocation behavior for restricted countries',
+                    'Admin.International.Feature'
+                ),
+                'choices' => [
+                    $this->trans('Visitors cannot see your catalog.', 'Admin.International.Feature') => $this->configuration->get('_PS_GEOLOCATION_NO_CATALOG_'),
+                    $this->trans('Visitors can see your catalog but cannot place an order.', 'Admin.International.Feature') => $this->configuration->get('_PS_GEOLOCATION_NO_ORDER_'),
+                ],
+                'choice_translation_domain' => false,
+            ])
+            ->add('geolocation_na_behaviour', ChoiceType::class, [
+                'label' => $this->trans(
+                    'Geolocation behavior for other countries',
+                    'Admin.International.Feature'
+                ),
+                'choices' => [
+                    $this->trans('All features are available', 'Admin.International.Feature') => '-1',
+                    $this->trans('Visitors cannot see your catalog.', 'Admin.International.Feature') => $this->configuration->get('_PS_GEOLOCATION_NO_CATALOG_'),
+                    $this->trans('Visitors can see your catalog but cannot place an order.', 'Admin.International.Feature') => $this->configuration->get('_PS_GEOLOCATION_NO_ORDER_'),
+                ],
+                'choice_translation_domain' => false,
+            ])
+            ->add('geolocation_countries', MaterialChoiceTableType::class, [
+                'label' => $this->trans(
+                    'Select the countries from which your store is accessible',
+                    'Admin.International.Feature'
+                ),
+                'choices' => $this->countryChoices,
+                'choice_translation_domain' => false,
+            ]);
+    }
+}

@@ -1,0 +1,56 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="card" id="linkedOrdersPanel">
+  <div class="card-header">
+    <h3 class="card-header-title">
+      {{ 'Linked orders'|trans({}, 'Admin.Orderscustomers.Feature') }}
+      <span class="badge badge-primary rounded">{{ orderForViewing.linkedOrders.linkedOrders|length }}</span>
+    </h3>
+  </div>
+
+  <div class="card-body">
+    <table class="table mb-3">
+      <thead>
+      <tr>
+        <th>
+          {{ 'Order ID'|trans({}, 'Admin.Orderscustomers.Feature') }}
+        </th>
+        <th>
+          {{ 'Status'|trans({}, 'Admin.Global') }}
+        </th>
+        <th>
+          {{ 'Amount'|trans({}, 'Admin.Global') }}
+        </th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      {% if orderForViewing.linkedOrders.linkedOrders is not empty %}
+      {% for linkedOrder in orderForViewing.linkedOrders.linkedOrders %}
+      <tr>
+        <td>
+          <a class="_blank" href="{{ path('admin_orders_view', {orderId: linkedOrder.orderId}) }}">
+            {{ linkedOrder.orderId }}
+          </a>
+        </td>
+        <td>
+          {{ linkedOrder.statusName }}
+        </td>
+        <td>
+          {{ linkedOrder.amount }}
+        </td>
+        <td>
+          <a class="_blank" href="{{ path('admin_orders_view', {orderId: linkedOrder.orderId}) }}">
+            <i class="material-icons">remove_red_eye</i>
+            {{ 'View order'|trans({}, 'Admin.Orderscustomers.Feature') }}
+          </a>
+        </td>
+        {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>

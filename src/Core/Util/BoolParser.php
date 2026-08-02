@@ -1,0 +1,27 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+namespace PrestaShop\PrestaShop\Core\Util;
+
+class BoolParser
+{
+    /**
+     * @param string|int|bool $value
+     *
+     * @return bool
+     */
+    public static function castToBool($value)
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+        if (is_numeric($value)) {
+            return (bool) $value; // 0 => false; all other true
+        }
+
+        return strtolower($value) !== 'false';
+    }
+}

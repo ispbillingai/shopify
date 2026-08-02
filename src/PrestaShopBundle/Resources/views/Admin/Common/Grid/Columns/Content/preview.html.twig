@@ -1,0 +1,20 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<span
+  class="preview-toggle"
+  {% if column.options.preview_data_route is defined %}
+    {% set params = {} %}
+    {% if column.options.preview_route_params is defined %}
+      {% for param_name, record_field in column.options.preview_route_params %}
+        {% set params = params|merge({(param_name): record[record_field]}) %}
+      {% endfor %}
+    {% endif %}
+    data-preview-data-url="{{ path(column.options.preview_data_route, params) }}"
+  {% endif %}
+>
+  <i class="text-primary material-icons js-expand d-none">{{ column.options.icon_expand }}</i>
+  <i class="text-primary material-icons js-collapse d-none">{{ column.options.icon_collapse }}</i>
+</span>

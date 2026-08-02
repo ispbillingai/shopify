@@ -1,0 +1,36 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% embed '@PrestaShop/Admin/Helpers/bootstrap_popup.html.twig' with {
+  id: 'changeOrdersStatusModal',
+  title: 'Choose an order status'|trans({}, 'Admin.Orderscustomers.Feature'),
+  closable: true,
+  actions: [{
+    type: 'button',
+    label: 'Update status'|trans({}, 'Admin.Orderscustomers.Feature'),
+    class: 'btn btn-primary btn-lg js-submit-modal-form-btn',
+  }],
+} %}
+  {% block content %}
+    <div class="modal-body">
+      {{ form_start(changeOrderStatusesForm, {
+        action: path('admin_orders_change_orders_status'),
+        attr: {
+          'data-bulk-inputs-id': changeOrderStatusesForm.order_ids.vars.id,
+        },
+      }) }}
+
+      <div class="form-group mb-0">
+        {{ form_widget(changeOrderStatusesForm.new_order_status_id) }}
+      </div>
+
+      <div class="d-none">
+        {{ form_widget(changeOrderStatusesForm.order_ids) }}
+      </div>
+
+      {{ form_end(changeOrderStatusesForm) }}
+    </div>
+  {% endblock %}
+{% endembed %}

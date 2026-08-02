@@ -1,0 +1,24 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% block kpi_row %}
+  <div class="card card-kpis">
+
+    <div class="kpi-row">
+      {% for kpi in kpiRow.kpis %}
+        {{ kpi|raw }}
+      {% endfor %}
+    </div>
+
+    {% if kpiRow.allowRefresh %}
+    <div class="kpi-refresh">
+      <button class="refresh-kpis btn btn-primary" type="button">
+        <i class="material-icons">refresh</i>
+      </button>
+    </div>
+    {% endif %}
+
+  </div>
+{% endblock %}

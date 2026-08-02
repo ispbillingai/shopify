@@ -1,0 +1,23 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="card">
+  <div class="card-body">
+    {% for action in customerThreadView.actions %}
+      <form action="{{ path('admin_customer_threads_view_update_status', {
+        customerThreadId: customerThreadView.customerThreadId.value,
+      }) }}" method="post" class="d-inline">
+        <input type="hidden" name="newStatus" value="{{ action.value }}"/>
+        <button class="btn btn-outline-secondary">{{ action.label }}</button>
+      </form>
+    {% endfor %}
+
+    <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#forwardThreadModal">
+      {{ 'Forward this discussion to another employee'|trans({}, 'Admin.Orderscustomers.Feature') }}
+    </button>
+
+    {{ include('@PrestaShop/Admin/Sell/CustomerService/CustomerThread/Block/forward_thread_modal.html.twig') }}
+  </div>
+</div>

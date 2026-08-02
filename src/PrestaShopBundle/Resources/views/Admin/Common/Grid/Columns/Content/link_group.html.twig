@@ -1,0 +1,14 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="text-nowrap">
+  {% for link in column.options.links %}
+    {% if record[link.is_link_available_field] %}
+      <a href="{{ path(link.route, {(link.route_param_name): record[link.route_param_field]}) }}">
+        <i class="material-icons">{{ link.icon }}</i>
+      </a>
+    {% endif %}
+  {% endfor %}
+</div>

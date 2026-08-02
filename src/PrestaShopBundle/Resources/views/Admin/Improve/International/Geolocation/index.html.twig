@@ -1,0 +1,37 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+{% trans_default_domain 'Admin.International.Feature' %}
+
+{% block content %}
+  {% if not geolocationDatabaseAvailable %}
+
+    <div class="alert alert-warning" role="alert">
+      <span class="alert-text">
+        {{ 'Since December 30, 2019, you need to register for a [1]MaxMind[/1] account to get a license key to be able to download the geolocation data. Once downloaded, extract the data using Winrar or Gzip into the /app/Resources/geoip/ directory.'|trans({'[1]': '<a href="https://dev.maxmind.com/geoip/geoip2/geolite2" target="_blank">', '[/1]': '</a>'}, 'Admin.Notifications.Warning')|raw_purified }}
+      </span>
+    </div>
+
+  {% endif %}
+
+  {{ form_start(geolocationByIpAddressForm, {action: path('admin_geolocation_by_ip_address_save')}) }}
+  {{ include('@PrestaShop/Admin/Improve/International/Geolocation/Blocks/geolocation_by_ip_address.html.twig') }}
+  {{ form_end(geolocationByIpAddressForm) }}
+
+  {{ form_start(geolocationOptionsForm, {action: path('admin_geolocation_options_save')}) }}
+  {{ include('@PrestaShop/Admin/Improve/International/Geolocation/Blocks/geolocation_options.html.twig') }}
+  {{ form_end(geolocationOptionsForm) }}
+
+  {{ form_start(geolocationIpAddressWhitelistForm, {action: path('admin_geolocation_whitelist_save')}) }}
+  {{ include('@PrestaShop/Admin/Improve/International/Geolocation/Blocks/geolocation_ip_address_whitelist.html.twig') }}
+  {{ form_end(geolocationIpAddressWhitelistForm) }}
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/new-theme/public/geolocation.bundle.js') }}"></script>
+{% endblock %}

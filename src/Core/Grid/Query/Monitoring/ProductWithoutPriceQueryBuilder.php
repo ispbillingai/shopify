@@ -1,0 +1,69 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+namespace PrestaShop\PrestaShop\Core\Grid\Query\Monitoring;
+
+use Doctrine\DBAL\Query\QueryBuilder;
+use PrestaShop\PrestaShop\Core\Grid\Search\SearchCriteriaInterface;
+
+/**
+ * Builds query for product without price list data
+ */
+final class ProductWithoutPriceQueryBuilder extends AbstractProductQueryBuilder
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getSearchQueryBuilder(SearchCriteriaInterface $searchCriteria)
+    {
+        $qb = $this->getQueryBuilder($searchCriteria);
+
+        $this->searchCriteriaApplicator
+            ->applyPagination($searchCriteria, $qb)
+            ->applySorting($searchCriteria, $qb);
+
+        return $qb;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCountQueryBuilder(SearchCriteriaInterface $searchCriteria)
+    {
+        $qb = $this->getQueryBuilder($searchCriteria);
+        $qb->select('COUNT(DISTINCT p.id_product)');
+
+        return $qb;
+    }
+
+    /**
+     * Get generic query builder.
+     *
+     * @param SearchCriteriaInterface $searchCriteria
+     *
+     * @return QueryBuilder
+     */
+    private function getQueryBuilder(SearchCriteriaInterface $searchCriteria)
+    {
+        $qb = $this->getProductsCommonQueryBuilder($searchCriteria);
+
+        $specPriceSubQuery = $this->connection->createQueryBuilder()
+            ->select('1')
+            ->from($this->dbPrefix . 'specific_price', 'sp')
+            ->andWhere('p.id_product = sp.id_product');
+
+        if ($this->multistoreContextChecker->isSingleShopContext()) {
+            $specPriceSubQuery->andWhere('sp.id_shop = :context_shop_id')
+                ->setParameter('context_shop_id', $this->contextShopId);
+        }
+
+        $qb->andWhere('p.price = 0')
+            ->andWhere('p.wholesale_price = 0')
+            ->andWhere('NOT EXISTS(' . $specPriceSubQuery->getSQL() . ')');
+
+        return $qb;
+    }
+}

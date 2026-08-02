@@ -1,0 +1,71 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('themes/new-theme/public/product' ~ rtl_suffix ~ '.css') }}" type="text/css" media="all">
+{% endblock %}
+
+{# We empty the parent content header block because session alert is gonna be displayed inside the content #}
+{% block content_header %}
+{% endblock %}
+
+{% block content %}
+<div class="product-page-v2">
+  {% set productType = productForm.vars.product_type %}
+  {% set productId = productForm.vars.product_id %}
+  {% set shopId = productForm.vars.shop_id %}
+  {# Passed via data attribute only so that the iframe modal can replicate it in its redirection url #}
+  {% set forceDefaultActive = productForm.vars.force_default_active %}
+
+  <div class="header-toolbar d-print-none">
+    {{ component('MultistoreProductHeader', {productId: productId}) }}
+  </div>
+
+  {{ form_start(productForm, {attr: {
+    class: 'form-horizontal product-page justify-content-md-center product-form',
+    novalidate: 'novalidate',
+    'data-product-id': productId,
+    'data-shop-id': shopId,
+    'data-product-type': productType,
+    'data-force-default-active': forceDefaultActive,
+  }}) }}
+
+  {# Header form child is rendered separately because it's not one of the tabs so it needs to be rendered before #}
+  {% block product_header %}
+    {{ include('@PrestaShop/Admin/Sell/Catalog/Product/Blocks/header.html.twig', {productForm: productForm}) }}
+  {% endblock %}
+
+  {# Footer form child is rendered separately because it's not one of the tabs so it needs to be rendered before #}
+  {% block product_footer %}
+    {{ include('@PrestaShop/Admin/Sell/Catalog/Product/Blocks/footer.html.twig', {
+      productForm: productForm,
+      editable: editable,
+      productId: productId,
+    }) }}
+  {% endblock %}
+
+  {{ block('session_alert') }}
+
+  <div id="contextual-notification-box"></div>
+
+  {{ form_widget(productForm) }}
+
+  {% block product_rest %}
+    {{ form_end(productForm) }}
+  {% endblock %}
+
+  {% block category_tree_form %}
+    {{ form_row(categoryTreeSelectorForm) }}
+  {% endblock %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/new-theme/public/product_edit.bundle.js') }}"></script>
+{% endblock %}

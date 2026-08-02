@@ -1,0 +1,11 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% block content %}
+  {% block products_light_listing %}
+    <div class="product-light-list-container">
+      {{ include('@PrestaShop/Admin/Common/Grid/grid_panel.html.twig', {grid: productLightGrid}) }}
+      </div>
+  {% endblock %}
+{% endblock %}

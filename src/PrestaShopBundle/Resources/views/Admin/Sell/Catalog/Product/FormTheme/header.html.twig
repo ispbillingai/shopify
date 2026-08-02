@@ -1,0 +1,20 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% use '@PrestaShop/Admin/Sell/Catalog/Product/FormTheme/product.html.twig' with product_type_row as base_product_type_row %}
+
+{% block product_type_row %}
+  <div class="product-type-preview">
+    {% for group_label, choice in choices %}
+      {% if choice is selectedchoice(value) %}
+        <i class="material-icons product-type-preview-icon">{{ choice.attr['icon'] }}</i>
+        <span class="product-type-preview-label">{{ choice.label }}</span>
+      {% endif %}
+    {% endfor %}
+    <div id="product-type-selector-modal-content" class="d-none">
+      {{ block('base_product_type_row') }}
+    </div>
+  </div>
+{% endblock %}

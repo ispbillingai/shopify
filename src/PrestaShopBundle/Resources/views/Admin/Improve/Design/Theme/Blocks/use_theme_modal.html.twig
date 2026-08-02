@@ -1,0 +1,36 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% embed '@PrestaShop/Admin/Helpers/bootstrap_popup.html.twig' with {
+  id: 'use_theme_modal',
+} %}
+  {% block header %}
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Use this theme?'|trans({}, 'Admin.Design.Feature') }}</h4>
+      </div>
+  {% endblock %}
+
+  {% block content %}
+    <div class="alert alert-info m-2">
+      {{ 'When applying a new theme to your store, make sure that the modules you are using are still compatible.'|trans({}, 'Admin.Design.Feature') }}
+    </div>
+  {% endblock %}
+
+  {% block footer %}
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-lg"
+        data-dismiss="modal">
+        {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+      </button>
+
+      <button type="button" class="btn btn-primary js-submit-use-theme btn-lg">
+        {{ 'Yes'|trans({}, 'Admin.Global') }}
+      </button>
+    </div>
+  {% endblock %}
+
+{% endembed %}

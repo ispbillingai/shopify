@@ -1,0 +1,45 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% form_theme modifyTranslationsForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+{% trans_default_domain 'Admin.International.Feature' %}
+
+{% block modify_translations %}
+  {{ form_start(modifyTranslationsForm, {action: path('admin_international_translations_modify')}) }}
+
+  <div class="card">
+    <h3 class="card-header">
+      <i class="material-icons">description</i> {{ 'Modify translations'|trans }}
+
+      <span
+        class="help-box"
+        data-container="body"
+        data-toggle="popover"
+        data-trigger="hover"
+        data-placement="right"
+        data-content="{{ 'Here you can modify translations for every line of text inside PrestaShop.'|trans({}, 'Admin.International.Help') }}{{ 'First, select a type of translation (such as "Back office" or "Installed modules"), and then select the language you want to translate strings in.'|trans({}, 'Admin.International.Help') }}"
+        title=""
+      >
+      </span>
+    </h3>
+
+    <div class="card-body">
+      <div class="form-wrapper">
+        {{ form_widget(modifyTranslationsForm) }}
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-primary">
+          <i class="material-icons">edit</i>
+          <span>{{ 'Modify'|trans({}, 'Admin.Actions') }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {{ form_end(modifyTranslationsForm) }}
+{% endblock %}

@@ -1,0 +1,30 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% embed '@PrestaShop/Admin/Helpers/bootstrap_popup.html.twig' with {
+  id: 'delete_theme_modal',
+} %}
+  {% block header %}
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Delete this theme?'|trans({}, 'Admin.Design.Feature') }}</h4>
+      </div>
+  {% endblock %}
+
+  {% block footer %}
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-lg"
+        data-dismiss="modal">
+        {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+      </button>
+
+      <button type="button" class="btn btn-tertiary js-submit-delete-theme btn-lg">
+        {{ 'Yes'|trans({}, 'Admin.Global') }}
+      </button>
+    </div>
+  {% endblock %}
+
+{% endembed %}

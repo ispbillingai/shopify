@@ -1,0 +1,13 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{{ form_start(specificPriceForm, {attr: {class: 'form-horizontal specific-price-product-form justify-content-md-center', novalidate: 'novalidate'}}) }}
+{% block specific_price_form %}
+  {{ form_row(specificPriceForm) }}
+{% endblock %}
+
+{% block specific_price_rest %}
+  {{ form_end(specificPriceForm) }}
+{% endblock %}

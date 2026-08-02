@@ -1,0 +1,23 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% import '@PrestaShop/Admin/macros.html.twig' as ps %}
+
+{% block content %}
+  {% block supplier_grid %}
+    {% if settingsTipMessage is not empty %}
+      {{ ps.infotip(settingsTipMessage, true) }}
+    {% endif %}
+    {{ include('@PrestaShop/Admin/Common/Grid/grid_panel.html.twig', {grid: supplierGrid}) }}
+  {% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/new-theme/public/supplier.bundle.js') }}"></script>
+  <script src="{{ asset('themes/default/js/bundle/pagination.js') }}"></script>
+{% endblock %}

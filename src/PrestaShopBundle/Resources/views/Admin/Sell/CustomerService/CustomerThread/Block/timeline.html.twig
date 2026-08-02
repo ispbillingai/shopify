@@ -1,0 +1,59 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="card" data-role="messages_timeline">
+  <h3 class="card-header">
+    {{ 'Orders and messages timeline'|trans({}, 'Admin.Orderscustomers.Feature') }}
+  </h3>
+  <div class="card-body">
+    <div class="timeline">
+      {% for timelineItem in customerThreadView.timeline.timelineItems %}
+        {# We are using left-right styling for the timeline #}
+        <div class="timeline-item {% if timelineItem.arrow == 'right' %}right{% else %}left{% endif %}">
+
+          {# Icon #}
+          <div class="timeline-icon-wrapper">
+            <div class="timeline-icon"
+              {% if timelineItem.color %}
+                style="background-color: {{ timelineItem.color }};"
+              {% endif %}
+            >
+              <i class="material-icons text-white">{{ timelineItem.icon }}</i>
+            </div>
+          </div>
+
+          {# Date #}
+          <div class="timeline-date-wrapper">
+            <div class="timeline-date">
+              <i class="material-icons font-16">calendar_today</i>
+              <span class="timeline-date-day">{{ format_date(timelineItem.date) }}</span>
+              <i class="material-icons font-16">access_time</i>
+              <span>{{ timelineItem.date|date('H:i') }}</span>
+            </div>
+          </div>
+
+          {# Content #}
+          <div class="timeline-content-wrapper">
+            <div class="timeline-content">
+              <div>
+                {{ timelineItem.content|raw|nl2br }}
+              </div>
+              {% if timelineItem.relatedOrderId %}
+                <p class="mb-0 mt-2">
+                  <a href="{{ getAdminLink('AdminOrders', true, {vieworder: 1, id_order: timelineItem.relatedOrderId}) }}"
+                      class="btn btn-outline-secondary btn-sm"
+                      target="_blank"
+                  >
+                    {{ 'See more'|trans({}, 'Admin.Actions') }}
+                  </a>
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

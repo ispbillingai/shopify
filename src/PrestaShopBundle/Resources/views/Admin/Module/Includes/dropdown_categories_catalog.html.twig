@@ -1,0 +1,32 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+<div class="ps-dropdown dropdown btn-group bordered mb-1">
+  {% for menu in topMenuData %}
+    {% set refMenu = menu.refMenu %}
+    <div id="{{ refMenu }}" class="dropdown-label" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <span class="js-selected-item selected-item module-category-selector-label">
+        {{ menu.name }}
+      </span>
+      <i class="material-icons arrow-down float-right">keyboard_arrow_down</i>
+    </div>
+
+    <div class="ps-dropdown-menu dropdown-menu module-category-selector items-list js-items-list" aria-labelledby="{{ refMenu }}">
+        <a class="dropdown-item module-category-menu module-category-reset">
+          {{ 'All categories'|trans({}, 'Admin.Modules.Feature') }}
+        </a>
+
+        {% for subMenu in menu.subMenu %}
+          <a
+            class="dropdown-item module-category-menu"
+            {% if subMenu.tab %}data-category-tab="{{ subMenu.tab }}"{% endif %}
+            data-category-ref="{{ subMenu.refMenu }}"
+            data-category-display-name="{{ subMenu.name }}"
+          >
+            {{ subMenu.name }}<span class="float-right">{{ subMenu.modules|length }}</span>
+          </a>
+        {% endfor %}
+    </div>
+  {% endfor %}
+</div>

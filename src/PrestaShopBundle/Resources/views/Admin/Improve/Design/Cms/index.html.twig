@@ -1,0 +1,34 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block content %}
+
+  {{ include('@PrestaShop/Admin/Improve/Design/Cms/Blocks/showcase_card.html.twig') }}
+
+  {% block cms_page_category_breadcrumb %}
+    {{ include('@PrestaShop/Admin/Improve/Design/Cms/Blocks/breadcrumb.html.twig') }}
+  {% endblock %}
+
+  {% block cms_category_grid %}
+    {% embed '@PrestaShop/Admin/Common/Grid/grid_panel.html.twig' with {grid: cmsCategoryGrid} %}
+      {% block grid_panel_footer %}
+        {% if app.request.query.get('id_cms_category') and app.request.query.get('id_cms_category') != cmsPageView.root_category_id %}
+          {{ include('@PrestaShop/Admin/Improve/Design/Cms/Blocks/listing_panel_footer.html.twig') }}
+        {% endif %}
+      {% endblock %}
+    {% endembed %}
+  {% endblock %}
+
+  {% block cms_grid %}
+    {{ include('@PrestaShop/Admin/Common/Grid/grid_panel.html.twig', {grid: cmsGrid}) }}
+  {% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('themes/new-theme/public/cms_page.bundle.js') }}"></script>
+  <script src="{{ asset('themes/default/js/bundle/pagination.js') }}"></script>
+{% endblock %}

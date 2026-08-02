@@ -1,0 +1,177 @@
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+import {createApp} from 'vue';
+import {EventEmitter} from '@components/event-emitter';
+import serp from './serp.vue';
+
+const {$} = window;
+
+/**
+ * Vue component displaying a search page result, Google style.
+ * Requires a tag with the id "#serp-app" to be present in the DOM to run it.
+ * The component is automatically updated by watching several inputs.
+ * Set the proper class to link a input to a part of the panel.
+ */
+class SerpApp {
+  constructor(selectors, url) {
+    // If the selector cannot be found, we do not load the Vue app
+    if ($(selectors.container).length === 0) {
+      return;
+    }
+
+    this.originalUrl = url;
+    this.selectors = selectors;
+    this.useMultiLang = selectors.multiLanguageInput !== undefined || selectors.multiLanguageField !== undefined;
+
+    if (this.useMultiLang) {
+      const possibleSelectors = [];
+
+      if (selectors.multiLanguageInput) {
+        possibleSelectors.push(selectors.multiLanguageInput);
+      }
+      if (selectors.multiLanguageField) {
+        possibleSelectors.push(selectors.multiLanguageField);
+      }
+      this.multiLangSelector = possibleSelectors.join(',');
+      this.attachMultiLangEvents();
+    }
+
+    this.data = {
+      url,
+      title: '',
+      description: '',
+    };
+
+    this.appendTitle = selectors.appendTitle ? $(selectors.appendTitle).val() : '';
+
+    this.initializeSelectors(selectors);
+    this.attachInputEvents();
+  }
+
+  updateComponent() {
+    if (this.vm) {
+      this.vm.unmount();
+    }
+
+    this.vm = createApp({
+      template: '<serp ref="serp" :url="url" :title="title" :description="description" />',
+      components: {serp},
+      data: () => this.data,
+    });
+
+    this.vm.mount(this.selectors.container);
+  }
+
+  attachMultiLangEvents(itemSelector) {
+    $('body').on(
+      'click',
+      itemSelector,
+      () => {
+        this.checkTitle();
+        this.checkDesc();
+        this.checkUrl();
+      },
+    );
+
+    EventEmitter.on('languageSelected', () => {
+      this.checkTitle();
+      this.checkDesc();
+      this.checkUrl();
+    });
+  }
+
+  initializeSelectors(selectors) {
+    this.defaultTitle = $(selectors.defaultTitle);
+    this.watchedTitle = $(selectors.watchedTitle);
+    this.defaultDescription = $(selectors.defaultDescription);
+    this.watchedDescription = $(selectors.watchedDescription);
+    this.watchedMetaUrl = $(selectors.watchedMetaUrl);
+  }
+
+  attachInputEvents() {
+    $(this.defaultTitle).on('keyup change', () => this.checkTitle());
+    $(this.watchedTitle).on('keyup change', () => this.checkTitle());
+    $(this.defaultDescription).on('keyup change', () => this.checkDesc());
+    $(this.watchedDescription).on('keyup change', () => this.checkDesc());
+    this.watchedMetaUrl.on('keyup change', () => this.checkUrl());
+
+    this.checkTitle();
+    this.checkDesc();
+    this.checkUrl();
+  }
+
+  setTitle(title) {
+    this.data.title = title;
+  }
+
+  setDescription(description) {
+    this.data.description = description;
+  }
+
+  setUrl(rewrite) {
+    // We replace two placeholders because there was a typo in the initial one ('friendy' instead of 'friendly')
+    this.data.url = this.originalUrl.replace(
+      '{friendy-url}',
+      rewrite,
+    );
+    this.data.url = this.data.url.replace(
+      '{friendly-url}',
+      rewrite,
+    );
+  }
+
+  checkTitle() {
+    let {defaultTitle} = this;
+    let {watchedTitle} = this;
+
+    if (this.useMultiLang) {
+      watchedTitle = watchedTitle.closest(this.multiLangSelector).find('input');
+      defaultTitle = defaultTitle.closest(this.multiLangSelector).find('input');
+    }
+
+    const title1 = watchedTitle.length ? watchedTitle.val() : '';
+    const title2 = defaultTitle.length ? defaultTitle.val() : '';
+
+    this.setTitle(`${title1 === '' ? title2 : title1}${this.appendTitle ? ` ${this.appendTitle}` : ''}`);
+    // Always check for url if title change
+    this.checkUrl();
+    this.updateComponent();
+  }
+
+  checkDesc() {
+    let {watchedDescription} = this;
+    let {defaultDescription} = this;
+
+    if (this.useMultiLang) {
+      const watchedDescriptionTarget = watchedDescription
+        .closest(this.multiLangSelector)
+        .find(this.watchedDescription.is('input') ? 'input' : 'textarea');
+      watchedDescription = watchedDescriptionTarget.length ? watchedDescriptionTarget : watchedDescription;
+      const defaultDescriptionTarget = defaultDescription
+        .closest(this.multiLangSelector)
+        .find(this.defaultDescription.is('input') ? 'input' : 'textarea');
+      defaultDescription = defaultDescriptionTarget.length ? defaultDescriptionTarget : defaultDescription;
+    }
+
+    const desc1 = watchedDescription.length ? watchedDescription.val().innerText || watchedDescription.val() : '';
+    const desc2 = defaultDescription.length ? defaultDescription.text() : '';
+
+    this.setDescription(desc1 === '' ? desc2 : desc1);
+    this.updateComponent();
+  }
+
+  checkUrl() {
+    let {watchedMetaUrl} = this;
+
+    if (this.useMultiLang) {
+      watchedMetaUrl = watchedMetaUrl.closest(this.multiLangSelector).find('input');
+    }
+
+    this.setUrl(watchedMetaUrl.val());
+    this.updateComponent();
+  }
+}
+
+export default SerpApp;

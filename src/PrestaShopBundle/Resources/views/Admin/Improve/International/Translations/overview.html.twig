@@ -1,0 +1,38 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block content %}
+  <div id="translations-app"></div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script>
+    var data = {
+      baseUrl: '{{ app.request.getBasePath() }}',
+      locale: '{{ app.request.query.get('locale') }}',
+      type: '{{ app.request.query.get('type') }}',
+      currentTheme: {{ theme.name|json_encode|raw_purified }},
+      selected: '{{ app.request.query.get('selected') }}',
+      domainsTreeUrl: '{{ url('api_translation_domains_tree', {
+        lang: app.request.query.get('lang'),
+        type: app.request.query.get('type'),
+        selected: app.request.query.get('selected'),
+      }) }}',
+      translationUrl: '{{ url('api_i18n_translations_list', {page: 'international'}) }}',
+      internationalUrl: '{{ getAdminLink('AdminLocalization')|raw_purified }}',
+      translationsUrl: '{{ getAdminLink('AdminTranslations')|raw_purified }}'
+    }
+  </script>
+
+  {% if webpack_server %}
+    <script src="http://localhost:8080/translations.bundle.js"></script>
+  {% else %}
+    <script src="{{ asset('themes/new-theme/public/translations.bundle.js') }}"></script>
+  {% endif %}
+
+{% endblock %}

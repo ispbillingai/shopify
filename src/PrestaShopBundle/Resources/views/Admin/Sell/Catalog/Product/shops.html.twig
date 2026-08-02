@@ -1,0 +1,32 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% set legacyBaseLayout = lightDisplay|default(false) ? 'light_display_layout.tpl' : 'layout.tpl' %}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('themes/new-theme/public/product.css') }}" type="text/css" media="all">
+{% endblock %}
+
+{% block content %}
+  {{ form_start(productShopsForm, {attr: {
+      class: 'form-horizontal product-shops-form product-page-v2 justify-content-md-center',
+      novalidate: 'novalidate',
+      'data-product-id': productId,
+  }}) }}
+  {% block product_creation_form %}
+    {{ form_row(productShopsForm) }}
+  {% endblock %}
+
+  {% block product_rest %}
+    {{ form_end(productShopsForm) }}
+  {% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/new-theme/public/product_shops.bundle.js') }}"></script>
+{% endblock %}

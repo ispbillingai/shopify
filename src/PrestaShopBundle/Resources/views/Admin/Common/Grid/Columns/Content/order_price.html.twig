@@ -1,0 +1,14 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="text-left">
+  {% if record[column.options.is_paid_field] %}
+    <span class="badge badge-success rounded">
+    {{ record[column.options.field] }}
+  </span>
+  {% else %}
+    {{ record[column.options.field] }}
+  {% endif %}
+</div>

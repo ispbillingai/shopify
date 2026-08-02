@@ -1,0 +1,23 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="customer-carts-card card">
+  <h3 class="card-header">
+    <i class="material-icons">shopping_cart</i>
+    {{ 'Carts'|trans({}, 'Admin.Global') }}
+    <span class="badge badge-primary rounded">{{ customerCartGrid.data.records_total }}</span>
+  </h3>
+  <div class="card-body">
+    {% if customerCartGrid.data.records_total > 0 %}
+      {{ include('@PrestaShop/Admin/Common/Grid/grid.html.twig', {grid: customerCartGrid}) }}
+    {% else %}
+      <div class="text-center">
+        <p class="text-muted mb-2">
+          {{ '%firstname% %lastname% did not create any cart yet'|trans({'%firstname%': customerInformation.personalInformation.firstName, '%lastname%': customerInformation.personalInformation.lastName}, 'Admin.Orderscustomers.Feature') }}
+        </p>
+      </div>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,155 @@
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+// External components
+import {EventEmitter} from '@components/event-emitter';
+
+// Core components
+import ChoiceTable from '@js/components/choice-table';
+import ChoiceTree from '@js/components/form/choice-tree';
+import ColorPicker from '@js/app/utils/colorpicker';
+import CountryDniRequiredToggler from '@components/country-dni-required-toggler';
+import CountryStateSelectionToggler from '@components/country-state-selection-toggler';
+import DateRange from '@js/components/form/date-range';
+import DeltaQuantityInput from '@components/form/delta-quantity-input';
+import DisablingSwitch from '@components/form/disabling-switch';
+import GeneratableInput from '@js/components/generatable-input';
+import TextWithRecommendedLengthCounter from '@components/form/text-with-recommended-length-counter';
+import Grid from '@components/grid/grid';
+import ModifyAllShopsCheckbox from '@components/modify-all-shops-checkbox';
+import MultipleChoiceTable from '@js/components/multiple-choice-table';
+import MultistoreConfigField from '@js/components/form/multistore-config-field';
+import PreviewOpener from '@components/form/preview-opener';
+import Router from '@components/router';
+import ShopSelector from '@components/shop-selector/shop-selector';
+import TaggableField from '@js/components/taggable-field';
+import TextWithLengthCounter from '@components/form/text-with-length-counter';
+import TinyMCEEditor from '@js/components/tinymce-editor';
+import TranslatableField from '@js/components/translatable-field';
+import TranslatableInput from '@js/components/translatable-input';
+import EntitySearchInput from '@js/components/entity-search-input';
+import MultipleZoneChoice from '@js/components/form/multiple-zone-choice';
+import ToggleChildrenChoice from '@js/components/form/toggle-children-choice';
+import FilterLinkGroup from '@components/filter/filter-link-group';
+
+// Grid extensions
+import AsyncToggleColumnExtension from '@components/grid/extension/column/common/async-toggle-column-extension';
+import BulkActionCheckboxExtension from '@components/grid/extension/bulk-action-checkbox-extension';
+import BulkOpenTabsExtension from '@components/grid/extension/bulk-open-tabs-extension';
+import ChoiceExtension from '@components/grid/extension/choice-extension';
+import ColumnTogglingExtension from '@components/grid/extension/column-toggling-extension';
+import ExportToSqlManagerExtension from '@components/grid/extension/export-to-sql-manager-extension';
+import FiltersResetExtension from '@components/grid/extension/filters-reset-extension';
+import FiltersSubmitButtonEnablerExtension from '@components/grid/extension/filters-submit-button-enabler-extension';
+import IframeClient from '@components/modal/iframe-client';
+import LinkRowActionExtension from '@components/grid/extension/link-row-action-extension';
+import ModalFormSubmitExtension from '@components/grid/extension/modal-form-submit-extension';
+import PositionExtension from '@components/grid/extension/position-extension';
+import PreviewExtension from '@components/grid/extension/preview-extension';
+import ReloadListExtension from '@components/grid/extension/reload-list-extension';
+import SortingExtension from '@components/grid/extension/sorting-extension';
+import SubmitBulkActionExtension from '@components/grid/extension/submit-bulk-action-extension';
+import AjaxBulkActionExtension from '@components/grid/extension/ajax-bulk-action-extension';
+import SubmitGridActionExtension from '@components/grid/extension/submit-grid-action-extension';
+import SubmitRowActionExtension from '@components/grid/extension/action/row/submit-row-action-extension';
+import FormFieldToggler from '@components/form/form-field-toggler';
+import EmailInput from '@components/email-input';
+
+const GridExtensions = {
+  AjaxBulkActionExtension,
+  AsyncToggleColumnExtension,
+  BulkActionCheckboxExtension,
+  BulkOpenTabsExtension,
+  ChoiceExtension,
+  ColumnTogglingExtension,
+  ExportToSqlManagerExtension,
+  FilterLinkGroup,
+  FiltersResetExtension,
+  FiltersSubmitButtonEnablerExtension,
+  LinkRowActionExtension,
+  ModalFormSubmitExtension,
+  PositionExtension,
+  PreviewExtension,
+  ReloadListExtension,
+  SortingExtension,
+  SubmitBulkActionExtension,
+  SubmitGridActionExtension,
+  SubmitRowActionExtension,
+};
+
+const initPrestashopComponents = (): void => {
+  window.prestashop = {...window.prestashop};
+
+  if (!window.prestashop.instance) {
+    window.prestashop.instance = {};
+  }
+
+  window.prestashop.component = {
+    initComponents(components: string[]) {
+      components.forEach((component: string): void => {
+        if (window.prestashop.component[component] === undefined) {
+          console.error(`Failed to initialize PrestaShop component "${component}". This component doesn't exist.`);
+
+          return;
+        }
+
+        const componentInstanceName = component.charAt(0).toLowerCase() + component.slice(1);
+
+        if (window.prestashop.instance[componentInstanceName] !== undefined) {
+          console.warn(
+            `Failed to initialize PrestaShop component "${component}". This component is already initialized.`,
+          );
+
+          return;
+        }
+
+        // EventEmitter is a special case it has no constructor and could be used via
+        // window.prestashop.component.EventEmitter straight away
+        if (component === 'EventEmitter') {
+          window.prestashop.instance[componentInstanceName] = window.prestashop.component[component];
+
+          return;
+        }
+
+        window.prestashop.instance[componentInstanceName] = new window.prestashop.component[component]();
+      });
+
+      // Send an event so external users can initiate their own components
+      EventEmitter.emit('PSComponentsInitiated');
+    },
+    // @todo: add all standard components in this list
+    ChoiceTable,
+    ChoiceTree,
+    ColorPicker,
+    CountryDniRequiredToggler,
+    CountryStateSelectionToggler,
+    DeltaQuantityInput,
+    DisablingSwitch,
+    EventEmitter,
+    FormFieldToggler,
+    GeneratableInput,
+    DateRange,
+    Grid,
+    GridExtensions,
+    IframeClient,
+    ModifyAllShopsCheckbox,
+    MultipleChoiceTable,
+    MultistoreConfigField,
+    PreviewOpener,
+    Router,
+    TextWithRecommendedLengthCounter,
+    ShopSelector,
+    TaggableField,
+    TextWithLengthCounter,
+    TinyMCEEditor,
+    TranslatableField,
+    TranslatableInput,
+    EntitySearchInput,
+    EmailInput,
+    MultipleZoneChoice,
+    ToggleChildrenChoice,
+  };
+};
+export default initPrestashopComponents;

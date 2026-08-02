@@ -1,0 +1,35 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% form_theme pdfByDateForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+{% trans_default_domain 'Admin.Orderscustomers.Feature' %}
+
+{{ form_start(pdfByDateForm, {
+  method: 'GET',
+  action: path('_admin_credit_slips_pdf_by_date'),
+  attr: {id: 'form-generate-credit-slips-by-date'}})
+}}
+<div class="card">
+  <h3 class="card-header">
+    <i class="material-icons">date_range</i> {{ 'By date'|trans }}
+  </h3>
+
+  <div class="card-body">
+    <div class="form-wrapper">
+      {% block credit_slip_pdf_by_date_form %}
+        {{ form_widget(pdfByDateForm) }}
+      {% endblock %}
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-primary" id="generate-credit-slip-by-date">
+        {{ 'Generate PDF file by date'|trans({}, 'Admin.Orderscustomers.Feature') }}
+      </button>
+    </div>
+  </div>
+</div>
+{{ form_end(pdfByDateForm) }}

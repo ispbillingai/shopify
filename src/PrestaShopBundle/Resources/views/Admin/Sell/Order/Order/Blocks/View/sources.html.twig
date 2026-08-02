@@ -1,0 +1,37 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+  {% if orderForViewing.sources.sources is not empty %}
+    <div class="card d-print-none">
+      <div class="card-header">
+        <i class="material-icons">public</i>
+        {{ 'Sources'|trans({}, 'Admin.Orderscustomers.Feature') }}
+        <span class="badge badge-primary rounded">{{ orderForViewing.sources.sources|length }}</span>
+      </div>
+
+      <div class="card-body">
+        <table class="table" id="order-sources-list">
+          <thead>
+            <tr>
+              <th scope="col">{{ 'Date'|trans({}, 'Admin.Orderscustomers.Feature') }}</th>
+              <th scope="col">{{ 'From'|trans({}, 'Admin.Orderscustomers.Feature') }}</th>
+              <th scope="col">{{ 'To'|trans({}, 'Admin.Orderscustomers.Feature') }}</th>
+              <th scope="col">{{ 'Keywords'|trans({}, 'Admin.Global') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for source in orderForViewing.sources.sources %}
+              <tr>
+                <td>{{ source.addedAt|date_format_full }}</td>
+                <td>{% if source.httpReferer != '' %}<a href="{{ source.httpReferer }}">{{ source.httpReferer }}</a>{% else %}{{ 'Unknown'|trans({}, 'Admin.Orderscustomers.Feature') }}{% endif %}</td>
+                <td><a href="http://{{ source.requestUri }}">{{ source.requestUri|slice(0, 100) }}</a></td>
+                <td>{% if source.keywords != '' %}{{ source.keywords }}{% endif %}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}

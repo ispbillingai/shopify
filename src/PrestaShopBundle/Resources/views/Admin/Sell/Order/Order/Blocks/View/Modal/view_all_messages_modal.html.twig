@@ -1,0 +1,39 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="modal fade" id="view_all_messages_modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="card-header">
+        <div class="row">
+          <div class="col">
+            <h3 class="card-header-title">
+              {% if orderForViewing.customer is not null and orderForViewing.customer.id != 0 %}
+                {{ 'Message history with %name%'|trans({'%name%': orderForViewing.customer.firstName ~ ' ' ~ orderForViewing.customer.lastName}, 'Admin.Global') }}
+              {% else %}
+                {{ 'Message history'|trans({}, 'Admin.Global') }}
+              {% endif %}
+              ({{ orderForViewing.messages.messages|length }})
+            </h3>
+          </div>
+          <div class="col">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <i class="material-icons">
+                close
+              </i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <ul class="list-unstyled p-4 messages-block" id="all-messages-list">
+          {% for message in orderForViewing.messages.messages|reverse %}
+            {{ include('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/msg_list_item.html.twig') }}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+/**
+ * Allow call of Legacy classes from classes in /src and /tests
+ * @see composer.json "files" property for custom autoloading
+ */
+require_once __DIR__.'/config/defines.inc.php';
+require_once __DIR__.'/config/autoload.php';

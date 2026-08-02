@@ -1,0 +1,13 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/Common/Grid/Columns/Content/link.html.twig' %}
+
+{% block link %}
+  {% if record[column.options.disabled_field] %}
+    {{ 'Deleted customer'|trans({}, 'Admin.Global') }}
+  {% else %}
+    {{ parent() }}
+  {% endif %}
+{% endblock %}

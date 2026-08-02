@@ -1,0 +1,17 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% block logo_card %}
+  <div class="card logo-card">
+    <div class="card-body">
+      <div class="logo-card-title text-left">
+        {% block card_title %}
+        {% endblock %}
+      </div>
+      {% block card_content %}
+      {% endblock %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% form_theme exportCataloguesForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+{% trans_default_domain 'Admin.International.Feature' %}
+
+{{ form_start(exportCataloguesForm, {action: path('admin_international_translations_export_catalogues')}) }}
+
+<div class="card export-translations">
+  <h3 class="card-header">
+    <i class="material-icons">cloud_upload</i> {{ 'Export a language'|trans }}
+
+    <span
+      class="help-box"
+      data-container="body"
+      data-toggle="popover"
+      data-trigger="hover"
+      data-placement="right"
+      data-content="{{ 'Export data from one language to a file (language pack).'|trans({}, 'Admin.International.Help') }}{{ 'Select which theme you would like to export your translations to.'|trans({}, 'Admin.International.Help') }}"
+      title=""
+    >
+    </span>
+  </h3>
+  <div class="card-body">
+    <div class="form-wrapper">
+      {{ form_rest(exportCataloguesForm) }}
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-primary" id="form-export-language-button">
+        <i class="material-icons">cloud_download</i>
+        <span>{{ 'Export'|trans({}, 'Admin.Actions') }}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+{{ form_end(exportCataloguesForm) }}

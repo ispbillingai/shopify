@@ -1,0 +1,26 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% trans_default_domain 'Admin.Shopparameters.Feature' %}
+{% form_theme pageForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+
+{% block product_preferences_page %}
+  <div class="card" id="configuration_fieldset_fo_product_page">
+    <h3 class="card-header">
+      <i class="material-icons">shopping_basket</i>
+      {{ 'Product page'|trans }}
+    </h3>
+    <div class="card-body">
+      <div class="form-wrapper">
+        {{ form_widget(pageForm) }}
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" id="form-page-save-button">{{ 'Save'|trans({}, 'Admin.Actions') }}</button>
+      </div>
+    </div>
+  </div>
+{% endblock %}

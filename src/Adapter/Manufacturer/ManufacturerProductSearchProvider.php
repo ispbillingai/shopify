@@ -1,0 +1,96 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+namespace PrestaShop\PrestaShop\Adapter\Manufacturer;
+
+use Manufacturer;
+use PrestaShop\PrestaShop\Core\Product\Search\ProductSearchContext;
+use PrestaShop\PrestaShop\Core\Product\Search\ProductSearchProviderInterface;
+use PrestaShop\PrestaShop\Core\Product\Search\ProductSearchQuery;
+use PrestaShop\PrestaShop\Core\Product\Search\ProductSearchResult;
+use PrestaShop\PrestaShop\Core\Product\Search\SortOrdersCollection;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+class ManufacturerProductSearchProvider implements ProductSearchProviderInterface
+{
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * @var Manufacturer
+     */
+    private $manufacturer;
+
+    /**
+     * @var SortOrdersCollection
+     */
+    private $sortOrdersCollection;
+
+    public function __construct(
+        TranslatorInterface $translator,
+        Manufacturer $manufacturer
+    ) {
+        $this->translator = $translator;
+        $this->manufacturer = $manufacturer;
+        $this->sortOrdersCollection = new SortOrdersCollection($this->translator);
+    }
+
+    /**
+     * @param ProductSearchContext $context
+     * @param ProductSearchQuery $query
+     * @param string $type
+     *
+     * @return array|int
+     */
+    private function getProductsOrCount(
+        ProductSearchContext $context,
+        ProductSearchQuery $query,
+        $type = 'products'
+    ) {
+        $result = $this->manufacturer->getProducts(
+            $this->manufacturer->id,
+            $context->getIdLang(),
+            $query->getPage(),
+            $query->getResultsPerPage(),
+            $query->getSortOrder()->toLegacyOrderBy(),
+            $query->getSortOrder()->toLegacyOrderWay(),
+            $type !== 'products'
+        );
+
+        return $type !== 'products' ? (int) $result : $result;
+    }
+
+    /**
+     * @param ProductSearchContext $context
+     * @param ProductSearchQuery $query
+     *
+     * @return ProductSearchResult
+     */
+    public function runQuery(
+        ProductSearchContext $context,
+        ProductSearchQuery $query
+    ) {
+        $products = $this->getProductsOrCount($context, $query, 'products');
+        $count = $this->getProductsOrCount($context, $query, 'count');
+
+        $result = new ProductSearchResult();
+
+        if (!empty($products)) {
+            $result
+                ->setProducts($products)
+                ->setTotalProductsCount($count);
+
+            // We use only default set of sort orders
+            $result->setAvailableSortOrders(
+                $this->sortOrdersCollection->getDefaults()
+            );
+        }
+
+        return $result;
+    }
+}

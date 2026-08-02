@@ -1,0 +1,9 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/Common/Grid/grid_panel.html.twig' %}
+
+{% block grid_view_block %}
+  {{ include('@PrestaShop/Admin/Sell/Catalog/Product/Grid/grid.html.twig', {grid: grid}) }}
+{% endblock %}

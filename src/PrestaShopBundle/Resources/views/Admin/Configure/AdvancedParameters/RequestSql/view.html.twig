@@ -1,0 +1,51 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+{% trans_default_domain 'Admin.Advparameters.Feature' %}
+
+{% block content %}
+  {% block request_sql_view_block %}
+    <div class="card">
+      <h3 class="card-header">
+        <i class="material-icons">list</i>
+        {{ 'SQL query results'|trans }} ({{ sqlRequestResult.rows|length }})
+      </h3>
+      <div class="card-body">
+        {% if sqlRequestResult.rows is not empty %}
+          <div class="table-responsive">
+            <table id="grid-table" class="table">
+              <thead>
+                <tr>
+                  {% for column in sqlRequestResult.columns %}
+                    <th class="column-{{ column }}-head">{{ column }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in sqlRequestResult.rows %}
+                  <tr>
+                    {% for column in sqlRequestResult.columns %}
+                      {% if requestSqlView.attributes[column] is defined %}
+                        <td class="grid-{{ column }}-value">{{ requestSqlView.attributes[column] }}</td>
+                      {% else %}
+                        <td class="grid-{{ column }}-value">{{ row[column] }}</td>
+                      {% endif %}
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="alert alert-warning">
+            <p class="alert-text">
+              {{ 'This SQL query has no result.'|trans({}, 'Admin.Advparameters.Notification') }}
+            </p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endblock %}
+{% endblock %}

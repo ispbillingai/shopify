@@ -1,0 +1,19 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block content %}
+  {{ include('@PrestaShop/Admin/Sell/Catalog/Manufacturer/Blocks/View/addresses.html.twig') }}
+
+  <div class="mt-3">
+    {{ include('@PrestaShop/Admin/Sell/Catalog/Manufacturer/Blocks/View/products.html.twig') }}
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/new-theme/public/manufacturer.bundle.js') }}"></script>
+{% endblock %}

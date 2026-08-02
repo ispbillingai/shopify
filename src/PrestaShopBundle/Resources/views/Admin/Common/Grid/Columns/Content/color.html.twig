@@ -1,0 +1,10 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% set textColor = is_color_bright(record[column.options.color_field]) ? '#383838' : 'white' %}
+
+<span class="badge rounded" style="background-color: {{ record[column.options.color_field] }}; color: {{ textColor }};">
+  {{ record[column.options.field] }}
+</span>

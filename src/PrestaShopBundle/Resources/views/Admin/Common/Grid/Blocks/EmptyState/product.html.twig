@@ -1,0 +1,20 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="text-center showcase-list-card">
+  <img class="img-responsive mt-3" src="{{ asset('themes/new-theme/img/empty_state/catalog.svg') }}" width="320" height="auto">
+
+  <p class="mt-4 showcase-list-card__header">{{ 'Manage your products'|trans({}, 'Admin.Catalog.Feature') }}</p>
+
+  <div class="mt-4">
+    <a href="{{ path('admin_products_create') }}" class="btn btn-primary ml-1 new-product-button">
+      {{ 'Create new product'|trans({}, 'Admin.Catalog.Feature') }}
+    </a>
+    {{ 'or'|trans({}, 'Admin.Global') }}
+    <a href="{{ path('admin_import') }}" target="_blank" class="btn btn-outline-secondary mr-1">
+      {{ 'Import a list of products.'|trans({}, 'Admin.Catalog.Feature') }}
+    </a>
+  </div>
+</div>

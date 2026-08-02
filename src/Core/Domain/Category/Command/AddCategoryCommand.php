@@ -1,0 +1,362 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+namespace PrestaShop\PrestaShop\Core\Domain\Category\Command;
+
+use PrestaShop\PrestaShop\Core\Domain\Category\Exception\CategoryConstraintException;
+use PrestaShop\PrestaShop\Core\Domain\Category\ValueObject\RedirectOption;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+/**
+ * Class AddCategoryCommand adds new category.
+ */
+class AddCategoryCommand
+{
+    /**
+     * @var string[]
+     */
+    private $localizedNames;
+
+    /**
+     * @var int
+     */
+    private $parentCategoryId;
+
+    /**
+     * @var string[]
+     */
+    private $localizedLinkRewrites;
+
+    /**
+     * @var string[]
+     */
+    private $localizedDescriptions;
+
+    /**
+     * @var string[]|null
+     */
+    private $localizedAdditionalDescriptions;
+
+    /**
+     * @var bool
+     */
+    private $isActive;
+
+    /**
+     * @var string[]
+     */
+    private $localizedMetaTitles;
+
+    /**
+     * @var string[]
+     */
+    private $localizedMetaDescriptions;
+
+    /**
+     * @var int[]
+     */
+    private $associatedGroupIds;
+
+    /**
+     * @var int[]
+     */
+    private $associatedShopIds;
+
+    /**
+     * @var UploadedFile|null
+     */
+    private $coverImage;
+
+    /**
+     * @var UploadedFile|null
+     */
+    private $thumbnailImage;
+
+    private ?RedirectOption $redirectOption = null;
+
+    /**
+     * @param string[] $localizedNames
+     * @param string[] $localizedLinkRewrites
+     * @param bool $isActive
+     * @param int $parentCategoryId
+     *
+     * @throws CategoryConstraintException
+     */
+    public function __construct(array $localizedNames, array $localizedLinkRewrites, $isActive, $parentCategoryId)
+    {
+        $this
+            ->setLocalizedNames($localizedNames)
+            ->setLocalizedLinkRewrites($localizedLinkRewrites)
+            ->setIsActive($isActive)
+            ->setParentCategoryId($parentCategoryId);
+    }
+
+    /**
+     * @return int
+     */
+    public function getParentCategoryId()
+    {
+        return $this->parentCategoryId;
+    }
+
+    /**
+     * @param int $parentCategoryId
+     *
+     * @return self
+     *
+     * @throws CategoryConstraintException
+     */
+    public function setParentCategoryId($parentCategoryId)
+    {
+        if (!is_int($parentCategoryId) || 0 >= $parentCategoryId) {
+            throw new CategoryConstraintException(sprintf('Invalid Category parent id %s supplied', var_export($parentCategoryId, true)), CategoryConstraintException::INVALID_PARENT_ID);
+        }
+
+        $this->parentCategoryId = $parentCategoryId;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getLocalizedNames()
+    {
+        return $this->localizedNames;
+    }
+
+    /**
+     * @param string[] $localizedNames
+     *
+     * @return $this
+     *
+     * @throws CategoryConstraintException
+     */
+    public function setLocalizedNames(array $localizedNames)
+    {
+        if (empty($localizedNames)) {
+            throw new CategoryConstraintException('Category name cannot be empty', CategoryConstraintException::EMPTY_NAME);
+        }
+
+        $this->localizedNames = $localizedNames;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getLocalizedLinkRewrites()
+    {
+        return $this->localizedLinkRewrites;
+    }
+
+    /**
+     * @param string[] $localizedLinkRewrites
+     *
+     * @return $this
+     *
+     * @throws CategoryConstraintException
+     */
+    public function setLocalizedLinkRewrites(array $localizedLinkRewrites)
+    {
+        if (empty($localizedLinkRewrites)) {
+            throw new CategoryConstraintException('Category link rewrite cannot be empty', CategoryConstraintException::EMPTY_LINK_REWRITE);
+        }
+
+        $this->localizedLinkRewrites = $localizedLinkRewrites;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getLocalizedDescriptions()
+    {
+        return $this->localizedDescriptions;
+    }
+
+    /**
+     * @param string[] $localizedDescriptions
+     *
+     * @return $this
+     */
+    public function setLocalizedDescriptions(array $localizedDescriptions)
+    {
+        $this->localizedDescriptions = $localizedDescriptions;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getLocalizedAdditionalDescriptions(): ?array
+    {
+        return $this->localizedAdditionalDescriptions;
+    }
+
+    /**
+     * @param string[] $localizedAdditionalDescriptions
+     *
+     * @return $this
+     */
+    public function setLocalizedAdditionalDescriptions(array $localizedAdditionalDescriptions): self
+    {
+        $this->localizedAdditionalDescriptions = $localizedAdditionalDescriptions;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @param bool $isActive
+     *
+     * @return $this
+     *
+     * @throws CategoryConstraintException
+     */
+    public function setIsActive($isActive)
+    {
+        if (!is_bool($isActive)) {
+            throw new CategoryConstraintException('Invalid Category status supplied', CategoryConstraintException::INVALID_STATUS);
+        }
+
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getLocalizedMetaTitles()
+    {
+        return $this->localizedMetaTitles;
+    }
+
+    /**
+     * @param string[] $localizedMetaTitles
+     *
+     * @return $this
+     */
+    public function setLocalizedMetaTitles(array $localizedMetaTitles)
+    {
+        $this->localizedMetaTitles = $localizedMetaTitles;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getLocalizedMetaDescriptions()
+    {
+        return $this->localizedMetaDescriptions;
+    }
+
+    /**
+     * @param string[] $localizedMetaDescriptions
+     *
+     * @return $this
+     */
+    public function setLocalizedMetaDescriptions(array $localizedMetaDescriptions)
+    {
+        $this->localizedMetaDescriptions = $localizedMetaDescriptions;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getAssociatedGroupIds()
+    {
+        return $this->associatedGroupIds;
+    }
+
+    /**
+     * @param int[] $associatedGroupIds
+     *
+     * @return $this
+     */
+    public function setAssociatedGroupIds(array $associatedGroupIds)
+    {
+        $this->associatedGroupIds = $associatedGroupIds;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getAssociatedShopIds()
+    {
+        return $this->associatedShopIds;
+    }
+
+    /**
+     * @param int[] $associatedShopIds
+     *
+     * @return $this
+     */
+    public function setAssociatedShopIds(array $associatedShopIds)
+    {
+        $this->associatedShopIds = $associatedShopIds;
+
+        return $this;
+    }
+
+    /**
+     * @return UploadedFile|null
+     */
+    public function getCoverImage(): ?UploadedFile
+    {
+        return $this->coverImage;
+    }
+
+    /**
+     * @param UploadedFile|null $coverImage
+     */
+    public function setCoverImage(?UploadedFile $coverImage): void
+    {
+        $this->coverImage = $coverImage;
+    }
+
+    /**
+     * @return UploadedFile|null
+     */
+    public function getThumbnailImage(): ?UploadedFile
+    {
+        return $this->thumbnailImage;
+    }
+
+    /**
+     * @param UploadedFile|null $thumbnailImage
+     */
+    public function setThumbnailImage(?UploadedFile $thumbnailImage): void
+    {
+        $this->thumbnailImage = $thumbnailImage;
+    }
+
+    public function getRedirectOption(): ?RedirectOption
+    {
+        return $this->redirectOption;
+    }
+
+    public function setRedirectOption(?RedirectOption $redirectOption): void
+    {
+        $this->redirectOption = $redirectOption;
+    }
+}

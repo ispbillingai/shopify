@@ -1,0 +1,13 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% if record.employee is not null %}
+  <span class="employee_avatar_small">
+    <img class="img rounded-circle" alt="{{ record.employee }}" src="{{ asset(record.image) }}" height="32" width="32" />
+  </span>
+  {{ record.employee }}
+{% else %}
+  {{ 'N/A'|trans({}, 'Admin.Global') }}
+{% endif %}

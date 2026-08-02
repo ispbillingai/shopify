@@ -1,0 +1,16 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% set legacyBaseLayout = lightDisplay|default(false) ? 'light_display_layout.tpl' : 'layout.tpl' %}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block content %}
+  {{ include('@PrestaShop/Admin/Sell/Catalog/Attachment/Blocks/form.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/new-theme/public/attachment.bundle.js') }}"></script>
+{% endblock %}

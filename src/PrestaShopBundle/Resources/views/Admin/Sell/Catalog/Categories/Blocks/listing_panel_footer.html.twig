@@ -1,0 +1,17 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% if app.request.query.has('id_category') and not currentCategoryView.is_home_category %}
+  {% if currentCategoryView.id_parent %}
+    {% set params = {id_category: currentCategoryView.id_parent} %}
+  {% endif %}
+
+  <div class="card-footer">
+    <a href="{{ path('admin_categories_index', params|default({})) }}" class="btn btn-outline-secondary">
+      <i class="material-icons rtl-flip">arrow_back</i>
+      {{ 'Back to list'|trans({}, 'Admin.Actions') }}
+    </a>
+  </div>
+{% endif %}

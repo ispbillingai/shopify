@@ -1,0 +1,75 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+namespace PrestaShop\PrestaShop\Core\Import\EntityField\Provider;
+
+use PrestaShop\PrestaShop\Core\Import\EntityField\EntityField;
+use PrestaShop\PrestaShop\Core\Import\EntityField\EntityFieldCollection;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+/**
+ * Class AddressFieldsProvider defines an address fields provider.
+ */
+final class AddressFieldsProvider implements EntityFieldsProviderInterface
+{
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCollection()
+    {
+        $fields = [
+            new EntityField('id', $this->trans('ID', 'Admin.Global')),
+            new EntityField('alias', $this->trans('Alias', 'Admin.Shopparameters.Feature'), '', true),
+            new EntityField('active', $this->trans('Active  (0/1)', 'Admin.Advparameters.Feature')),
+            new EntityField('customer_email', $this->trans('Customer email', 'Admin.Advparameters.Feature'), '', true),
+            new EntityField('id_customer', $this->trans('Customer ID', 'Admin.Advparameters.Feature')),
+            new EntityField('manufacturer', $this->trans('Brand', 'Admin.Global')),
+            new EntityField('supplier', $this->trans('Supplier', 'Admin.Global')),
+            new EntityField('company', $this->trans('Company', 'Admin.Global')),
+            new EntityField('lastname', $this->trans('Last name', 'Admin.Global'), '', true),
+            new EntityField('firstname', $this->trans('First name', 'Admin.Global'), '', true),
+            new EntityField('address1', $this->trans('Address', 'Admin.Global'), '', true),
+            new EntityField('address2', $this->trans('Address (2)', 'Admin.Global')),
+            new EntityField('postcode', $this->trans('Zip/Postal code', 'Admin.Global'), '', true),
+            new EntityField('city', $this->trans('City', 'Admin.Global'), '', true),
+            new EntityField('country', $this->trans('Country', 'Admin.Global'), '', true),
+            new EntityField('state', $this->trans('State', 'Admin.Global')),
+            new EntityField('other', $this->trans('Other', 'Admin.Global')),
+            new EntityField('phone', $this->trans('Phone', 'Admin.Global')),
+            new EntityField('phone_mobile', $this->trans('Mobile phone', 'Admin.Global')),
+            new EntityField('vat_number', $this->trans('VAT number', 'Admin.Orderscustomers.Feature')),
+            new EntityField('dni', $this->trans('Identification number', 'Admin.Orderscustomers.Feature')),
+        ];
+
+        return EntityFieldCollection::createFromArray($fields);
+    }
+
+    /**
+     * A shorter name method for translations.
+     *
+     * @param string $id translation ID
+     * @param string $domain translation domain
+     *
+     * @return string
+     */
+    private function trans($id, $domain = 'Admin.Advparameters.Feature')
+    {
+        return $this->translator->trans($id, [], $domain);
+    }
+}

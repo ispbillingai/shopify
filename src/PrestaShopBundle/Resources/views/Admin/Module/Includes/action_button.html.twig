@@ -1,0 +1,17 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% if (action == 'configure') %}
+  <a class="{{ classes }}" href="{{ url }}">
+    {{ label }}
+  </a>
+{% else %}
+  {# For the 'upgrade' action, if an upload_url is provided, it is added as a data-upload-url attribute to allow file upload during module upgrade via JavaScript #}
+  <form class="{{ classes_form|default() }}" method="post" action="{{ url }}" {% if action == 'upgrade' and upload_url is not empty %}data-upload-url="{{ upload_url }}"{% endif %}>
+    <button type="submit" class="{{ classes }} module_action_menu_{{ action }}" data-confirm_modal="module-modal-confirm-{{ name }}-{{ action }}">
+      {{ label }}
+    </button>
+  </form>
+{% endif %}

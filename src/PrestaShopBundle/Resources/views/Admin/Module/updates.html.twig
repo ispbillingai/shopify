@@ -1,0 +1,24 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/Module/common.html.twig' %}
+
+{% block content %}
+  {# Contains toolbar-nav for module page #}
+  {{ include('@PrestaShop/Admin/Module/Includes/modal_import.html.twig', {level: level, errorMessage: errorMessage}) }}
+  {# Actual Page Content #}
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div id="module-short-list-update" class="module-short-list">
+        <span class="module-search-result-title module-search-result-wording">{{ '%nbModules% modules to update'|trans({'%nbModules%': modules|length}, 'Admin.Modules.Feature') }}</span>
+        {{ include('@Common/HelpBox/helpbox.html.twig', {content: 'Update these modules to enjoy their latest versions.'|trans({}, 'Admin.Modules.Help'), title: 'Modules to update'|trans({}, 'Admin.Modules.Feature')}) }}
+
+        {% if (modules|length > 1) and (level >= constant('PrestaShop\\PrestaShop\\Core\\Security\\Permission::LEVEL_UPDATE')) %}
+          <a class="btn btn-primary float-right module_action_menu_upgrade_all" href="#" data-confirm_modal="module-modal-confirm-upgrade-all">{{ 'Update all'|trans({}, 'Admin.Modules.Feature') }}</a>
+        {% endif %}
+      </div>
+      {{ include('@PrestaShop/Admin/Module/Includes/grid_notification_update.html.twig', {modules: modules, display_type: 'list', id: 'update', level: level, category: 'notification'}) }}
+    </div>
+  </div>
+{% endblock %}

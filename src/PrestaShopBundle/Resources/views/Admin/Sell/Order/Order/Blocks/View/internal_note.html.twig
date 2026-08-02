@@ -1,0 +1,43 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+<div class="mt-2 info-block">
+  <div class="row">
+    {% set isNoteOpen = not orderForViewing.note is empty %}
+
+    <div class="col-md-6">
+      <h3 class="mb-0{{ not isNoteOpen ? ' d-print-none' : '' }}">
+        {{ 'Order private note'|trans({}, 'Admin.Orderscustomers.Feature') }}
+      </h3>
+    </div>
+
+    <div class="col-md-6 text-right d-print-none">
+      <a href="#"
+         class="float-right tooltip-link js-order-notes-toggle-btn{% if isNoteOpen %} is-opened{% endif %}"
+      >
+        <i class="material-icons">{% if isNoteOpen %}remove{% else %}add{% endif %}</i>
+      </a>
+    </div>
+
+    <div class="col-md-12 mt-3 js-order-notes-block{% if not isNoteOpen %} d-none{% endif %}">
+      {{ form_start(internalNoteForm, {
+        action: path('admin_orders_set_internal_note', {orderId: orderForViewing.getId()}),
+      }) }}
+      {{ form_widget(internalNoteForm.note) }}
+      <div class="d-none">
+        {{ form_rest(internalNoteForm) }}
+      </div>
+
+      <div class="mt-2 text-right">
+        <button type="submit"
+                class="btn btn-primary btn-sm js-order-notes-btn"
+                {% if orderForViewing.note is empty %}disabled{% endif %}
+        >
+          {{ 'Save'|trans({}, 'Admin.Actions') }}
+        </button>
+      </div>
+      {{ form_end(internalNoteForm) }}
+    </div>
+  </div>
+</div>

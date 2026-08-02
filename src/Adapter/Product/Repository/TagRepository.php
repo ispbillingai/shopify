@@ -1,0 +1,143 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
+namespace PrestaShop\PrestaShop\Adapter\Product\Repository;
+
+use Doctrine\DBAL\Connection;
+use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\LanguageId;
+use PrestaShop\PrestaShop\Core\Domain\Product\Exception\CannotUpdateProductException;
+use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\LocalizedTags;
+use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductId;
+use PrestaShop\PrestaShop\Core\Exception\CoreException;
+use PrestaShopException;
+use Tag;
+
+/**
+ * Accesses product Tag data source
+ */
+class TagRepository
+{
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * @var string
+     */
+    private $dbPrefix;
+
+    /**
+     * @param Connection $connection
+     * @param string $dbPrefix
+     */
+    public function __construct(Connection $connection, string $dbPrefix)
+    {
+        $this->connection = $connection;
+        $this->dbPrefix = $dbPrefix;
+    }
+
+    public function addTagsByLanguage(ProductId $productId, LocalizedTags $localizedTags): void
+    {
+        $productIdValue = $productId->getValue();
+        $langIdValue = $localizedTags->getLanguageId()->getValue();
+
+        try {
+            // assign new tags to product
+            if (!Tag::addTags($langIdValue, $productIdValue, $localizedTags->getTags())) {
+                throw new CannotUpdateProductException(
+                    sprintf('Failed to update product #%d tags in lang #%d', $productIdValue, $langIdValue),
+                    CannotUpdateProductException::FAILED_UPDATE_TAGS
+                );
+            }
+        } catch (PrestaShopException) {
+            throw new CoreException(
+                sprintf('Error occurred when trying to add tags to product #%d', $productIdValue
+                ));
+        }
+    }
+
+    /**
+     * @param ProductId $productId
+     *
+     * @throws CannotUpdateProductException
+     * @throws CoreException
+     */
+    public function deleteAllTags(ProductId $productId): void
+    {
+        $productIdValue = $productId->getValue();
+
+        try {
+            if (!Tag::deleteTagsForProduct($productIdValue)) {
+                throw new CannotUpdateProductException(
+                    sprintf('Failed to delete all tags for product #%d', $productIdValue),
+                    CannotUpdateProductException::FAILED_UPDATE_TAGS
+                );
+            }
+        } catch (PrestaShopException) {
+            throw new CoreException(
+                sprintf('Error occurred when trying to delete product #%d tags', $productIdValue
+                ));
+        }
+    }
+
+    /**
+     * @param ProductId $productId
+     * @param LanguageId $languageId
+     *
+     * @throws CannotUpdateProductException
+     * @throws CoreException
+     */
+    public function deleteTagsByLanguage(ProductId $productId, LanguageId $languageId): void
+    {
+        $productIdValue = $productId->getValue();
+        $langIdValue = $languageId->getValue();
+
+        try {
+            if (!Tag::deleteProductTagsInLang($productIdValue, $langIdValue)) {
+                throw new CannotUpdateProductException(
+                    sprintf('Failed to delete product #%d previous tags in lang #%d', $productIdValue, $langIdValue),
+                    CannotUpdateProductException::FAILED_UPDATE_TAGS
+                );
+            }
+        } catch (PrestaShopException) {
+            throw new CoreException(
+                sprintf('Error occurred when trying to delete product #%d tags', $productIdValue
+                ));
+        }
+    }
+
+    /**
+     * @param ProductId $productId
+     *
+     * @return array Localized tags for a product
+     */
+    public function getLocalizedProductTags(ProductId $productId): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('t.id_lang, t.name')
+            ->from($this->dbPrefix . 'tag', 't')
+            ->leftJoin('t', $this->dbPrefix . 'product_tag', 'pt', 'pt.id_tag = t.id_tag')
+            ->where('pt.id_product = :productId')
+            ->setParameter('productId', $productId->getValue())
+        ;
+
+        $result = $qb->executeQuery()->fetchAllAssociative();
+        if (empty($result)) {
+            return [];
+        }
+
+        $localizedTags = [];
+        foreach ($result as $row) {
+            $localizedTags[(int) $row['id_lang']][] = $row['name'];
+        }
+
+        return $localizedTags;
+    }
+}

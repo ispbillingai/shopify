@@ -1,0 +1,34 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% form_theme orderStateForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+
+{% block order_state_form %}
+  {{ form_start(orderStateForm) }}
+    <div class="card">
+      <h3 class="card-header">
+        <i class="material-icons">schedule</i>
+        {{ 'Order status'|trans({}, 'Admin.Shopparameters.Feature') }}
+      </h3>
+      <div class="card-body">
+        <div class="form-wrapper">
+          {{ form_errors(orderStateForm) }}
+
+          {% block order_state_form_rest %}
+            {{ form_rest(orderStateForm) }}
+          {% endblock %}
+        </div>
+      </div>
+      <div class="card-footer">
+          <a href="{{ pathWithBackUrl('admin_order_states') }}" class="btn btn-outline-secondary">
+          {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+        </a>
+        <button class="btn btn-primary float-right"id="save-button">
+          {{ 'Save'|trans({}, 'Admin.Actions') }}
+        </button>
+      </div>
+    </div>
+  {{ form_end(orderStateForm) }}
+{% endblock %}

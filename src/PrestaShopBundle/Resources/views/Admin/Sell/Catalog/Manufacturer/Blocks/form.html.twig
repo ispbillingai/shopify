@@ -1,0 +1,41 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% form_theme manufacturerForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+
+{{ form_start(manufacturerForm) }}
+<div class="card">
+  <h3 class="card-header">
+    <i class="material-icons">star</i>
+    {{ 'Brand'|trans({}, 'Admin.Catalog.Feature') }}
+  </h3>
+  <div class="card-body">
+    <div class="form-wrapper">
+      {{ form_row(manufacturerForm.name) }}
+      {{ form_row(manufacturerForm.short_description) }}
+      {{ form_row(manufacturerForm.description) }}
+      {{ form_row(manufacturerForm.logo) }}
+      {% if logoImage is defined and logoImage is not null %}
+        <div class="form-group row">
+          <label for="" class="form-control-label"></label>
+          <div class="col-sm">
+            {{ include('@PrestaShop/Admin/Sell/Catalog/Manufacturer/logo_image.html.twig') }}
+          </div>
+        </div>
+      {% endif %}
+
+      {{ form_widget(manufacturerForm) }}
+    </div>
+  </div>
+  <div class="card-footer">
+    <a href="{{ path('admin_manufacturers_index') }}" class="btn btn-outline-secondary">
+      {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+    </a>
+    <button class="btn btn-primary float-right">
+      {{ 'Save'|trans({}, 'Admin.Actions') }}
+    </button>
+  </div>
+</div>
+{{ form_end(manufacturerForm) }}

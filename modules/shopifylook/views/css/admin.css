@@ -1,0 +1,382 @@
+/*
+ * Shopify-style back office skin for PrestaShop 9.
+ *
+ * Targets the real 9.x admin DOM: body.ps-bo-rebrand, #header_infos.main-header,
+ * nav#nav-sidebar .main-menu, #main-div .content-div.
+ *
+ * Design tokens follow the flat, no-gradient house rule.
+ */
+
+:root {
+    --sl-canvas:        #f1f1f1;
+    --sl-surface:       #ffffff;
+    --sl-topbar:        #1a1a1a;
+    --sl-topbar-text:   #e3e3e3;
+    --sl-border:        #e3e3e3;
+    --sl-border-strong: #d1d1d1;
+    --sl-text:          #303030;
+    --sl-text-muted:    #616161;
+    --sl-accent:        #303030;
+    --sl-hover:         #f0f0f0;
+    --sl-active:        #ffffff;
+    --sl-radius:        10px;
+    --sl-radius-sm:     8px;
+    --sl-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ---------- Canvas ---------- */
+
+body.ps-bo-rebrand {
+    background: var(--sl-canvas);
+    font-family: var(--sl-font);
+    color: var(--sl-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+body.ps-bo-rebrand #main-div {
+    background: var(--sl-canvas);
+}
+
+body.ps-bo-rebrand .content-div {
+    background: transparent;
+    padding-top: 16px;
+}
+
+/* ---------- Top bar ---------- */
+
+body.ps-bo-rebrand #header_infos.main-header,
+body.ps-bo-rebrand #header .main-header {
+    background: var(--sl-topbar);
+    border-bottom: none;
+    box-shadow: none;
+    height: 56px;
+}
+
+body.ps-bo-rebrand #header_infos a,
+body.ps-bo-rebrand #header_infos .link,
+body.ps-bo-rebrand #header_infos i.material-icons,
+body.ps-bo-rebrand #header_infos span {
+    color: var(--sl-topbar-text);
+}
+
+body.ps-bo-rebrand #header_infos a:hover,
+body.ps-bo-rebrand #header_infos .link:hover {
+    color: #ffffff;
+}
+
+/* Search field — Shopify centres a rounded, slightly lighter input. */
+body.ps-bo-rebrand #header-search-container .component-search-body input,
+body.ps-bo-rebrand #header-search-container input[type="text"] {
+    background: #303030;
+    border: 1px solid #4a4a4a;
+    border-radius: var(--sl-radius-sm);
+    color: #ffffff;
+    height: 34px;
+}
+
+body.ps-bo-rebrand #header-search-container input::placeholder {
+    color: #a0a0a0;
+}
+
+body.ps-bo-rebrand #shop_version {
+    color: #8a8a8a;
+    font-size: 11px;
+}
+
+/* ---------- Sidebar ---------- */
+
+body.ps-bo-rebrand nav#nav-sidebar.nav-bar {
+    background: #fbfbfb;
+    border-right: 1px solid var(--sl-border);
+    box-shadow: none;
+}
+
+body.ps-bo-rebrand #nav-sidebar .logo-container {
+    background: transparent;
+    border-bottom: 1px solid var(--sl-border);
+}
+
+body.ps-bo-rebrand #nav-sidebar .main-menu {
+    padding: 8px;
+}
+
+body.ps-bo-rebrand #nav-sidebar .main-menu > li {
+    margin: 1px 0;
+    border: none;
+}
+
+body.ps-bo-rebrand #nav-sidebar .main-menu > li > a {
+    color: var(--sl-text);
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: var(--sl-radius-sm);
+    padding: 7px 10px;
+    border-left: none;
+    transition: background 90ms ease;
+}
+
+body.ps-bo-rebrand #nav-sidebar .main-menu > li > a:hover {
+    background: var(--sl-hover);
+    color: var(--sl-text);
+}
+
+/* Active item: white pill, the Shopify tell. */
+body.ps-bo-rebrand #nav-sidebar .main-menu > li.link-active > a,
+body.ps-bo-rebrand #nav-sidebar .main-menu > li.-active > a,
+body.ps-bo-rebrand #nav-sidebar .main-menu > li.current > a {
+    background: var(--sl-active);
+    color: #000000;
+    font-weight: 600;
+    border: 1px solid var(--sl-border);
+    border-left: 1px solid var(--sl-border);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+body.ps-bo-rebrand #nav-sidebar .main-menu li a i.material-icons {
+    font-size: 19px;
+    color: var(--sl-text-muted);
+}
+
+body.ps-bo-rebrand #nav-sidebar .main-menu > li.link-active > a i.material-icons {
+    color: #000000;
+}
+
+/* Submenus sit quietly under their parent. */
+body.ps-bo-rebrand #nav-sidebar .main-menu ul li a {
+    color: var(--sl-text-muted);
+    font-size: 12.5px;
+    border-radius: var(--sl-radius-sm);
+    padding: 5px 10px 5px 38px;
+}
+
+body.ps-bo-rebrand #nav-sidebar .main-menu ul li a:hover {
+    background: var(--sl-hover);
+    color: var(--sl-text);
+}
+
+/* ---------- Page header ---------- */
+
+body.ps-bo-rebrand .page-head,
+body.ps-bo-rebrand .header-toolbar {
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
+}
+
+body.ps-bo-rebrand .page-title,
+body.ps-bo-rebrand h1.page-title,
+body.ps-bo-rebrand .page-head h2 {
+    font-size: 20px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    color: var(--sl-text);
+}
+
+/* ---------- Cards ---------- */
+
+body.ps-bo-rebrand .card,
+body.ps-bo-rebrand .panel,
+body.ps-bo-rebrand .kpi-container .kpi-row,
+body.ps-bo-rebrand .modal-content {
+    background: var(--sl-surface);
+    border: 1px solid var(--sl-border);
+    border-radius: var(--sl-radius);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+body.ps-bo-rebrand .card-header,
+body.ps-bo-rebrand .panel-heading {
+    background: transparent;
+    border-bottom: 1px solid var(--sl-border);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 14px 16px;
+    border-radius: var(--sl-radius) var(--sl-radius) 0 0;
+}
+
+body.ps-bo-rebrand .card-body,
+body.ps-bo-rebrand .panel-body {
+    padding: 16px;
+}
+
+body.ps-bo-rebrand .card-footer {
+    background: transparent;
+    border-top: 1px solid var(--sl-border);
+    border-radius: 0 0 var(--sl-radius) var(--sl-radius);
+}
+
+/* ---------- Buttons ---------- */
+
+body.ps-bo-rebrand .btn {
+    border-radius: var(--sl-radius-sm);
+    font-size: 13px;
+    font-weight: 550;
+    padding: 7px 14px;
+    box-shadow: none;
+    transition: background 90ms ease, border-color 90ms ease;
+}
+
+body.ps-bo-rebrand .btn-primary,
+body.ps-bo-rebrand .btn-action {
+    background: var(--sl-accent);
+    border: 1px solid var(--sl-accent);
+    color: #ffffff;
+}
+
+body.ps-bo-rebrand .btn-primary:hover,
+body.ps-bo-rebrand .btn-primary:focus {
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+    color: #ffffff;
+}
+
+body.ps-bo-rebrand .btn-default,
+body.ps-bo-rebrand .btn-secondary,
+body.ps-bo-rebrand .btn-outline-secondary {
+    background: var(--sl-surface);
+    border: 1px solid var(--sl-border-strong);
+    color: var(--sl-text);
+}
+
+body.ps-bo-rebrand .btn-default:hover,
+body.ps-bo-rebrand .btn-secondary:hover {
+    background: var(--sl-hover);
+    color: var(--sl-text);
+}
+
+/* ---------- Tables ---------- */
+
+body.ps-bo-rebrand .table {
+    font-size: 13px;
+    color: var(--sl-text);
+}
+
+body.ps-bo-rebrand .table thead th {
+    background: transparent;
+    border-bottom: 1px solid var(--sl-border);
+    border-top: none;
+    color: var(--sl-text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: none;
+}
+
+body.ps-bo-rebrand .table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+body.ps-bo-rebrand .table tbody tr:hover {
+    background: #fafafa;
+}
+
+body.ps-bo-rebrand .table td {
+    border-top: none;
+    padding: 11px 12px;
+    vertical-align: middle;
+}
+
+/* ---------- Forms ---------- */
+
+body.ps-bo-rebrand .form-control,
+body.ps-bo-rebrand select.form-control,
+body.ps-bo-rebrand textarea.form-control {
+    border: 1px solid var(--sl-border-strong);
+    border-radius: var(--sl-radius-sm);
+    box-shadow: none;
+    font-size: 13px;
+    color: var(--sl-text);
+}
+
+body.ps-bo-rebrand .form-control:focus {
+    border-color: #8a8a8a;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
+}
+
+body.ps-bo-rebrand label,
+body.ps-bo-rebrand .form-control-label {
+    font-size: 13px;
+    font-weight: 550;
+    color: var(--sl-text);
+}
+
+/* ---------- Alerts & badges ---------- */
+
+body.ps-bo-rebrand .alert {
+    border-radius: var(--sl-radius);
+    border: 1px solid var(--sl-border);
+    font-size: 13px;
+}
+
+body.ps-bo-rebrand .badge {
+    border-radius: 20px;
+    font-weight: 550;
+    font-size: 11.5px;
+    padding: 3px 9px;
+}
+
+/* ---------- Footer ---------- */
+
+body.ps-bo-rebrand #footer,
+body.ps-bo-rebrand .bootstrap footer {
+    background: transparent;
+    border-top: 1px solid var(--sl-border);
+    color: var(--sl-text-muted);
+    font-size: 12px;
+}
+
+/* ---------- Debranding ----------
+ * Removes the vendor's own marks from the back office. The menu entries
+ * (Marketplace, Care Center, Wall of Fame) are switched off at the database
+ * level instead — see docs/debrand.sql — because hiding a live link with CSS
+ * still leaves it reachable by URL.
+ *
+ * To change the wordmark, edit the `content:` value below.
+ */
+
+/* Wordmark: drop the vendor logo image, print the store name instead. */
+body.ps-bo-rebrand #header_logo,
+body.ps-bo-rebrand a#header_logo.logo {
+    background-image: none !important;
+    background: none !important;
+    width: auto !important;
+    min-width: 0 !important;
+    text-indent: 0 !important;
+    display: inline-flex !important;
+    align-items: center;
+    height: 56px;
+}
+
+body.ps-bo-rebrand #header_logo::after {
+    content: "SHOPIFY STORE";
+    color: #ffffff;
+    font-family: var(--sl-font);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    padding-left: 4px;
+}
+
+/* Version badge next to the logo. */
+body.ps-bo-rebrand #shop_version,
+body.ps-bo-rebrand .header-version {
+    display: none !important;
+}
+
+/* Vendor copyright line in the footer. */
+body.ps-bo-rebrand #footer a[href*="prestashop"],
+body.ps-bo-rebrand footer a[href*="prestashop"],
+body.ps-bo-rebrand .footer-powered-by,
+body.ps-bo-rebrand #main-div .copyright {
+    display: none !important;
+}
+
+/* Upsell/marketing surfaces the vendor injects into list pages. */
+body.ps-bo-rebrand .mbo-recommended-modules,
+body.ps-bo-rebrand #modules-list-container-recommended,
+body.ps-bo-rebrand .ps-mbo-recommended,
+body.ps-bo-rebrand [class*="prestashop-account"],
+body.ps-bo-rebrand .ps_account-block {
+    display: none !important;
+}

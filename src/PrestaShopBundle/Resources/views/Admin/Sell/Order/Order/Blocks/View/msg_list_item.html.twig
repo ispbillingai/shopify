@@ -1,0 +1,45 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+ <li class="mb-2 {% if message.employeeId %}messages-block-employee{% else %}messages-block-customer{% endif %}">
+  <div class="row no-gutters">
+    {% if not message.employeeId %}
+      <div class="messages-block-icon">
+        <i class="material-icons">account_circle</i>
+      </div>
+
+      <div class="messages-block-content">
+        <p class="mb-0 message customer-message">
+          {{ message.message|nl2br }}
+        </p>
+        <p class="text-muted mb-0">
+          {{ message.customerFirstName ~ ' ' ~ message.customerLastName }}
+          {{ message.messageDate.format }}
+        </p>
+      </div>
+    {% endif %}
+
+    {% if message.employeeId %}
+      <div class="messages-block-content">
+        <p class="mb-0 message employee-message{{ message.isPrivate ? '--private' : '' }}">
+          {{ message.message|nl2br }}
+        </p>
+        <p class="text-muted mb-0 text-right">
+          {% if message.isCurrentEmployeesMessage %}
+            {{ 'Me'|trans({}, 'Admin.Global') }}
+          {% else %}
+            {{ message.employeeFirstName ~ ' ' ~ message.employeeLastName }}
+          {% endif %}
+
+          {{ message.messageDate.format }}
+        </p>
+      </div>
+
+      <div class="messages-block-icon">
+        <i class="material-icons employee-icon{{ message.isPrivate ? '--private' : '' }}"></i>
+      </div>
+    {% endif %}
+  </div>
+</li>

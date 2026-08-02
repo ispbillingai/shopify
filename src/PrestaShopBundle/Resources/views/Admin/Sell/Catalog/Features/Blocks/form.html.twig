@@ -1,0 +1,31 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% block feature_form_block %}
+  {{ form_start(featureForm) }}
+
+  <div class="card">
+    <h3 class="card-header">
+      {{ 'Feature'|trans({}, 'Admin.Catalog.Feature') }}
+    </h3>
+
+    <div class="card-body">
+      <div class="form-wrapper">
+        {% block feature_form_rest %}
+          {{ form_rest(featureForm) }}
+        {% endblock %}
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <a href="{{ path('admin_features_index') }}" class="btn btn-outline-secondary">
+        {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+      </a>
+      <button class="btn btn-primary float-right" id="save-button">
+        {{ 'Save'|trans({}, 'Admin.Actions') }}
+      </button>
+    </div>
+  </div>
+  {{ form_end(featureForm) }}
+{% endblock %}

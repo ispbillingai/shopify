@@ -1,0 +1,32 @@
+# Secrets — parameters.php holds the DB credentials the installer generated.
+# This repo is public. Never commit these.
+/app/config/parameters.php
+/app/config/parameters.yml
+/config/settings.inc.php
+
+# Generated at runtime
+/var/cache/*
+/var/logs/*
+/var/sessions/*
+/cache/*
+!/var/cache/.gitkeep
+!/var/logs/.gitkeep
+
+# Merchant/customer data written by the running shop
+/download/*
+/upload/*
+/img/tmp/*
+/img/p/*
+/img/c/*
+/img/m/*
+/img/su/*
+/img/st/*
+
+# Generated theme assets
+/themes/*/assets/cache/*
+/modules/*/config*.xml
+
+# Local
+.idea/
+.vscode/
+*.log

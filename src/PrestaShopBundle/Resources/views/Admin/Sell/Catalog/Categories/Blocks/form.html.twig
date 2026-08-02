@@ -1,0 +1,41 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% form_theme categoryForm '@PrestaShop/Admin/Sell/Catalog/Categories/FormTheme/category.html.twig' %}
+
+{% block category_form_block %}
+{{ form_start(categoryForm, {attr: {'data-id': categoryId|default(0)}}) }}
+<div class="card">
+  <h3 class="card-header">
+    {{ 'Category'|trans({}, 'Admin.Catalog.Feature') }}
+  </h3>
+  <div class="card-body">
+    <div class="form-wrapper">
+      {{ form_widget(categoryForm) }}
+      <div class="form-group row">
+        <label class="form-control-label"></label>
+        <div class="col-sm">
+          <div class="alert alert-info">
+            <p class="mb-1">
+              <strong>{{ 'You now have three default customer groups.'|trans({}, 'Admin.Catalog.Help') }}</strong>
+            </p>
+
+            <p>{{ '%group_name% - All people without a valid customer account.'|trans({'%group_name%': '<strong>' ~ defaultGroups.visitorsGroup.name ~ '</strong>'}, 'Admin.Catalog.Feature')|raw_purified }}</p>
+            <p>{{ '%group_name% - Customer who placed an order with the guest checkout.'|trans({'%group_name%': '<strong>' ~ defaultGroups.guestsGroup.name ~ '</strong>'}, 'Admin.Catalog.Feature')|raw_purified }}</p>
+            <p>{{ '%group_name% - All people who have created an account on this site.'|trans({'%group_name%': '<strong>' ~ defaultGroups.customersGroup.name ~ '</strong>'}, 'Admin.Catalog.Feature')|raw_purified }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <a href="{{ path('admin_categories_index') }}" class="btn btn-outline-secondary">
+      {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+    </a>
+    <button class="btn btn-primary float-right" id="save-button">{{ 'Save'|trans({}, 'Admin.Actions') }}</button>
+  </div>
+</div>
+{{ form_end(categoryForm) }}
+{% endblock %}

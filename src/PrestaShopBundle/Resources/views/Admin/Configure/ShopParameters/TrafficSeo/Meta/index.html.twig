@@ -1,0 +1,48 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+{% trans_default_domain 'Admin.Shopparameters.Feature' %}
+
+{% block content %}
+  {{ include('@PrestaShop/Admin/Configure/ShopParameters/TrafficSeo/Meta/Blocks/meta_showcase_card.html.twig') }}
+  {% if not isGridDisplayed %}
+    <div class="alert alert-info" role="alert">
+      <div class="alert-text">
+        {{ 'You can only display the page list in a shop context.'|trans({}, 'Admin.Shopparameters.Notification') }}
+      </div>
+    </div>
+  {% else %}
+    {{ include('@PrestaShop/Admin/Common/Grid/grid_panel.html.twig', {grid: grid}) }}
+  {% endif %}
+
+  {{ form_start(setUpUrlsForm, {attr: {class: 'form'}, action: path('admin_metas_set_up_urls_save')}) }}
+  {{ include('@PrestaShop/Admin/Configure/ShopParameters/TrafficSeo/Meta/Blocks/set_up_urls_configuration.html.twig') }}
+  {{ form_end(setUpUrlsForm) }}
+
+  {{ form_start(shopUrlsForm, {attr: {class: 'form'}, action: path('admin_metas_shop_urls_save')}) }}
+  {{ include('@PrestaShop/Admin/Configure/ShopParameters/TrafficSeo/Meta/Blocks/shop_urls_configuration.html.twig') }}
+  {{ form_end(shopUrlsForm) }}
+
+  {% if urlSchemaForm is not empty %}
+    {{ form_start(urlSchemaForm, {attr: {class: 'form'}, action: path('admin_metas_url_schema_save')}) }}
+    {{ include('@PrestaShop/Admin/Configure/ShopParameters/TrafficSeo/Meta/Blocks/url_schema_configuration.html.twig') }}
+    {{ form_end(urlSchemaForm) }}
+  {% endif %}
+
+  {{ form_start(seoOptionsForm, {attr: {class: 'form'}, action: path('admin_metas_seo_options_save')}) }}
+  {{ include('@PrestaShop/Admin/Configure/ShopParameters/TrafficSeo/Meta/Blocks/seo_options_configuration.html.twig') }}
+  {{ form_end(seoOptionsForm) }}
+
+  {{ form_start(robotsForm, {action: path('admin_metas_generate_robots_text_file')}) }}
+  {{ include('@PrestaShop/Admin/Configure/ShopParameters/TrafficSeo/Meta/Blocks/robots_file_generation.html.twig') }}
+  {{ form_end(robotsForm) }}
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('themes/new-theme/public/meta.bundle.js') }}"></script>
+  <script src="{{ asset('themes/default/js/bundle/pagination.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,35 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% embed '@PrestaShop/Admin/Helpers/bootstrap_popup.html.twig' with {
+  id: grid.id ~ '_grid_delete_categories_modal',
+  title: 'What do you want to do with the products associated with this category?'|trans({}, 'Admin.Catalog.Notification'),
+  closable: true,
+  closeLabel: 'Cancel'|trans({}, 'Admin.Actions'),
+  actions: [{
+    type: 'button',
+    label: 'Delete'|trans({}, 'Admin.Actions'),
+    class: 'btn btn-danger btn-lg js-submit-delete-categories',
+  }],
+} %}
+  {% block content %}
+    <div class="modal-body">
+      {{ form_start(deleteCategoriesForm, {action: path('admin_categories_delete')}) }}
+      <div class="form-group mb-0">
+        {{ form_widget(deleteCategoriesForm.delete_mode) }}
+      </div>
+      <span class="form-text text-muted">
+        {{ 'Note that if they have another category, your products will logically remain associated with it.'|trans({}, 'Admin.Catalog.Notification') }}
+      </span>
+      <div class="d-none">
+        {{ form_widget(deleteCategoriesForm.categories_to_delete) }}
+      </div>
+      <div class="d-none">
+        {{ form_widget(deleteCategoriesForm.categories_to_delete_parent) }}
+      </div>
+      {{ form_end(deleteCategoriesForm) }}
+    </div>
+  {% endblock %}
+{% endembed %}

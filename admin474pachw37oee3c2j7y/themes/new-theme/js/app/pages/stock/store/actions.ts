@@ -1,0 +1,230 @@
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+import {Commit} from 'vuex/types';
+import * as types from '@app/pages/stock/store/mutation-types';
+import {showGrowl} from '@app/utils/growl';
+import {EventEmitter} from '@components/event-emitter';
+import {
+  omitBy, isNil,
+} from 'lodash';
+
+const isParamInvalid = (value: any) => isNil(value) || value.length <= 0;
+
+export const getStock = async ({commit}: {commit: Commit}, payload: Record<string, any>): Promise<void> => {
+  const url = new URL(window.data.apiStockUrl, window.location.origin);
+  const queryParams = omitBy({
+    order: payload.order,
+    page_size: payload.page_size,
+    page_index: payload.page_index,
+    keywords: payload.keywords,
+    active: payload.active,
+    low_stock: payload.low_stock,
+  }, isParamInvalid);
+
+  Object.entries(queryParams).forEach(([key, value]) => {
+    url.searchParams.append(key, String(value));
+  });
+
+  if (payload.suppliers) {
+    payload.suppliers.forEach((v: string) => {
+      url.searchParams.append('supplier_id[]', v);
+    });
+  }
+  if (payload.categories) {
+    payload.categories.forEach((v: string) => {
+      url.searchParams.append('category_id[]', v);
+    });
+  }
+
+  try {
+    const response = await fetch(url);
+    const datas = await response.json();
+
+    commit(types.LOADING_STATE, false);
+    commit(types.SET_TOTAL_PAGES, response.headers.get('Total-Pages'));
+    commit(types.ADD_PRODUCTS, datas);
+  } catch (error: any) {
+    showGrowl('error', error.statusText);
+  }
+};
+
+export const getSuppliers = async ({commit}: {commit: Commit}): Promise<void> => {
+  const url = window.data.suppliersUrl;
+
+  try {
+    const response = await fetch(url);
+    const datas = await response.json();
+    commit(types.SET_SUPPLIERS, datas);
+  } catch (error: any) {
+    showGrowl('error', error.statusText);
+  }
+};
+
+export const getCategories = async ({commit}: {commit: Commit}): Promise<void> => {
+  const url = window.data.categoriesUrl;
+
+  try {
+    const response = await fetch(url);
+    const datas = await response.json();
+    commit(types.SET_CATEGORIES, datas);
+  } catch (error: any) {
+    showGrowl('error', error.statusText);
+  }
+};
+
+export const getMovements = async ({commit}: {commit: Commit}, payload: Record<string, any>): Promise<void> => {
+  const url = new URL(window.data.apiMovementsUrl, window.location.origin);
+
+  const queryParams = omitBy({
+    order: payload.order,
+    page_size: payload.page_size,
+    page_index: payload.page_index,
+    keywords: payload.keywords,
+    supplier_id: payload.suppliers,
+    category_id: payload.categories,
+    id_stock_mvt_reason: payload.id_stock_mvt_reason,
+    id_employee: payload.id_employee,
+  }, isParamInvalid);
+
+  Object.entries(queryParams).forEach(([key, value]) => {
+    url.searchParams.append(key, String(value));
+  });
+
+  if (payload.date_add?.sup) {
+    url.searchParams.append('date_add[sup]', payload.date_add.sup);
+  }
+
+  if (payload.date_add?.inf) {
+    url.searchParams.append('date_add[inf]', payload.date_add.inf);
+  }
+
+  try {
+    const response = await fetch(url);
+    const datas = await response.json();
+
+    commit(types.LOADING_STATE, false);
+    commit(types.SET_TOTAL_PAGES, response.headers.get('Total-Pages'));
+    commit(types.SET_MOVEMENTS, datas);
+  } catch (error: any) {
+    showGrowl('error', error.statusText);
+  }
+};
+
+export const getTranslations = async ({commit}: {commit: Commit}): Promise<void> => {
+  const url = window.data.translationUrl;
+  try {
+    const response = await fetch(url);
+    const datas = await response.json();
+
+    commit(types.SET_TRANSLATIONS, datas);
+    commit(types.APP_IS_READY);
+  } catch (error: any) {
+    showGrowl('error', error.statusText);
+  }
+};
+
+export const getEmployees = async ({commit}: {commit: Commit}): Promise<void> => {
+  const url = window.data.employeesUrl;
+  try {
+    const response = await fetch(url);
+    const datas = await response.json();
+    commit(types.SET_EMPLOYEES_LIST, datas);
+  } catch (error: any) {
+    showGrowl('error', error.statusText);
+  }
+};
+
+export const getMovementsTypes = async ({commit}: {commit: Commit}): Promise<void> => {
+  const url = window.data.movementsTypesUrl;
+  try {
+    const response = await fetch(url);
+    const datas = await response.json();
+    commit(types.SET_MOVEMENTS_TYPES, datas);
+  } catch (error: any) {
+    showGrowl('error', error.statusText);
+  }
+};
+
+export const updateOrder = ({commit}: {commit: Commit}, order: Record<string, any>): void => {
+  commit(types.UPDATE_ORDER, order);
+};
+
+export const updateSort = ({commit}: {commit: Commit}, sort: string): void => {
+  commit(types.UPDATE_SORT, sort);
+};
+
+export const updatePageIndex = ({commit}: {commit: Commit}, pageIndex: number): void => {
+  commit(types.SET_PAGE_INDEX, pageIndex);
+};
+
+export const updateKeywords = ({commit}: {commit: Commit}, keywords: Array<string>): void => {
+  commit(types.UPDATE_KEYWORDS, keywords);
+};
+
+export const isLoading = ({commit}: {commit: Commit}): void => {
+  commit(types.LOADING_STATE, true);
+};
+
+export const updateProductQty = ({commit}: {commit: Commit}, payload: Record<string, any>): void => {
+  commit(types.UPDATE_PRODUCT_QTY, payload);
+};
+
+export const updateQtyByProductId = async ({commit}: {commit: Commit}, payload: Record<string, any>): Promise<void> => {
+  const {url} = payload;
+  const {delta} = payload;
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({delta}),
+    });
+    const datas = await res.json();
+
+    commit(types.UPDATE_PRODUCT, datas);
+    EventEmitter.emit('displayBulkAlert', 'success');
+  } catch (error: any) {
+    showGrowl('error', error.statusText);
+  }
+};
+
+export const updateQtyByProductsId = async ({commit, state}: {commit: Commit, state: Record<string, any>}): Promise<void> => {
+  const url = state.editBulkUrl;
+  const productsQty = state.productsToUpdate;
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(productsQty),
+    });
+    const datas = await res.json();
+
+    commit(types.UPDATE_PRODUCTS_QTY, datas);
+    EventEmitter.emit('displayBulkAlert', 'success');
+  } catch (error: any) {
+    showGrowl('error', error.body?.error ?? error.statusText);
+  }
+};
+
+export const updateBulkEditQty = ({commit}: {commit: Commit}, value: number): void => {
+  commit(types.UPDATE_BULK_EDIT_QTY, value);
+};
+
+export const addProductToUpdate = ({commit}: {commit: Commit}, product: Record<string, any>): void => {
+  commit(types.ADD_PRODUCT_TO_UPDATE, product);
+};
+
+export const removeProductToUpdate = ({commit}: {commit: Commit}, product: Record<string, any>): void => {
+  commit(types.REMOVE_PRODUCT_TO_UPDATE, product);
+};
+
+export const addSelectedProduct = ({commit}: {commit: Commit}, product: Record<string, any>): void => {
+  commit(types.ADD_SELECTED_PRODUCT, product);
+};
+
+export const removeSelectedProduct = ({commit}: {commit: Commit}, product: Record<string, any>): void => {
+  commit(types.REMOVE_SELECTED_PRODUCT, product);
+};

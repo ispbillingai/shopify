@@ -1,0 +1,16 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+<div class="product-header-v2">
+  <div class="product-header-cover">
+    {{ form_row(productForm.header.cover_thumbnail) }}
+  </div>
+  <div class="product-header-form">
+    {% block product_header_form %}
+      {{ form_row(productForm.header) }}
+    {% endblock %}
+  </div>
+
+  {{ include('@PrestaShop/Admin/Sell/Catalog/Product/Blocks/header-details.html.twig') }}
+</div>

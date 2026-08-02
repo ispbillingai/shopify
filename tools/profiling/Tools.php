@@ -1,0 +1,69 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+class Tools extends ToolsCore
+{
+    public static function redirect($url, $base_uri = __PS_BASE_URI__, ?Link $link = null, $headers = null)
+    {
+        if (!$link) {
+            $link = Context::getContext()->link;
+        }
+
+        if (!preg_match('@^https?://@i', $url) && $link) {
+            if (strpos($url, $base_uri) === 0) {
+                $url = substr($url, strlen($base_uri));
+            }
+            if (strpos($url, 'index.php?controller=') === 0) {
+                $url = substr($url, strlen('index.php?controller='));
+                if (Configuration::get('PS_REWRITING_SETTINGS')) {
+                    $url = static::strReplaceFirst('&', '?', $url);
+                }
+            }
+
+            $explode = explode('?', $url);
+            // don't use ssl if url is home page, used when logout for example
+            $use_ssl = !empty($url);
+            $url = $link->getPageLink($explode[0], $use_ssl);
+            if (isset($explode[1])) {
+                $url .= '?' . $explode[1];
+            }
+        }
+
+        // Send additional headers
+        if ($headers) {
+            if (!is_array($headers)) {
+                $headers = [$headers];
+            }
+
+            foreach ($headers as $header) {
+                header($header);
+            }
+        }
+
+        Context::getContext()->controller->setRedirectAfter($url);
+    }
+
+    public static function getDefaultControllerClass()
+    {
+        if (isset(Context::getContext()->employee) && Validate::isLoadedObject(Context::getContext()->employee) && isset(Context::getContext()->employee->default_tab)) {
+            $default_controller = Tab::getClassNameById((int) Context::getContext()->employee->default_tab);
+        }
+        if (empty($default_controller)) {
+            $default_controller = 'AdminDashboard';
+        }
+        $controllers = Dispatcher::getControllers([_PS_ADMIN_CONTROLLER_DIR_, _PS_OVERRIDE_DIR_ . 'controllers/admin/']);
+        if (!isset($controllers[strtolower($default_controller)])) {
+            $default_controller = 'adminnotfound';
+        }
+        $controller_class = $controllers[strtolower($default_controller)];
+
+        return $controller_class;
+    }
+
+    public static function redirectLink($url)
+    {
+        static::redirect($url);
+    }
+}

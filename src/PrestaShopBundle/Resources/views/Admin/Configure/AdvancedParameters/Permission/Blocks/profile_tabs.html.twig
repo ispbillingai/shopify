@@ -1,0 +1,18 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="list-group" id="profileTabs" role="tablist">
+  {% for profile in configurablePermissions.profiles %}
+    <a class="list-group-item list-group-item-action p-2{% if profile.id == configurablePermissions.employeeProfileId %} active{% endif %}"
+       id="profileListItem_{{ profile.id }}"
+       data-toggle="list"
+       href="#profileTabContent_{{ profile.id }}"
+       role="tab"
+       aria-controls="home"
+    >
+      {{ profile.name }}
+    </a>
+  {% endfor %}
+</div>

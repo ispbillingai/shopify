@@ -1,0 +1,26 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="order-navigation">
+  <div class="order-navigation-left">
+      <a
+        href="{{ path('admin_orders_view', {orderId: previousOrderId}) }}"
+        role="button"
+        class="btn btn-action {% if not previousOrderId %} disabled {% endif %}"
+       >
+        <span class="material-icons rtl-flip">arrow_back</span>
+      </a>
+  </div>
+
+  <div class="order-navigation-right">
+      <a
+        href="{{ path('admin_orders_view', {orderId: nextOrderId}) }}"
+        role="button"
+        class="btn btn-action {% if not nextOrderId %} disabled {% endif %}"
+      >
+        <span class="material-icons rtl-flip">arrow_forward</span>
+      </a>
+  </div>
+</div>

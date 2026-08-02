@@ -1,0 +1,18 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<tr class="empty_row">
+  <td colspan="{{ grid.columns|length }}" {% if grid.attributes.is_empty_state %}class="border-0"{% endif %}>
+    {% if grid.attributes.is_empty_state %}
+      {{ include([
+        '@PrestaShop/Admin/Common/Grid/Blocks/EmptyState/' ~ grid.id ~ '.html.twig',
+        '@PrestaShop/Admin/Common/Grid/Blocks/EmptyState/_default.html.twig',
+        ], {grid: grid},
+      ) }}
+    {% else %}
+      {{ include('@PrestaShop/Admin/Common/Grid/Blocks/EmptyState/_default.html.twig', {grid: grid}) }}
+    {% endif %}
+  </td>
+</tr>

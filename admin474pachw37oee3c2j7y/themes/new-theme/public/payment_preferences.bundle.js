@@ -1,0 +1,1 @@
+(()=>{"use strict";var e={428:e=>{e.exports=window.jQuery}},r={};var o=function o(t){var n=r[t];if(void 0!==n)return n.exports;var p=r[t]={exports:{}};return e[t](p,p.exports,o),p.exports}(428);o((()=>{window.prestashop.component.initComponents(["MultipleChoiceTable"])})),window.payment_preferences={}})();

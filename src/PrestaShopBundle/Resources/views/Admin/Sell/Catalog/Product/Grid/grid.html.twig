@@ -1,0 +1,15 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/Common/Grid/grid.html.twig' %}
+
+{% block grid_bulk_actions_block %}
+  {# When grid is not in empty state we show the extra category filter #}
+  {% if not grid.attributes.is_empty_state %}
+  {{ form_start(categoryFilterForm, {attr: {class: 'd-inline-block'}}) }}
+    {{ form_row(categoryFilterForm) }}
+  {{ form_end(categoryFilterForm) }}
+  {% endif %}
+  {{ parent() }}
+{% endblock %}

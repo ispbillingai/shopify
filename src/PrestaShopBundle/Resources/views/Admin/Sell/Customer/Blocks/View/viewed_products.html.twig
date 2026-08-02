@@ -1,0 +1,17 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% if customerViewedProductGrid.data.records_total > 0 %}
+  <div class="card customer-viewed-products-card">
+    <h3 class="card-header">
+      <i class="material-icons">remove_red_eye</i>
+      {{ 'Products in carts'|trans({}, 'Admin.Orderscustomers.Feature') }}
+      <span class="badge badge-primary rounded">{{ customerViewedProductGrid.data.records_total }}</span>
+    </h3>
+    <div class="card-body">
+      {{ include('@PrestaShop/Admin/Common/Grid/grid.html.twig', {grid: customerViewedProductGrid}) }}
+    </div>
+  </div>
+{% endif %}

@@ -1,0 +1,10 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% if record[column.options.field] %}
+  {{ column.options.true_name }}
+{% else %}
+  {{ column.options.false_name }}
+{% endif %}

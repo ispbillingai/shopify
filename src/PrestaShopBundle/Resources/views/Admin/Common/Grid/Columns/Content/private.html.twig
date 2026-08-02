@@ -1,0 +1,10 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% if record.private == 1 %}
+  <i class="material-icons">lock_open</i>
+{% else %}
+  <i class="material-icons">lock</i>
+{% endif %}

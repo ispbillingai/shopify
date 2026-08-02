@@ -1,0 +1,21 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+ <div class="unavailable-feature">
+  <h2>
+    {{ featureTitle }}
+    {% if helpbox is defined %}
+      {{ include('@PrestaShop/Admin/Common/HelpBox/helpbox.html.twig', {
+        content: helpbox,
+      }) }}
+    {% endif %}
+  </h2>
+
+  <div class="alert alert-unavailable" role="alert">
+    <p class="alert-text">
+      {{ 'Not available yet.'|trans({}, 'Admin.Catalog.Feature') }}
+    </p>
+  </div>
+ </div>

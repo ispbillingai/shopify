@@ -1,0 +1,144 @@
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+import {Commit} from 'vuex/types';
+import * as types from '@app/pages/translations/store/mutation-types';
+import {showGrowl} from '@app/utils/growl';
+import {
+  omitBy, isNil,
+} from 'lodash';
+
+const isParamInvalid = (value: any) => isNil(value) || value.length <= 0;
+
+export const getTranslations = async ({commit}: {commit: Commit}): Promise<void> => {
+  const url = window.data.translationUrl;
+
+  try {
+    const response = await fetch(url);
+    const datas = await response.json();
+    commit(types.SET_TRANSLATIONS, datas);
+    commit(types.APP_IS_READY);
+  } catch (error: any) {
+    showGrowl('error', error.bodyText ? JSON.parse(error.bodyText).error : error.statusText);
+  }
+};
+
+export const getCatalog = async ({commit}: {commit: Commit}, payload: Record<string, any>): Promise<void> => {
+  commit(types.PRINCIPAL_LOADING, true);
+
+  const url = new URL(payload.url, window.location.origin);
+  const queryParams = omitBy({
+    page_size: payload.page_size,
+    page_index: payload.page_index,
+  }, isParamInvalid);
+
+  Object.entries(queryParams).forEach(([key, value]) => {
+    url.searchParams.append(key, String(value));
+  });
+
+  try {
+    const response = await fetch(url);
+    const datas = await response.json();
+
+    commit(types.SET_TOTAL_PAGES, response.headers.get('Total-Pages'));
+    commit(types.SET_CATALOG, datas);
+    commit(types.PRINCIPAL_LOADING, false);
+  } catch (error: any) {
+    showGrowl('error', error.bodyText ? JSON.parse(error.bodyText).error : error.statusText);
+  }
+};
+
+export const getDomainsTree = async ({commit}: {commit: Commit}, payload: Record<string, any>): Promise<void> => {
+  const url = new URL(window.data.domainsTreeUrl, window.location.origin);
+
+  commit(types.SIDEBAR_LOADING, true);
+  commit(types.PRINCIPAL_LOADING, true);
+
+  payload.store.getters.searchTags.forEach((tag: any) => {
+    url.searchParams.append('search[]', tag);
+  });
+
+  try {
+    const response = await fetch(url);
+    const datas = await response.json();
+
+    commit(types.SET_DOMAINS_TREE, datas);
+    commit(types.SIDEBAR_LOADING, false);
+    commit(types.RESET_CURRENT_DOMAIN);
+  } catch (error: any) {
+    showGrowl('error', error.bodyText ? JSON.parse(error.bodyText).error : error.statusText);
+  }
+};
+
+export const refreshCounts = async ({commit}: {commit: Commit}, payload: Record<string, any>): Promise<void> => {
+  const url = new URL(window.data.domainsTreeUrl, window.location.origin);
+
+  payload.store.getters.searchTags.forEach((tag: any) => {
+    url.searchParams.append('search[]', tag);
+  });
+
+  try {
+    const response = await fetch(url);
+    const datas = await response.json();
+
+    commit(types.DECREASE_CURRENT_DOMAIN_TOTAL_MISSING_TRANSLATIONS, payload.successfullySaved);
+    commit(types.SET_DOMAINS_TREE, datas);
+  } catch (error: any) {
+    showGrowl('error', error.bodyText ? JSON.parse(error.bodyText).error : error.statusText);
+  }
+};
+
+export const saveTranslations = async ({commit}: {commit: Commit}, payload: Record<string, any>): Promise<void> => {
+  const {url} = payload;
+  const {translations} = payload;
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({translations}),
+    });
+
+    payload.store.dispatch('refreshCounts', {
+      successfullySaved: translations.length,
+      store: payload.store,
+    });
+    commit(types.RESET_MODIFIED_TRANSLATIONS);
+    showGrowl('success', 'Translations successfully updated');
+  } catch (error: any) {
+    showGrowl('error', error.bodyText ? JSON.parse(error.bodyText).error : error.statusText);
+  }
+};
+
+/* eslint-disable-next-line no-unused-vars */
+export const resetTranslation = async (params: Record<string, any>, payload: Record<string, any>): Promise<void> => {
+  const {url} = payload;
+  const {translations} = payload;
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({translations}),
+    });
+
+    showGrowl('success', 'Translations successfully reset');
+  } catch (error: any) {
+    showGrowl('error', error.bodyText ? JSON.parse(error.bodyText).error : error.statusText);
+  }
+};
+
+export const updatePageIndex = ({commit}: {commit: Commit}, pageIndex: string): void => {
+  commit(types.SET_PAGE_INDEX, pageIndex);
+};
+
+export const updateCurrentDomain = ({commit}: {commit: Commit}, currentDomain: string): void => {
+  commit(types.SET_CURRENT_DOMAIN, currentDomain);
+};
+
+export const updatePrincipalLoading = ({commit}: {commit: Commit}, principalLoading: string): void => {
+  commit(types.PRINCIPAL_LOADING, principalLoading);
+};
+
+export const updateSearch = ({commit}: {commit: Commit}, searchTags: Array<Record<string, any>>): void => {
+  commit(types.SEARCH_TAGS, searchTags);
+};

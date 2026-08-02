@@ -1,0 +1,35 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+{% trans_default_domain 'Admin.Advparameters.Feature' %}
+
+{% block content %}
+  {% block backup_download_file %}
+    {% if hasDownloadFile %}
+      {{ include('@PrestaShop/Admin/Configure/AdvancedParameters/Backup/Blocks/download_file.html.twig') }}
+    {% endif %}
+  {% endblock %}
+
+  {% block backup_alerts %}
+    {{ include('@PrestaShop/Admin/Common/multistore-infotip.html.twig') }}
+    {{ include('@PrestaShop/Admin/Configure/AdvancedParameters/Backup/Blocks/backup_warning.html.twig') }}
+    {{ include('@PrestaShop/Admin/Configure/AdvancedParameters/Backup/Blocks/backup_info.html.twig') }}
+  {% endblock %}
+
+  {% block backup_listing %}
+    {{ include('@PrestaShop/Admin/Common/Grid/grid_panel.html.twig', {grid: backupGrid}) }}
+  {% endblock %}
+
+  {% block backup_options %}
+    {{ include('@PrestaShop/Admin/Configure/AdvancedParameters/Backup/Blocks/options.html.twig') }}
+  {% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/default/js/bundle/pagination.js') }}"></script>
+  <script src="{{ asset('themes/new-theme/public/backup.bundle.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,9 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<img
+  src="{{ record[column.options.src_field] }}"
+  {% if record[column.options.alt_field] is defined %}alt="{{ record[column.options.alt_field] }}"{% endif %}
+/>

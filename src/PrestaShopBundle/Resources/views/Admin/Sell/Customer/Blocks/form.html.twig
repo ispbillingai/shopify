@@ -1,0 +1,38 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% form_theme customerForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+
+{% set allowedNameChars = '0-9!<>,;?=+()@#"°{}_$%:' %}
+{% set isGuest = isGuest|default(false) %}
+
+{% block customer_form %}
+  {{ form_start(customerForm) }}
+    <div class="card">
+      <h3 class="card-header">
+        <i class="material-icons">person</i>
+        {{ 'Customer'|trans({}, 'Admin.Global') }}
+      </h3>
+      <div class="card-body">
+        <div class="form-wrapper">
+          {{ form_widget(customerForm) }}
+        </div>
+      </div>
+      <div class="card-footer">
+        {% if (displayInIframe is defined and displayInIframe == true) %}
+          <a href="javascript:window.parent.$.fancybox.close();" class="btn btn-outline-secondary">
+        {% else %}
+          <a href="{{ pathWithBackUrl('admin_customers_index') }}" class="btn btn-outline-secondary">
+        {% endif %}
+          {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+        </a>
+        <button class="btn btn-primary float-right" id="save-button">
+          {{ 'Save'|trans({}, 'Admin.Actions') }}
+        </button>
+      </div>
+    </div>
+  {{ form_end(customerForm) }}
+
+  {{ include('@PrestaShop/Admin/Helpers/password_feedback.html.twig') }}
+{% endblock %}

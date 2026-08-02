@@ -1,0 +1,24 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+<div class="ps-dropdown dropdown btn-group bordered mb-1 module-bulk-actions disabled">
+  <div id="bulk-actions-dropdown" class="dropdown-label" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-flip="false">
+    <span class="js-selected-item selected-item module-bulk-actions-selector-label">
+      {{ 'Uninstall'|trans({}, 'Admin.Actions') }}
+    </span>
+    <i class="material-icons arrow-down float-right">keyboard_arrow_down</i>
+  </div>
+
+  <div class="ps-dropdown-menu dropdown-menu module-category-selector items-list js-items-list">
+    {% for key, name in bulkActions %}
+      <a
+        class="dropdown-item module-bulk-menu"
+        data-ref="{{ key }}"
+        data-display-name="{{ name }}"
+      >
+        {{ name }}
+      </a>
+    {% endfor %}
+  </div>
+</div>

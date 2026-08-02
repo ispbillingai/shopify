@@ -1,0 +1,59 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+{% form_theme pdfForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+{% form_theme optionsForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+
+{% trans_default_domain 'Admin.Orderscustomers.Feature' %}
+{% import '@PrestaShop/Admin/macros.html.twig' as ps %}
+
+{% block content %}
+  {{ form_start(pdfForm, {
+    attr: {class: 'form', autocomplete: 'off', id: 'form-delivery-slips-print-pdf'},
+    action: path('admin_order_delivery_slip_pdf')})
+  }}
+  {% block admin_form_order_delivery_slip_pdf %}
+    <div class="card" id="delivery_pdf_fieldset">
+      <h3 class="card-header">
+        <i class="material-icons">print</i>
+        {{ 'Print PDF'|trans }}
+      </h3>
+      <div class="card-body">
+        {{ form_widget(pdfForm) }}
+      </div>
+      <div class="card-footer">
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-primary" id="generate-delivery-slip-by-date">{{ 'Generate PDF'|trans }}</button>
+        </div>
+      </div>
+    </div>
+  {% endblock %}
+  {{ form_end(pdfForm) }}
+
+  {{ form_start(optionsForm, {attr: {class: 'form', id: 'form-delivery-slips-options'}}) }}
+  {% block admin_form_order_delivery_slip_options %}
+    <div class="card" id="delivery_options_fieldset">
+      <h3 class="card-header">
+        <i class="material-icons">settings</i>
+        {{ 'Delivery slip options'|trans }}
+      </h3>
+      <div class="card-body">
+        {{ form_widget(optionsForm) }}
+      </div>
+      <div class="card-footer">
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-primary" id="save-delivery-slip-options-button">{{ 'Save'|trans({}, 'Admin.Actions') }}</button>
+        </div>
+      </div>
+    </div>
+  {% endblock %}
+  {{ form_end(optionsForm) }}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/new-theme/public/order_delivery.bundle.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="card customer-private-note-card">
+  <h3 class="card-header">
+    <i class="material-icons">visibility_off</i>
+    {{ 'Add a private note'|trans({}, 'Admin.Orderscustomers.Feature') }}
+  </h3>
+  <div class="card-body clearfix">
+    <div class="alert alert-info" role="alert">
+      <p class="alert-text">
+        {{ 'This note will be displayed to all employees but not to customers.'|trans({}, 'Admin.Orderscustomers.Help') }}
+      </p>
+    </div>
+
+    {% if privateNoteForm is not null %}
+      {{ form_start(privateNoteForm, {action: path('admin_customers_set_private_note', {customerId: customerInformation.customerId.value})}) }}
+        {{ form_widget(privateNoteForm.note) }}
+
+        <button class="btn btn-primary float-right mt-3" id="save-private-note" type="submit">
+          {{ 'Save'|trans({}, 'Admin.Actions') }}
+        </button>
+      {{ form_end(privateNoteForm) }}
+    {% endif %}
+  </div>
+</div>

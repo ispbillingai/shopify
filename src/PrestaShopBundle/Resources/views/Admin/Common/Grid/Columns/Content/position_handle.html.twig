@@ -1,0 +1,16 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% set updateRouteParams = record|array_pluck(column.options.record_route_params) %}
+
+<div class="position-drag-handle js-{{ grid.id }}-position"
+     data-id="{{ record[column.options.id_field] }}"
+     data-position="{{ record[column.options.position_field] }}"
+     data-update-url="{{ url(column.options.update_route, updateRouteParams) }}"
+     data-update-method="{{ column.options.update_method }}"
+     data-pagination-offset="{{ grid.pagination.offset }}"
+>
+    <i class="material-icons">drag_indicator</i>
+</div>

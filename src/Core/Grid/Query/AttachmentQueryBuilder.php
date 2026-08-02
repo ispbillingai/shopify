@@ -1,0 +1,150 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+namespace PrestaShop\PrestaShop\Core\Grid\Query;
+
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
+use PrestaShop\PrestaShop\Core\Context\LanguageContext;
+use PrestaShop\PrestaShop\Core\Grid\Search\SearchCriteriaInterface;
+
+/**
+ * Attachment query builder builds search & count data for attachment grid.
+ */
+final class AttachmentQueryBuilder extends AbstractDoctrineQueryBuilder
+{
+    /**
+     * @var DoctrineSearchCriteriaApplicatorInterface
+     */
+    private $searchCriteriaApplicator;
+
+    /**
+     * @param Connection $connection
+     * @param string $dbPrefix
+     * @param DoctrineSearchCriteriaApplicatorInterface $searchCriteriaApplicator
+     * @param LanguageContext $languageContext
+     */
+    public function __construct(
+        Connection $connection,
+        string $dbPrefix,
+        DoctrineSearchCriteriaApplicatorInterface $searchCriteriaApplicator,
+        private LanguageContext $languageContext
+    ) {
+        parent::__construct($connection, $dbPrefix);
+
+        $this->searchCriteriaApplicator = $searchCriteriaApplicator;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSearchQueryBuilder(SearchCriteriaInterface $searchCriteria): QueryBuilder
+    {
+        $qb = $this->getQueryBuilder($searchCriteria->getFilters());
+
+        $qb
+            ->select('a.`id_attachment`, al.`name`, a.`file`, a.`file_size`')
+            ->addSelect('COALESCE(virtual_product_attachment.`product_count`, 0) AS products')
+        ;
+
+        $this->searchCriteriaApplicator
+            ->applyPagination($searchCriteria, $qb)
+            ->applySorting($searchCriteria, $qb)
+            ->applyDeterministicSorting($searchCriteria, $qb, 'a', 'id_attachment')
+        ;
+
+        return $qb;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCountQueryBuilder(SearchCriteriaInterface $searchCriteria): QueryBuilder
+    {
+        $qb = $this->getQueryBuilder($searchCriteria->getFilters())
+            ->select('COUNT(DISTINCT a.`id_attachment`)')
+        ;
+
+        return $qb;
+    }
+
+    /**
+     * Gets query builder with the common sql used for displaying webservice list and applying filter actions.
+     *
+     * @param array $filters
+     *
+     * @return QueryBuilder
+     */
+    private function getQueryBuilder(array $filters): QueryBuilder
+    {
+        $qb = $this->connection
+            ->createQueryBuilder()
+            ->from($this->dbPrefix . 'attachment', 'a')
+            ->leftJoin(
+                'a',
+                $this->dbPrefix . 'attachment_lang',
+                'al',
+                'a.`id_attachment` = al.`id_attachment`'
+            );
+
+        $productCountQb = $this->connection
+            ->createQueryBuilder()
+            ->from($this->dbPrefix . 'product_attachment', 'pa')
+            ->select('pa.`id_attachment`, COUNT(*) as product_count')
+            ->groupBy('id_attachment');
+
+        $qb->leftJoin('a',
+            '(' . $productCountQb->getSQL() . ')',
+            'virtual_product_attachment',
+            'a.`id_attachment` = virtual_product_attachment.`id_attachment`');
+
+        $qb->andWhere('al.`id_lang` = :employee_id_lang');
+        $qb->setParameter('employee_id_lang', $this->languageContext->getId());
+        $this->applyFilters($qb, $filters);
+
+        return $qb;
+    }
+
+    /**
+     * Apply filters to attachments query builder.
+     *
+     * @param array $filters
+     * @param QueryBuilder $qb
+     */
+    private function applyFilters(QueryBuilder $qb, array $filters)
+    {
+        $allowedFiltersMap = [
+            'id_attachment' => 'a.id_attachment',
+            'name' => 'al.name',
+            'file_size' => 'a.file_size',
+            'products' => 'virtual_product_attachment.product_count',
+        ];
+
+        foreach ($filters as $filterName => $value) {
+            if (!array_key_exists($filterName, $allowedFiltersMap)) {
+                continue;
+            }
+
+            if ('id_attachment' === $filterName) {
+                $qb->andWhere($allowedFiltersMap[$filterName] . ' = :' . $filterName);
+                $qb->setParameter($filterName, $value);
+
+                continue;
+            }
+
+            if ('products' === $filterName && $value === '0') {
+                $qb->andWhere($allowedFiltersMap[$filterName] . ' IS NULL');
+
+                $qb->setParameter($filterName, $value);
+
+                continue;
+            }
+
+            $qb->andWhere($allowedFiltersMap[$filterName] . ' LIKE :' . $filterName)
+                ->setParameter($filterName, '%' . $value . '%');
+        }
+    }
+}

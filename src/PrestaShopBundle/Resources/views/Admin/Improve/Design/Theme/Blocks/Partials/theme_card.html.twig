@@ -1,0 +1,31 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/Improve/Design/Theme/Blocks/Partials/theme_card_container.html.twig' %}
+
+{% block content %}
+  <div class="card theme-card" data-role="theme-card-container">
+    <div class="active-card-overlay {{ isActive ? 'active' : '' }}"></div>
+
+    {% block image %}
+    {% endblock %}
+
+    <div class="actions-container {{ isActive ? 'active' : '' }}">
+      {% block button_container %}
+      {% endblock %}
+    </div>
+  </div>
+
+  <div class="text-center theme-card-description">
+    <b class="theme-name">
+      {{ themeDisplayName }}
+    </b>
+    <span class="theme-version">
+      {{ 'Version'|trans({}, 'Admin.Global') }} {{ themeVersion }}
+    </span>
+    <div class="theme-author">
+      <a href="{{ themeAuthorUrl }}" target="_blank">{{ 'Designed by %s'|trans({'%s': themeAuthor}, 'Admin.Design.Feature') }}</a>
+    </div>
+  </div>
+{% endblock %}

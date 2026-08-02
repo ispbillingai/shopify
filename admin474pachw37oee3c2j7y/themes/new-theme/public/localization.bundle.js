@@ -1,0 +1,1 @@
+(()=>{"use strict";var r={428:r=>{r.exports=window.jQuery}},t={};const e="#form_default_currency";var n=function e(n){var o=t[n];if(void 0!==o)return o.exports;var a=t[n]={exports:{}};return r[n](a,a.exports,e),a.exports}(428);n((()=>{n(e).on("change",(function(){alert(n(this).data("warning-message"))}))})),window.localization={}})();

@@ -1,0 +1,140 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
+namespace PrestaShopBundle\Form\Admin\Sell\Product\Shipping;
+
+use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\PositiveOrZero;
+use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+class DimensionsType extends TranslatorAwareType
+{
+    /**
+     * @var string
+     */
+    private $dimensionUnit;
+
+    /**
+     * @var string
+     */
+    private $weightUnit;
+
+    /**
+     * @param TranslatorInterface $translator
+     * @param array $locales
+     * @param string $dimensionUnit
+     * @param string $weightUnit
+     */
+    public function __construct(
+        TranslatorInterface $translator,
+        array $locales,
+        string $dimensionUnit,
+        string $weightUnit
+    ) {
+        parent::__construct($translator, $locales);
+        $this->dimensionUnit = $dimensionUnit;
+        $this->weightUnit = $weightUnit;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('width', NumberType::class, [
+                'required' => false,
+                'label' => $this->trans('Width', 'Admin.Catalog.Feature'),
+                'unit' => $this->dimensionUnit,
+                'constraints' => [
+                    new NotBlank(),
+                    new Type([
+                        'type' => 'numeric',
+                        'message' => $this->trans(
+                            '%s is invalid.',
+                            'Admin.Notifications.Error'
+                        ),
+                    ]),
+                    new PositiveOrZero(),
+                ],
+                'default_empty_data' => 0,
+            ])
+            ->add('height', NumberType::class, [
+                'required' => false,
+                'label' => $this->trans('Height', 'Admin.Catalog.Feature'),
+                'unit' => $this->dimensionUnit,
+                'constraints' => [
+                    new NotBlank(),
+                    new Type([
+                        'type' => 'numeric',
+                        'message' => $this->trans(
+                            '%s is invalid.',
+                            'Admin.Notifications.Error'
+                        ),
+                    ]),
+                    new PositiveOrZero(),
+                ],
+                'default_empty_data' => 0,
+            ])
+            ->add('depth', NumberType::class, [
+                'required' => false,
+                'label' => $this->trans('Depth', 'Admin.Catalog.Feature'),
+                'unit' => $this->dimensionUnit,
+                'constraints' => [
+                    new NotBlank(),
+                    new Type([
+                        'type' => 'numeric',
+                        'message' => $this->trans(
+                            '%s is invalid.',
+                            'Admin.Notifications.Error'
+                        ),
+                    ]),
+                    new PositiveOrZero(),
+                ],
+                'default_empty_data' => 0,
+            ])
+            ->add('weight', NumberType::class, [
+                'required' => false,
+                'label' => $this->trans('Weight', 'Admin.Catalog.Feature'),
+                'unit' => $this->weightUnit,
+                'constraints' => [
+                    new NotBlank(),
+                    new Type([
+                        'type' => 'numeric',
+                        'message' => $this->trans(
+                            '%s is invalid.',
+                            'Admin.Notifications.Error'
+                        ),
+                    ]),
+                    new PositiveOrZero(),
+                ],
+                'default_empty_data' => 0,
+            ])
+        ;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+        $resolver->setDefaults([
+            'label' => $this->trans('Package dimension', 'Admin.Catalog.Feature'),
+            'label_tag_name' => 'h3',
+            'label_subtitle' => $this->trans('If you use carrier restrictions based on dimensions or weight ranges, these values must be filled in for the rules to apply. Enter dimensions and weight including the packaging.', 'Admin.Catalog.Feature'),
+            'required' => false,
+            'columns_number' => 4,
+        ]);
+    }
+}

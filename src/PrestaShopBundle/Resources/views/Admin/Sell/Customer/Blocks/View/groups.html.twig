@@ -1,0 +1,50 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<div class="card customer-groups-card">
+  <h3 class="card-header">
+    <i class="material-icons">group</i>
+    {{ 'Groups'|trans({}, 'Admin.Global') }}
+    <span class="badge badge-primary rounded">{{ customerInformation.groupsInformation|length }}</span>
+
+    <a href="{{ getAdminLink('AdminCustomers', true, {id_customer: customerInformation.customerId.value, updatecustomer: 1}) }}"
+       class="tooltip-link float-right"
+       data-toggle="pstooltip"
+       data-placement="top"
+       data-original-title="{{ 'Edit'|trans({}, 'Admin.Actions') }}"
+    >
+      <i class="material-icons">edit</i>
+    </a>
+  </h3>
+  <div class="card-body">
+    {% if customerInformation.groupsInformation is not empty %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ 'ID'|trans({}, 'Admin.Global') }}</th>
+            <th>{{ 'Name'|trans({}, 'Admin.Global') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for group in customerInformation.groupsInformation %}
+          <tr class="customer-group">
+            <td class="customer-group-id">{{ group.groupId }}</td>
+            <td class="customer-group-name">
+              <a href="{{ getAdminLink('AdminGroups', true, {id_group: group.groupId, viewgroup: 1}) }}">
+                {{ group.name }}
+              </a>
+              {% if group.isDefault %} ({{ 'default'|trans({}, 'Admin.Orderscustomers.Feature') }}){% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-muted text-center mb-0">
+        {{ 'No cart is available'|trans({}, 'Admin.Orderscustomers.Notification') }}
+      </p>
+    {% endif %}
+  </div>
+</div>

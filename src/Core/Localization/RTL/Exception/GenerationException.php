@@ -1,0 +1,16 @@
+<?php
+/**
+ * For the full copyright and license information, please view the
+ * docs/licenses/LICENSE.txt file that was distributed with this source code.
+ */
+
+namespace PrestaShop\PrestaShop\Core\Localization\RTL\Exception;
+
+use PrestaShop\PrestaShop\Core\Localization\Exception\LocalizationException;
+
+/**
+ * Is thrown when unable to generate RTL files
+ */
+class GenerationException extends LocalizationException
+{
+}

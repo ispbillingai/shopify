@@ -1,0 +1,41 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% form_theme exchangeRatesForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+
+{{ form_start(exchangeRatesForm, {action: path('admin_currencies_refresh_exchange_rates')}) }}
+  <div class="card">
+    <h3 class="card-header">
+      {{ 'Exchange rate'|trans({}, 'Admin.International.Feature') }}
+    </h3>
+    <div class="card-body">
+      <div class="form-wrapper">
+        <div class="form-group row">
+          <label class="form-control-label">
+            {{ 'Live exchange rates'|trans({}, 'Admin.International.Feature') }}
+          </label>
+          <div class="col-sm">
+            <small class="form-text">
+              {{ 'Check the [a]developer documentation[/a] for setup instructions.'|trans({'[a]': '<a href="https://devdocs.prestashop-project.org/9/faq/pricing/#refresh-exchange-rates" target="_blank">', '[/a]': '</a>'}, 'Admin.International.Notification')|raw_purified }}
+            </small>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="" class="form-control-label">
+            {{ 'Update exchange rates'|trans({}, 'Admin.International.Feature') }}
+          </label>
+          <div class="col-sm">
+            <button class="btn btn-primary" id="update-exchange-rates-button">
+              {{ 'Update'|trans({}, 'Admin.Actions') }}
+            </button>
+          </div>
+        </div>
+        {% block currency_settings %}
+          {{ form_rest(exchangeRatesForm) }}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+{{ form_end(exchangeRatesForm) }}

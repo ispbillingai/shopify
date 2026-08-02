@@ -1,0 +1,1 @@
+(()=>{"use strict";(()=>{const e=document.querySelector(".js-go-back-btn");e&&e.addEventListener("click",(()=>window.history.back()))})(),window.error={}})();

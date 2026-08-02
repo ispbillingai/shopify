@@ -1,0 +1,27 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% trans_default_domain 'Admin.International.Feature' %}
+{% form_theme stateForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+
+{{ form_start(stateForm) }}
+  <div class="card">
+    <h3 class="card-header">
+      <i class="material-icons">public</i>
+      {{ 'State'|trans({}, 'Admin.International.Feature') }}
+    </h3>
+    <div class="card-body">
+      <div class="form-wrapper">
+        {{ form_widget(stateForm) }}
+      </div>
+    </div>
+    <div class="card-footer d-flex align-items-center justify-content-between">
+      <a href="{{ path('admin_states_index') }}" class="btn btn-outline-secondary">
+        {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+      </a>
+      <button class="btn btn-primary" id="save-button">{{ 'Save'|trans({}, 'Admin.Actions') }}</button>
+    </div>
+  </div>
+{{ form_end(stateForm) }}

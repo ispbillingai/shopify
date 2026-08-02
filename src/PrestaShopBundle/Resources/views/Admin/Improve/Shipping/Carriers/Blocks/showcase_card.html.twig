@@ -1,0 +1,30 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% trans_default_domain 'Admin.Shipping.Feature' %}
+
+{% if not isShowcaseCardClosed %}
+  <div id="carriersShowcaseCard" class="helper-card card">
+    <div class="helper-card__left helper-card__carrier shape-one">
+      <img src="{{ asset('themes/new-theme/public/helper-card/carrier@3x.svg') }}" class="img-fluid">
+    </div>
+    <div class="helper-card__right">
+      <h2>{{ 'Manage your carriers'|trans }}</h2>
+      <p>{{ 'Create carriers to let your customers choose their best shipping option in terms of delivery dates or fees. Start with editing/deleting the default "My carrier", and add as many options as you need.'|trans }}</p>
+      <a class="btn btn-outline-secondary"
+         href="{{ documentation_link('carrier') }}"
+         target="_blank"
+      >
+        {{ 'Learn more'|trans({}, 'Admin.Actions') }}
+      </a>
+    </div>
+    <i class="showcase-card__close material-icons js-remove-helper-block"
+       data-card-name="{{ showcaseCardName }}"
+       data-close-url="{{ path('admin_close_showcase_card') }}"
+    >
+      close
+    </i>
+  </div>
+{% endif %}

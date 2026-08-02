@@ -1,0 +1,59 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+<table class="table" data-role="history-grid-table">
+  <tbody>
+    {% for status in orderForViewing.history.statuses %}
+    <tr>
+      <td data-role="status-column">
+        <span class="badge rounded badge-print-light"
+              style="background-color: {{ status.color }}; color: {{ is_color_bright(status.color) ? 'black' : 'white' }};"
+        >
+          {{ status.name }}
+        </span>
+      </td>
+      <td class="text-right" data-role="employee-column">
+        {% if status.employeeLastName is not empty %}
+          {{ status.employeeFirstName ~ ' ' ~ status.employeeLastName }}
+        {% endif %}
+        {% if status.apiClientId is not empty %}
+          {{ 'Api Client: %api_client_id%'|trans({'%api_client_id%': status.apiClientId}, 'Admin.Global') }}
+        {% endif %}
+      </td>
+      <td class="text-right" data-role="date-column">
+        {{ status.createdAt|date_format_full }}
+      </td>
+      <td class="text-right">
+        {% if status.withEmail %}
+          <form method="post"
+                action="{{ path('admin_orders_resend_email', {orderId: orderForViewing.id, orderHistoryId: status.orderHistoryId, orderStatusId: status.orderStatusId}) }}">
+            <button class="btn btn-primary btn-sm">
+              {{ 'Resend email'|trans({}, 'Admin.Orderscustomers.Feature') }}
+            </button>
+          </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="d-flex justify-content-end">
+  {{ form_start(updateOrderStatusForm, {action: path('admin_orders_update_status', {orderId: orderForViewing.id}), attr: {class: 'card-details-form'}}) }}
+    <div class="form-group card-details-actions">
+      {{ form_widget(updateOrderStatusForm.new_order_status_id) }}
+
+      <button class="btn btn-primary update-status mt-3 mt-md-0 ml-0 ml-md-3">
+        {{ 'Update status'|trans({}, 'Admin.Orderscustomers.Feature') }}
+      </button>
+    </div>
+
+    <div class="d-none">
+      {{ form_rest(updateOrderStatusForm) }}
+    </div>
+  {{ form_end(updateOrderStatusForm) }}
+</div>
+
+{{ include('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/internal_note.html.twig') }}

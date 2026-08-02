@@ -1,0 +1,45 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% set choices = column.options.choice_provider.getChoices(record) %}
+{% set selectedChoice = record[column.options.field] %}
+{% set selectedChoiceName = '' %}
+{% set routeParams = record|array_pluck(column.options.record_route_params) %}
+
+{% for name, value in choices %}
+  {% if value == selectedChoice %}
+    {% set selectedChoiceName = name %}
+  {% endif %}
+{% endfor %}
+
+{% set classes = 'btn btn-secondary dropdown-toggle dropdown-toggle-split rounded' %}
+
+{% if choices is not empty %}
+  <div class="dropdown">
+    <button
+      {% if column.options.color_field %}
+        {% set textColor = is_color_bright(record[column.options.color_field]) ? '#383838' : 'white' %}
+        style="background-color: {{ record[column.options.color_field] }}; color: {{ textColor }};"
+        {% set classes = classes ~ ' coloured' %}
+      {% endif %}
+      class="{{ classes }}"
+      type="button"
+      data-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+      data-flip="false"
+    >
+      {{ selectedChoiceName }}
+    </button>
+    <div
+      class="dropdown-menu js-choice-options"
+      data-url="{{ url(column.options.route, routeParams) }}"
+    >
+      {% for name, value in choices|filter(value => value != selectedChoice) %}
+        <button class="js-dropdown-item dropdown-item" data-value="{{ value }}">{{ name }}</button>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}

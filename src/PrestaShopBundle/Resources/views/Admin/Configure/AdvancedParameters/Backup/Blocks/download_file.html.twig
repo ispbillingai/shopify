@@ -1,0 +1,22 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% trans_default_domain 'Admin.Advparameters.Feature' %}
+
+<div class="card">
+  <h3 class="card-header">
+    <i class="material-icons">cloud_download</i>
+    {{ 'Download'|trans({}, 'Admin.Actions') }}
+  </h3>
+  <div class="card-body">
+    <p>
+      <a href="{{ downloadFile.url }}" class="btn btn-outline-primary download-file-link">
+        <i class="material-icons">cloud_download</i>
+        {{ 'Download the backup file (%s MB)'|trans({'%s': downloadFile.size}) }}
+      </a>
+    </p>
+    <p>{{ 'Tip: You can also download this file from your FTP server. Backup files are located in the "/adminXXXX/backups" directory.'|trans }}</p>
+  </div>
+</div>

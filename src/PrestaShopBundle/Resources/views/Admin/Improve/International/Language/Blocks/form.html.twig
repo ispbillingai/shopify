@@ -1,0 +1,28 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+
+{% form_theme languageForm '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit.html.twig' %}
+
+{{ form_start(languageForm) }}
+<div class="card">
+  <h3 class="card-header">
+    <i class="material-icons">language</i>
+    {{ 'Languages'|trans({}, 'Admin.Global') }}
+  </h3>
+  <div class="card-body">
+    <div class="form-wrapper">
+      {{ form_widget(languageForm) }}
+    </div>
+  </div>
+  <div class="card-footer">
+    <a href="{{ path('admin_languages_index') }}" class="btn btn-outline-secondary">
+      {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+    </a>
+    <button class="btn btn-primary float-right" id="save-button">
+      {{ 'Save'|trans({}, 'Admin.Actions') }}
+    </button>
+  </div>
+</div>
+{{ form_end(languageForm) }}

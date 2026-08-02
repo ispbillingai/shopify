@@ -1,0 +1,22 @@
+{#
+ # For the full copyright and license information, please view the
+ # docs/licenses/LICENSE.txt file that was distributed with this source code.
+ #}
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block content %}
+  {# "By Date" block #}
+  {{ include('@PrestaShop/Admin/Sell/Order/Invoices/Blocks/generate_by_date.html.twig') }}
+
+  {# "By order status" block #}
+  {{ include('@PrestaShop/Admin/Sell/Order/Invoices/Blocks/generate_by_status.html.twig') }}
+
+  {# "Invoice options" block #}
+  {{ include('@PrestaShop/Admin/Sell/Order/Invoices/Blocks/invoice_options.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('themes/new-theme/public/invoices.bundle.js') }}"></script>
+{% endblock %}
