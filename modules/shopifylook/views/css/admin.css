@@ -348,7 +348,7 @@ body.ps-bo-rebrand a#header_logo.logo {
 }
 
 body.ps-bo-rebrand #header_logo::after {
-    content: "SHOPIFY STORE";
+    content: "UPGRADESRLS";
     color: #ffffff;
     font-family: var(--sl-font);
     font-size: 15px;
