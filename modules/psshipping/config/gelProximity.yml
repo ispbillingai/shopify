@@ -1,8 +1,0 @@
-services:
-  _defaults:
-    public: true
-
-  PrestaShop\Module\Psshipping\Domain\GelProximity\GelProximityService:
-    class: 'PrestaShop\Module\Psshipping\Domain\GelProximity\GelProximityService'
-    arguments:
-      - '@psshipping'
