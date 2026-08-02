@@ -223,7 +223,7 @@ Hummingbird theme, installed with demo fixtures.
 | Thing | Where it lives |
 |---|---|
 | Storefront | `https://shopify.ispledger.com` |
-| Back office | `https://shopify.ispledger.com/admin474pachw37oee3c2j7y/` |
+| Back office | `https://shopify.ispledger.com/admin/` |
 | DB credentials | `app/config/parameters.php` — **gitignored**, server only |
 | Our admin skin | `modules/shopifylook/` |
 | Debranding | `docs/debrand.sql` |
@@ -234,21 +234,30 @@ Hummingbird theme, installed with demo fixtures.
 The repo tracks the **whole deployed tree**, vendor code included, so that a
 `git pull` is the entire deploy. Two consequences worth knowing:
 
-- The admin folder name is in a **public repo**, so it is public knowledge. It is
-  not a secret and must not be treated as one — the admin password is the only
-  control that matters. (PrestaShop renames this folder at install *precisely* to
-  keep it secret; committing it publicly gives that up deliberately.)
+- The back office lives at plain `/admin`, deliberately. PrestaShop randomises
+  this folder at install to hide it, and we gave that up on purpose: the repo is
+  public, so the name was never going to stay secret. **The admin password is the
+  only control on that door.** If we ever want defence in depth without
+  complicating the login, the move is an IP allowlist or HTTP basic auth on the
+  `<Directory>` block in the vhost.
 - `install/` was deleted after setup and must never come back. PrestaShop refuses
   to boot while it exists, and it would let anyone re-run the installer.
 
-### Customising without getting stuck
+### Customising
 
-PrestaShop overwrites core files on upgrade. Anything we change should go in a
-module hooking the relevant event, in the theme, or in `override/` — never by
-editing `classes/`, `src/` or `controllers/` directly. `modules/shopifylook/` is
-the worked example: it restyles the entire back office via
-`actionAdminControllerSetMedia` without touching a single core file.
+We edit whatever we need to, core included. Prefer a module hook, the theme, or
+`override/` when one of those does the job — it costs nothing extra and survives
+upgrades. `modules/shopifylook/` is the worked example: it restyles the whole
+back office through `actionAdminControllerSetMedia` without touching core.
+
+But some things have no hook, and then we edit core directly. **Every core file
+we change is listed below, because a PrestaShop upgrade will silently overwrite
+it and the vendor's version will come back.** Re-apply after any version bump.
+
+| Core file | What we changed | Why not a hook |
+|---|---|---|
+| `src/PrestaShopBundle/Resources/views/Admin/Layout/login_layout.html.twig` | Vendor logo, copyright line and social links replaced with the shop name | `actionAdminControllerSetMedia` does not fire before authentication, so no module can reach the login page |
 
 The back office theme is compiled SCSS and rebuilding it needs npm, which this
 box does not do. That is why the skin is plain CSS injected by a module — it
-needs no build step and survives upgrades.
+needs no build step.
