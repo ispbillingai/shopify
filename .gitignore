@@ -26,6 +26,32 @@
 /themes/*/assets/cache/*
 /modules/*/config*.xml
 
+# Written by PrestaShop itself at runtime, or when a language is installed.
+# These are regenerated on demand, differ per environment, and would otherwise
+# leave `git status` permanently dirty on the server and fight every pull.
+/.htaccess
+/robots.txt
+/config/themes/
+/var/modules/
+/admin*/bundles/
+
+# Translation catalogues + downloaded language packs (regenerated per language)
+/translations/*/
+/translations/*.zip
+
+# Per-language mail templates. The shipped themes and partials stay tracked.
+/mails/*/
+!/mails/themes/
+!/mails/_partials/
+
+# Generated placeholder/flag imagery
+/img/l/
+/img/os/
+/img/genders/
+
+# HTMLPurifier writes its serializer cache inside vendor
+/vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/Serializer/
+
 # Local
 .idea/
 .vscode/
