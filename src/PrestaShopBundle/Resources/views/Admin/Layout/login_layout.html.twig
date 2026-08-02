@@ -21,14 +21,11 @@
       <div id="login-panel">
         <div id="login-header">
           <h1 class="text-center mb-0">
-            <img id="logo" src="{{ ps.baseImgUrl }}prestashop@2x.png" width="128" height="auto" alt="PrestaShop" />
+            <span id="logo" style="display:inline-block;font-family:Inter,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:26px;font-weight:700;letter-spacing:0.01em;color:#1a1a1a;">{{ shopName }}</span>
           </h1>
         </div>
 
         <div id="login-content-card" class="card">
-          <div id="shop-img">
-            <img src="{{ ps.baseImgUrl }}prestashop@2x.png" alt="{{ shopName }}" width="200" height="22" />
-          </div>
 
           <div class="card-body">
             {% block session_alert %}
@@ -84,21 +81,7 @@
 
         <div id="login-footer">
           <div class="login__copy text-center text-muted">
-            <a href="https://www.prestashop-project.org" onclick="return !window.open(this.href);">
-              &copy; PrestaShop&#8482; 2007-{{ 'now'|date('Y') }} - All rights reserved
-            </a>
-          </div>
-
-          <div class="login__social text-center">
-            <a class="link-social link-twitter _blank" target="_blank" href="https://x.com/PrestaShop" title="X">
-              <twig:ux:icon name="bi:twitter-x" height="16" width="16" aria-hidden="true"/>
-            </a>
-            <a class="link-social link-facebook _blank" target="_blank" href="https://www.facebook.com/prestashop" title="Facebook">
-              <twig:ux:icon name="bi:facebook" height="16" width="16" aria-hidden="true"/>
-            </a>
-            <a class="link-social link-github _blank" target="_blank" href="https://github.com/PrestaShop/PrestaShop" title="Github">
-              <twig:ux:icon name="bi:github" height="16" width="16" aria-hidden="true"/>
-            </a>
+            &copy; {{ 'now'|date('Y') }} {{ shopName }}
           </div>
         </div>
       </div>
