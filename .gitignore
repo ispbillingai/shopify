@@ -58,3 +58,8 @@
 .idea/
 .vscode/
 *.log
+
+# PrestaShop deletes these directory guards from module src/ dirs on its
+# own (they interfere with entity autoloading). Tracking them means a dirty
+# tree after every deploy. Directory listing is already off in the vhost.
+/modules/*/src/**/index.php
