@@ -31,6 +31,8 @@
 # leave `git status` permanently dirty on the server and fight every pull.
 /.htaccess
 /robots.txt
+# PrestaShop drops a protective .htaccess into module vendor dirs
+/modules/*/vendor/.htaccess
 /config/themes/
 /var/modules/
 /admin*/bundles/
