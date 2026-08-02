@@ -212,15 +212,12 @@ class LoginController extends PrestaShopAdminController
             $requiredActions[] = $this->trans('deleted the /install folder', [], 'Admin.Login.Notification');
         }
 
-        // If admin folder is still named admin
-        if ($this->adminFolderName === 'admin') {
-            $randomName = sprintf(
-                'admin%03d%s/',
-                mt_rand(0, 999),
-                mb_strtolower((new PasswordGenerator(new OpenSSL()))->generatePassword(16)),
-            );
-            $requiredActions[] = $this->trans('renamed the /admin folder (e.g. %s)', [$randomName], 'Admin.Login.Notification');
-        }
+        // Upstream blocks login outright while the admin folder is named
+        // "admin", to force a hard-to-guess URL. We keep /admin on purpose:
+        // this repo is public, so the folder name was never going to stay
+        // secret and the obscurity bought nothing. The admin password is the
+        // control here. See the core-file register in README.md - a PrestaShop
+        // upgrade restores this block and locks us out of the back office.
 
         $sslEnabled = (bool) $this->getConfiguration()->get('PS_SSL_ENABLED');
         if ($sslEnabled && !$request->isSecure()) {

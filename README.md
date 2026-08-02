@@ -257,6 +257,11 @@ it and the vendor's version will come back.** Re-apply after any version bump.
 | Core file | What we changed | Why not a hook |
 |---|---|---|
 | `src/PrestaShopBundle/Resources/views/Admin/Layout/login_layout.html.twig` | Vendor logo, copyright line and social links replaced with the shop name | `actionAdminControllerSetMedia` does not fire before authentication, so no module can reach the login page |
+| `src/PrestaShopBundle/Controller/Admin/LoginController.php` | Removed the check in `checkRequiredActions()` that refuses login while the admin folder is named `admin` | Hard-coded guard in a Symfony controller; no hook or override intercepts it |
+
+⚠️ **If an upgrade restores that second one, the back office locks you out** —
+it refuses every login while the folder is `/admin`. Either re-apply the patch or
+rename the folder to get back in.
 
 The back office theme is compiled SCSS and rebuilding it needs npm, which this
 box does not do. That is why the skin is plain CSS injected by a module — it
