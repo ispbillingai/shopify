@@ -227,7 +227,44 @@ Hummingbird theme, installed with demo fixtures.
 | DB credentials | `app/config/parameters.php` — **gitignored**, server only |
 | Our admin skin | `modules/shopifylook/` |
 | Debranding | `docs/debrand.sql` |
+| Catalogue importer | `bin/import_shopify.php` |
+| Import source data | `/var/imports/shopify/` on the server — **outside the web root** |
 | Vendor base | everything else — treat as third-party |
+
+### The catalogue
+
+Imported from a Shopify export of the Stizzo Gioielleria store: **9,750 products**
+across 17,484 variant rows, Italian jewellery and bags.
+
+```bash
+php bin/import_shopify.php --products=/var/imports/shopify/products.csv \
+                           --inventory=/var/imports/shopify/inventory.csv
+php bin/import_shopify.php --products=/var/imports/shopify/products.csv --images
+```
+
+Re-runnable — products already present are matched on `link_rewrite` and skipped,
+so an interrupted run is restarted, not repaired. `--dry-run` and `--limit=N`
+exist for trials.
+
+Four things about this data that cost time to discover:
+
+- **The row count lies.** `wc -l` reports ~112,000 because product descriptions
+  contain HTML with embedded newlines. There are 17,484 actual CSV records. Parse
+  with `fgetcsv`, never line by line.
+- **SKUs carry a leading apostrophe** in the products export (`'1683800`) on 6,293
+  rows — Excel's "treat as text" marker. The inventory export does *not* have it,
+  so an unstripped SKU silently breaks the join and the product imports with zero
+  stock. `sku()` in the importer strips it.
+- **Prices are EUR**, so EUR is the shop's default currency at rate 1.0 and KES is
+  deactivated. Leaving KES active would quote euro amounts as shillings.
+- **Stock lives in a separate export** split across two warehouses (Stizzo Borse,
+  Stizzo Gioielleria). They are summed, because PrestaShop keeps one stock figure
+  per product unless Advanced Stock Management is switched on.
+
+Products import with **no tax rules group**, so the displayed price equals the
+exported price. Attach a group in the admin if VAT should be added on top.
+`Published: false` in the export (7,634 of 9,750) becomes an inactive product —
+present in the catalogue, absent from the storefront.
 
 ### What is ours vs theirs
 
