@@ -112,7 +112,7 @@ function logLine(string $msg): void
  */
 function uniqueLinkRewrite(string $handle, array &$taken): string
 {
-    $base = Tools::link_rewrite($handle);
+    $base = Tools::str2url($handle);
     if ($base === '') {
         $base = 'product';
     }
@@ -233,7 +233,7 @@ foreach ($order as $handle) {
         continue;
     }
 
-    $slug = Tools::link_rewrite($handle);
+    $slug = Tools::str2url($handle);
     if ($slug !== '' && isset($existing[$slug])) {
         ++$stats['skipped'];
         continue;
@@ -288,7 +288,7 @@ foreach ($order as $handle) {
                 $c = new Category();
                 $c->id_parent = $homeCategory;
                 $c->active = true;
-                $catSlug = Tools::link_rewrite($type);
+                $catSlug = Tools::str2url($type);
                 foreach ($langs as $idLang) {
                     $c->name[$idLang] = mb_substr($type, 0, 128);
                     $c->link_rewrite[$idLang] = $catSlug !== '' ? $catSlug : 'categoria-' . count($categories);
@@ -569,7 +569,7 @@ function importImages(array $groups, bool $dryRun, int $limit): void
 
         ++$done;
 
-        $slug = Tools::link_rewrite($handle);
+        $slug = Tools::str2url($handle);
         $idProduct = $byRewrite[$slug] ?? 0;
         if (!$idProduct) {
             ++$skipped;
