@@ -614,7 +614,7 @@ function importImages(array $groups, bool $dryRun, int $limit): void
                 }
 
                 $image->associateTo([1]);
-                $target = _PS_PROD_IMG_DIR_ . $image->getImgPath() . '.jpg';
+                $target = _PS_PRODUCT_IMG_DIR_ . $image->getImgPath() . '.jpg';
                 @mkdir(dirname($target), 0755, true);
 
                 $bytes = @file_get_contents($url);
@@ -629,7 +629,7 @@ function importImages(array $groups, bool $dryRun, int $limit): void
                 foreach (ImageType::getImagesTypes('products') as $type) {
                     ImageManager::resize(
                         $target,
-                        _PS_PROD_IMG_DIR_ . $image->getImgPath() . '-' . $type['name'] . '.jpg',
+                        _PS_PRODUCT_IMG_DIR_ . $image->getImgPath() . '-' . $type['name'] . '.jpg',
                         (int) $type['width'],
                         (int) $type['height']
                     );
