@@ -602,6 +602,7 @@ function importImages(array $groups, bool $dryRun, int $limit): void
 
         $position = 1;
         foreach ($urls as $url) {
+            $image = null;
             try {
                 $image = new Image();
                 $image->id_product = $idProduct;
@@ -639,6 +640,18 @@ function importImages(array $groups, bool $dryRun, int $limit): void
                 ++$position;
             } catch (Throwable $e) {
                 ++$failed;
+                // Drop the half-written row. Without this a failure leaves an
+                // image record with no file behind it, and because this pass
+                // skips products that "already have images", that product can
+                // never be retried.
+                if ($image !== null && (int) $image->id > 0) {
+                    try {
+                        $image->delete();
+                    } catch (Throwable) {
+                        // nothing useful to do here
+                    }
+                }
+
                 // Swallowing this message once already cost an hour of guessing
                 // at why every download "failed" while the files downloaded fine.
                 if ($failed <= 5) {
