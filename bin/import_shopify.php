@@ -528,7 +528,7 @@ function getAttribute(int $idGroup, string $value, array $langs): int
     );
 
     if (!$id) {
-        $attribute = new Attribute();
+        $attribute = new ProductAttribute();
         $attribute->id_attribute_group = $idGroup;
         foreach ($langs as $idLang) {
             $attribute->name[$idLang] = mb_substr($value, 0, 128);
