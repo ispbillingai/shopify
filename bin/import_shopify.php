@@ -97,6 +97,17 @@ function isTrue(string $v): bool
     return strtolower($v) === 'true';
 }
 
+/**
+ * 6,293 rows of the products export carry a leading apostrophe on the SKU and
+ * barcode ("'1683800") — Excel's "treat as text" marker, saved into the file.
+ * The inventory export does not have it. Left alone it breaks the SKU join, so
+ * every one of those products imports with no stock and an ugly reference.
+ */
+function sku(array $row, string $name): string
+{
+    return ltrim(col($row, $name), "'");
+}
+
 function logLine(string $msg): void
 {
     echo '[' . date('H:i:s') . '] ' . $msg . "\n";
@@ -153,7 +164,7 @@ $stock = [];
 if ($inventoryCsv !== '' && is_readable($inventoryCsv)) {
     logLine('reading ' . basename($inventoryCsv));
     foreach (readCsv($inventoryCsv) as $row) {
-        $sku = col($row, 'SKU');
+        $sku = sku($row, 'SKU');
         if ($sku === '') {
             continue;
         }
@@ -254,7 +265,7 @@ foreach ($order as $handle) {
                 col($head, 'Variant Price'),
                 col($head, 'Vendor'),
                 col($head, 'Type'),
-                count(array_filter($rows, static fn ($r) => col($r, 'Variant SKU') !== '')),
+                count(array_filter($rows, static fn ($r) => sku($r, 'Variant SKU') !== '')),
                 count(array_filter($rows, static fn ($r) => col($r, 'Image Src') !== ''))
             ));
         }
@@ -339,7 +350,7 @@ foreach ($order as $handle) {
         $product->price = $price;
         $product->wholesale_price = $cost;
         $product->weight = $grams > 0 ? $grams / 1000 : 0;
-        $product->reference = mb_substr(col($head, 'Variant SKU'), 0, 64);
+        $product->reference = mb_substr(sku($head, 'Variant SKU'), 0, 64);
         $product->id_manufacturer = $idManufacturer;
         $product->id_category_default = $idCategory;
         $product->active = isTrue(col($head, 'Published'));
@@ -349,7 +360,7 @@ foreach ($order as $handle) {
         // No tax group: the shown price then equals the exported price exactly.
         $product->id_tax_rules_group = 0;
 
-        $barcode = preg_replace('/\D/', '', col($head, 'Variant Barcode')) ?? '';
+        $barcode = preg_replace('/\D/', '', sku($head, 'Variant Barcode')) ?? '';
         if (strlen($barcode) === 13) {
             $product->ean13 = $barcode;
         }
@@ -383,7 +394,7 @@ foreach ($order as $handle) {
 
             foreach ($rows as $r) {
                 $value = col($r, 'Option1 Value');
-                $sku = col($r, 'Variant SKU');
+                $sku = sku($r, 'Variant SKU');
                 if ($value === '' || strtolower($value) === 'default title') {
                     continue;
                 }
