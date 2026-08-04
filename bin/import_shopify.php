@@ -639,6 +639,12 @@ function importImages(array $groups, bool $dryRun, int $limit): void
                 ++$position;
             } catch (Throwable $e) {
                 ++$failed;
+                // Swallowing this message once already cost an hour of guessing
+                // at why every download "failed" while the files downloaded fine.
+                if ($failed <= 5) {
+                    logLine('IMAGE ERROR ' . get_class($e) . ': ' . $e->getMessage()
+                        . ' @ ' . basename($e->getFile()) . ':' . $e->getLine());
+                }
             }
         }
 
