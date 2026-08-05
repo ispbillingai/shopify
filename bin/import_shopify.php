@@ -108,6 +108,20 @@ function sku(array $row, string $name): string
     return ltrim(col($row, $name), "'");
 }
 
+/**
+ * Failure reporting for the image pass.
+ *
+ * A flat "only log the first 5" cap hid a burst of 170 failures completely —
+ * the counter jumped and there was nothing in the log to explain it. Log the
+ * first few in full, then keep a heartbeat so a burst is always visible.
+ */
+function logFailure(int $failedCount, string $why): void
+{
+    if ($failedCount <= 10 || $failedCount % 25 === 0) {
+        logLine("IMAGE FAIL #{$failedCount}: {$why}");
+    }
+}
+
 function logLine(string $msg): void
 {
     echo '[' . date('H:i:s') . '] ' . $msg . "\n";
@@ -611,6 +625,7 @@ function importImages(array $groups, bool $dryRun, int $limit): void
 
                 if (!$image->add()) {
                     ++$failed;
+                    logFailure($failed, "Image::add() refused for product {$idProduct}");
                     continue;
                 }
 
@@ -622,6 +637,10 @@ function importImages(array $groups, bool $dryRun, int $limit): void
                 if ($bytes === false || strlen($bytes) < 100) {
                     $image->delete();
                     ++$failed;
+                    $why = $bytes === false
+                        ? (error_get_last()['message'] ?? 'file_get_contents returned false')
+                        : 'response too small (' . strlen($bytes) . ' bytes)';
+                    logFailure($failed, 'download failed: ' . $why);
                     continue;
                 }
 
@@ -652,12 +671,8 @@ function importImages(array $groups, bool $dryRun, int $limit): void
                     }
                 }
 
-                // Swallowing this message once already cost an hour of guessing
-                // at why every download "failed" while the files downloaded fine.
-                if ($failed <= 5) {
-                    logLine('IMAGE ERROR ' . get_class($e) . ': ' . $e->getMessage()
-                        . ' @ ' . basename($e->getFile()) . ':' . $e->getLine());
-                }
+                logFailure($failed, get_class($e) . ': ' . $e->getMessage()
+                    . ' @ ' . basename($e->getFile()) . ':' . $e->getLine());
             }
         }
 
