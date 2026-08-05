@@ -109,6 +109,57 @@ function sku(array $row, string $name): string
 }
 
 /**
+ * Fetches one image, with retries.
+ *
+ * A bare file_get_contents() ran clean for 2,700 products and then started
+ * failing in bursts — the CDN throttles a client that hammers it, and PHP's
+ * default user agent does not help. So: identify ourselves like a browser, cap
+ * the wait, and back off before retrying rather than discarding the image on
+ * the first refusal.
+ *
+ * @return array{0: ?string, 1: string} bytes (null on failure), and why
+ */
+function fetchImage(string $url, int $attempts = 3): array
+{
+    $lastWhy = 'no attempt made';
+
+    for ($try = 1; $try <= $attempts; ++$try) {
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'timeout' => 30,
+                'follow_location' => 1,
+                'user_agent' => 'Mozilla/5.0 (compatible; upgradesrls-import/1.0)',
+                'header' => "Accept: image/avif,image/webp,image/*,*/*;q=0.8\r\n",
+            ],
+            'ssl' => ['verify_peer' => true, 'verify_peer_name' => true],
+        ]);
+
+        $bytes = @file_get_contents($url, false, $context);
+
+        // $http_response_header is populated by the http wrapper.
+        $status = 0;
+        if (isset($http_response_header[0]) && preg_match('#\s(\d{3})\s#', $http_response_header[0], $m)) {
+            $status = (int) $m[1];
+        }
+
+        if ($bytes !== false && strlen($bytes) >= 100) {
+            return [$bytes, ''];
+        }
+
+        $lastWhy = $bytes === false
+            ? 'http ' . ($status ?: '?') . ' — ' . (error_get_last()['message'] ?? 'no response')
+            : 'response too small (' . strlen($bytes) . ' bytes)';
+
+        if ($try < $attempts) {
+            sleep($try * 2);   // 2s, then 4s
+        }
+    }
+
+    return [null, $lastWhy . " [after {$attempts} attempts]"];
+}
+
+/**
  * Failure reporting for the image pass.
  *
  * A flat "only log the first 5" cap hid a burst of 170 failures completely —
@@ -633,13 +684,10 @@ function importImages(array $groups, bool $dryRun, int $limit): void
                 $target = _PS_PRODUCT_IMG_DIR_ . $image->getImgPath() . '.jpg';
                 @mkdir(dirname($target), 0755, true);
 
-                $bytes = @file_get_contents($url);
-                if ($bytes === false || strlen($bytes) < 100) {
+                [$bytes, $why] = fetchImage($url);
+                if ($bytes === null) {
                     $image->delete();
                     ++$failed;
-                    $why = $bytes === false
-                        ? (error_get_last()['message'] ?? 'file_get_contents returned false')
-                        : 'response too small (' . strlen($bytes) . ' bytes)';
                     logFailure($failed, 'download failed: ' . $why);
                     continue;
                 }
