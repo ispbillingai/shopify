@@ -287,7 +287,7 @@ present in the catalogue, absent from the storefront.
 | Products | 9,750 (2,116 active, matching `Published`) |
 | Combinations | 3,099 |
 | Brands / categories | 95 / 41 |
-| Images | ~8,970 across ~3,620 products, ~9 GB on disk |
+| Images | 8,995 — all 3,625 products that have images are complete, ~9 GB on disk |
 | Stock | 4,396 products in stock |
 | Prices | €0 – €19,070, average €163 |
 
