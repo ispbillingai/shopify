@@ -266,6 +266,31 @@ exported price. Attach a group in the admin if VAT should be added on top.
 `Published: false` in the export (7,634 of 9,750) becomes an inactive product —
 present in the catalogue, absent from the storefront.
 
+#### Known imperfections in the source data
+
+- **14 SKUs are shared by 43 different products.** `ABX12311`, for example, is on
+  four distinct Giorgio Visconti rings. Each of them gets that SKU's stock, so
+  those 43 products *overstate availability* — 13 units read as 13 on each of
+  four products. Fixing it means deciding which product owns the SKU; the
+  importer cannot know.
+- **The inventory export covers a wider catalogue than the product export.**
+  4,726 units sit on 7,735 SKUs with no matching product, so the shop holds
+  11,422 of the file's 16,148 units. Nothing was lost — those products simply
+  are not in the product export.
+- **Roughly 6,100 products have no image** because the export has none for them.
+  Only 3,625 of 9,750 carry an `Image Src`.
+
+#### What landed
+
+| | |
+|---|---|
+| Products | 9,750 (2,116 active, matching `Published`) |
+| Combinations | 3,099 |
+| Brands / categories | 95 / 41 |
+| Images | ~8,970 across ~3,620 products, ~9 GB on disk |
+| Stock | 4,396 products in stock |
+| Prices | €0 – €19,070, average €163 |
+
 ### What is ours vs theirs
 
 The repo tracks the **whole deployed tree**, vendor code included, so that a
