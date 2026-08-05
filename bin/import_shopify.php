@@ -652,17 +652,38 @@ function importImages(array $groups, bool $dryRun, int $limit): void
             continue;
         }
 
-        // Already has images? leave it alone, so the pass is resumable.
+        // Compare against what the export expects, not merely "has any image".
+        //
+        // A plain "has > 0 ? skip" left products stranded half-finished: when a
+        // download burst failed partway, the product kept image 1 and could
+        // never regain images 2 and 3, because it looked done. 47 products sat
+        // in exactly that state, 97 images short.
         $has = (int) Db::getInstance()->getValue(
             'SELECT COUNT(*) FROM ' . _DB_PREFIX_ . 'image WHERE id_product = ' . (int) $idProduct
         );
-        if ($has > 0) {
+
+        if ($has >= count($urls)) {
             ++$skipped;
             continue;
         }
 
         if ($dryRun) {
             continue;
+        }
+
+        // Short of a full set: clear what is there and fetch the lot. Simpler
+        // and more reliable than diffing which URL maps to which stored image.
+        if ($has > 0) {
+            foreach (Db::getInstance()->executeS(
+                'SELECT id_image FROM ' . _DB_PREFIX_ . 'image WHERE id_product = ' . (int) $idProduct
+            ) ?: [] as $row) {
+                try {
+                    (new Image((int) $row['id_image']))->delete();
+                } catch (Throwable) {
+                    // if it will not delete, the re-add below still supersedes it
+                }
+            }
+            logLine("repairing {$slug}: had {$has} of " . count($urls) . ' images');
         }
 
         $position = 1;
