@@ -1,38 +1,51 @@
 {**
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * Stizzo Gioielleria custom footer
  *}
-{capture name="footer_before"}{hook h='displayFooterBefore'}{/capture}
-{if $smarty.capture.footer_before}
-  {block name='hook_footer_before'}
-    <div class="footer footer__before">
-      {$smarty.capture.footer_before nofilter}
-    </div>
-  {/block}
-{/if}
+{$stzImg = "{$urls.theme_assets}img/stizzo"}
 
 {block name='footer_main'}
-  <div class="footer footer__main">
-    <div class="container">
-      {capture name="footer_main_top"}{hook h='displayFooter'}{/capture}
-      {if $smarty.capture.footer_main_top}
-        {block name='hook_footer_main'}
-          <div class="footer__main-top row">
-            {$smarty.capture.footer_main_top nofilter}
-          </div>
-        {/block}
-      {/if}
+  <section class="stz-services">
+    <div><i class="material-icons">local_shipping</i><p>Free Shipping!</p></div>
+    <div><i class="material-icons">place</i><p>Sede</p></div>
+    <div><i class="material-icons">local_offer</i><p>Gift cards</p></div>
+    <div><i class="material-icons">star_border</i><p>Valutazione 5.0 stelle</p></div>
+  </section>
 
-      {capture name="footer_main_bottom"}{hook h='displayFooterAfter'}{/capture}
-      {if isset($smarty.capture.footer_main_bottom) && $smarty.capture.footer_main_bottom}
-        {block name='hook_footer_after'}
-          <div class="footer__main-bottom row">
-            {$smarty.capture.footer_main_bottom nofilter}
-          </div>
-        {/block}
-      {/if}
+  <div class="footer stz-footer">
+    <div class="stz-footer__grid">
+      <div>
+        <h4>STORE</h4>
+        <p class="stz-store-text">Siamo ossessionati dal design e dal prodotto. Senza compromessi nello stile, nella qualit&agrave; e nelle prestazioni di ogni prodotto che creiamo.</p>
+      </div>
+      <div>
+        <ul>
+          <li><a href="{$urls.base_url}content/2-privacy-policy">Privacy policy</a></li>
+          <li><a href="{$urls.base_url}content/1-spedizione-e-resi">Spedizione e resi</a></li>
+        </ul>
+      </div>
+      <div class="stz-footer__news">
+        <h4>Newsletter</h4>
+        <p>Ottieni il 10% di sconto sul tuo primo acquisto! Inoltre, sii il primo a conoscere saldi, lanci di nuovi prodotti e offerte esclusive!</p>
+        <form action="{$urls.current_url}" method="post">
+          <input type="email" name="email" placeholder="Inserisci l'indirizzo email" required>
+          <input type="hidden" name="action" value="0">
+          <input type="hidden" name="submitNewsletter" value="1">
+          <button type="submit">Registrati</button>
+        </form>
+      </div>
+      <div>
+        <h4>INFORMAZIONI AZIENDALI</h4>
+        <p>P.IVA 07904931214</p>
+      </div>
+    </div>
 
-      {include file='_partials/copyright.tpl'}
+    <div class="stz-footer__bottom">
+      <div class="stz-copy">&copy; {'Y'|date} Stizzo Gioielleria. Powered by {$shop.name}</div>
+      <div class="stz-payments">
+        {foreach ['american_express', 'apple_pay', 'bancontact', 'blik', 'google_pay', 'spidealwero', 'maestro', 'master', 'mobilepay', 'paypal', 'shopify_pay', 'unionpay', 'visa'] as $pay}
+          <img src="{$stzImg}/pay-{$pay}.svg" alt="{$pay}" loading="lazy">
+        {/foreach}
+      </div>
     </div>
   </div>
 {/block}

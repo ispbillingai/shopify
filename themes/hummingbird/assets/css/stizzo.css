@@ -1,0 +1,235 @@
+/* Stizzo Gioielleria front-end skin */
+:root {
+  --stz-gold: #6e5b1e;
+  --stz-gold-dark: #5e4d17;
+  --stz-pink: #f6dcdc;
+  --stz-ink: #2b2b2b;
+  --stz-font-serif: 'Cormorant Garamond', Georgia, serif;
+  --stz-font-script: 'Tangerine', cursive;
+}
+
+body { color: var(--stz-ink); }
+
+/* ---------- Announcement bar ---------- */
+.stz-announce {
+  background: var(--stz-gold);
+  border-top: 4px solid #e83e8c;
+  color: #fff;
+  text-align: center;
+  font-family: var(--stz-font-serif);
+  font-size: 1.35rem;
+  padding: .45rem 1rem;
+  letter-spacing: .02em;
+}
+
+/* ---------- Header ---------- */
+.stz-header { background: #fff; }
+.stz-header__row {
+  display: flex; align-items: center;
+  max-width: 1880px; margin: 0 auto; padding: .75rem 1.5rem;
+}
+.stz-header__search, .stz-header__actions { flex: 1; display: flex; align-items: center; gap: 1.25rem; }
+.stz-header__actions { justify-content: flex-end; }
+.stz-header__search a, .stz-header__actions a {
+  color: var(--stz-ink); text-decoration: none; font-size: .8rem; display: inline-flex; align-items: center; gap: .4rem;
+}
+.stz-header__search a:hover, .stz-header__actions a:hover { color: var(--stz-gold); }
+.stz-header__search svg { width: 22px; height: 22px; }
+.stz-header__logo { flex: 0 0 auto; text-align: center; }
+.stz-header__logo img { height: 92px; width: auto; display: block; margin: 0 auto; }
+.stz-header__logo h1 { margin: 0; line-height: 0; }
+.stz-cart-link svg { width: 26px; height: 26px; }
+
+/* ---------- Gold nav ---------- */
+.stz-nav { background: var(--stz-gold); }
+.stz-nav ul {
+  list-style: none; margin: 0 auto; padding: 0;
+  display: flex; justify-content: center; flex-wrap: nowrap; overflow-x: auto;
+  max-width: 1600px;
+}
+.stz-nav a {
+  display: block; color: #fff; text-decoration: none;
+  padding: 1.05rem 1.15rem; font-size: .875rem; white-space: nowrap;
+}
+.stz-nav a:hover { color: #fff; opacity: .8; }
+
+/* ---------- Homepage generic ---------- */
+.page-content--home { margin: 0; padding: 0; }
+#center-column.page { max-width: none; padding: 0; }
+.stz-home section { margin: 0; }
+.stz-btn {
+  display: inline-block; background: var(--stz-gold); color: #fff;
+  padding: .8rem 1.6rem; font-size: .875rem; text-decoration: none; border: 0; cursor: pointer;
+}
+.stz-btn:hover { background: var(--stz-gold-dark); color: #fff; }
+.stz-btn--light { background: #fff; color: var(--stz-ink); }
+.stz-btn--light:hover { background: #eee; color: var(--stz-ink); }
+.stz-title { text-align: center; font-size: 1.5rem; letter-spacing: .08em; font-weight: 400; }
+
+/* ---------- Hero slider ---------- */
+.stz-hero { position: relative; overflow: hidden; }
+.stz-hero__track { display: flex; transition: transform .6s ease; }
+.stz-hero__slide { min-width: 100%; position: relative; }
+.stz-hero__slide img { width: 100%; height: auto; display: block; max-height: 88vh; object-fit: cover; }
+.stz-hero__cta {
+  position: absolute; right: 4%; top: 60%; text-align: center; color: #fff;
+}
+.stz-hero__cta .stz-hero__kicker {
+  display: block; font-size: .72rem; letter-spacing: .12em; margin-bottom: .8rem;
+  color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.4); font-weight: 600;
+}
+.stz-hero__arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: none; border: 0; color: #fff; font-size: 3rem; line-height: 1;
+  cursor: pointer; z-index: 2; text-shadow: 0 1px 6px rgba(0,0,0,.35); padding: 0 1rem;
+}
+.stz-hero__arrow--prev { left: .5rem; }
+.stz-hero__arrow--next { right: .5rem; }
+
+/* ---------- Category tiles ---------- */
+.stz-tiles {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+  max-width: 1500px; margin: 0 auto; padding: 3.5rem 1.5rem;
+}
+.stz-tile { text-align: center; }
+.stz-tile img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; }
+.stz-tile h3 { font-weight: 400; font-size: 1.4rem; color: var(--stz-gold); margin: 1.2rem 0 1rem; }
+
+/* ---------- Product carousel ---------- */
+.stz-collection { background: #f7f7f7; padding: 3rem 0 3.5rem; }
+.stz-collection__head { text-align: center; margin-bottom: 2rem; }
+.stz-collection__head h2 { font-size: 1.5rem; letter-spacing: .08em; font-weight: 400; margin: 0 0 .4rem; }
+.stz-collection__head a { color: var(--stz-ink); font-size: .85rem; }
+.stz-products {
+  display: flex; gap: 1.5rem; overflow-x: auto; padding: 0 3rem; scroll-snap-type: x mandatory;
+}
+.stz-product { flex: 0 0 260px; scroll-snap-align: start; background: #fff; }
+.stz-product img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #fff; display: block; }
+.stz-product p { font-size: .85rem; margin: .8rem .5rem .2rem; }
+.stz-product .stz-price { font-size: .85rem; font-weight: 600; margin: 0 .5rem 1rem; }
+
+/* ---------- Thank you banner ---------- */
+.stz-thankyou {
+  position: relative; min-height: 620px; display: flex; align-items: center; justify-content: center;
+  background-size: cover; background-position: center; text-align: center;
+}
+.stz-thankyou h2 {
+  font-family: var(--stz-font-script); color: #fff; font-size: 5.5rem; line-height: 1.1;
+  text-shadow: 0 2px 10px rgba(0,0,0,.35); font-weight: 400; margin: 0; font-style: italic;
+}
+
+/* ---------- Brand logos ---------- */
+.stz-brands { background: #f7f7f7; padding: 4rem 1.5rem; }
+.stz-brands h2 { text-align: center; font-size: 1.4rem; letter-spacing: .08em; font-weight: 400; margin-bottom: 3rem; }
+.stz-brands__grid {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  gap: 4rem 6rem; max-width: 1500px; margin: 0 auto;
+}
+.stz-brands__grid img { max-height: 70px; max-width: 160px; object-fit: contain; filter: grayscale(20%); }
+
+/* ---------- Swarovski overlay ---------- */
+.stz-overlay {
+  position: relative; min-height: 640px; display: flex; align-items: flex-end; justify-content: center;
+  background-size: cover; background-position: center top; padding-bottom: 4rem; text-align: center;
+}
+.stz-overlay::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.25); }
+.stz-overlay > div { position: relative; color: #fff; }
+.stz-overlay .stz-kicker { font-size: .75rem; letter-spacing: .15em; font-weight: 600; display: block; margin-bottom: .8rem; }
+.stz-overlay h2 { font-size: 4.5rem; letter-spacing: .1em; font-weight: 400; margin: 0 0 1.5rem; }
+
+/* ---------- Review ---------- */
+.stz-review {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;
+  max-width: 1400px; margin: 0 auto; padding: 4.5rem 1.5rem;
+}
+.stz-review__stars { color: var(--stz-gold); letter-spacing: .3em; font-size: 1.1rem; margin-bottom: 1.5rem; }
+.stz-review blockquote {
+  font-size: 1.8rem; line-height: 1.35; color: var(--stz-gold); border: 0; margin: 0 0 1.5rem; padding: 0; font-weight: 400;
+}
+.stz-review figcaption { font-size: .8rem; letter-spacing: .12em; color: #555; }
+.stz-review__img img { width: 100%; display: block; }
+.stz-review__img a { display: block; margin-top: 1rem; font-size: .8rem; letter-spacing: .1em; color: var(--stz-ink); }
+
+/* ---------- Chi siamo ---------- */
+.stz-chisiamo {
+  position: relative; min-height: 640px; display: flex; align-items: center; justify-content: center;
+  background-size: cover; background-position: center; text-align: center;
+}
+.stz-chisiamo::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.45); }
+.stz-chisiamo > div { position: relative; color: #fff; }
+.stz-chisiamo .stz-kicker { font-size: .75rem; letter-spacing: .18em; font-weight: 600; display: block; margin-bottom: 1rem; }
+.stz-chisiamo h2 { font-family: var(--stz-font-script); font-size: 5rem; font-style: italic; font-weight: 400; margin: 0 0 1.5rem; }
+
+/* ---------- Quote banner ---------- */
+.stz-quote {
+  position: relative; min-height: 560px; display: flex; align-items: center; justify-content: center;
+  background-size: cover; background-position: center; text-align: center; padding: 2rem;
+}
+.stz-quote::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.35); }
+.stz-quote p {
+  position: relative; color: #fff; max-width: 720px; margin: 0;
+  font-size: 1.05rem; letter-spacing: .05em; line-height: 1.9; text-transform: uppercase;
+}
+
+/* ---------- Newsletter (pink) ---------- */
+.stz-newsletter { background: var(--stz-pink); text-align: center; padding: 4rem 1.5rem; }
+.stz-newsletter h2 {
+  font-family: var(--stz-font-script); color: var(--stz-gold); font-size: 3.2rem; font-style: italic;
+  letter-spacing: .15em; font-weight: 400; margin: 0 0 1rem;
+}
+.stz-newsletter p { font-family: var(--stz-font-serif); font-style: italic; font-size: 1.05rem; margin-bottom: 1.5rem; }
+.stz-newsletter form { display: flex; justify-content: center; gap: .6rem; flex-wrap: wrap; }
+.stz-newsletter input[type=email] {
+  width: 320px; max-width: 80vw; padding: .8rem 1rem; border: 1px solid #ccc; background: #fff; font-size: .9rem;
+}
+
+/* ---------- Services row ---------- */
+.stz-services {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+  max-width: 1500px; margin: 0 auto; padding: 2.2rem 1.5rem; text-align: center;
+}
+.stz-services .material-icons { font-size: 28px; color: var(--stz-ink); }
+.stz-services p { margin: .5rem 0 0; font-size: .95rem; }
+
+/* ---------- Footer ---------- */
+.stz-footer { background: var(--stz-gold); color: #fff; }
+.stz-footer a { color: #fff; text-decoration: none; }
+.stz-footer a:hover { text-decoration: underline; color: #fff; }
+.stz-footer__grid {
+  display: grid; grid-template-columns: 1.3fr 1fr 1.2fr 1fr; gap: 3rem;
+  max-width: 1700px; margin: 0 auto; padding: 3.5rem 2rem 2rem;
+}
+.stz-footer__grid h4 { color: #fff; font-size: 1rem; letter-spacing: .2em; font-weight: 600; margin-bottom: 1.2rem; }
+.stz-footer__grid .stz-store-text { font-style: italic; font-weight: 600; font-size: .92rem; line-height: 1.7; }
+.stz-footer__grid ul { list-style: none; padding: 0; margin: 0; }
+.stz-footer__grid li { margin-bottom: .7rem; font-size: .9rem; }
+.stz-footer__news p { font-weight: 600; font-size: .92rem; line-height: 1.7; margin-bottom: 1.2rem; }
+.stz-footer__news input[type=email] {
+  width: 100%; padding: .85rem 1rem; border: 0; font-size: .9rem; background: #fff; color: var(--stz-ink);
+}
+.stz-footer__news button { background: none; border: 0; color: #fff; margin-top: 1rem; cursor: pointer; font-size: .9rem; padding: 0; }
+.stz-footer__bottom {
+  border-top: 1px solid rgba(255,255,255,.25);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  max-width: 1700px; margin: 0 auto; padding: 1.5rem 2rem;
+}
+.stz-footer__bottom .stz-copy { font-size: .8rem; }
+.stz-payments { display: flex; gap: .4rem; flex-wrap: wrap; }
+.stz-payments img { height: 24px; border-radius: 3px; }
+
+/* hide default hummingbird footer/header leftovers on all pages */
+.header-banner, .header-top, .header-bottom, .header-nav-full-width { display: none !important; }
+.footer.footer__main .footer__main-top, .footer.footer__main .footer__main-bottom { display: none !important; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991px) {
+  .stz-tiles { grid-template-columns: 1fr; }
+  .stz-review { grid-template-columns: 1fr; }
+  .stz-footer__grid { grid-template-columns: 1fr; gap: 2rem; }
+  .stz-services { grid-template-columns: repeat(2, 1fr); }
+  .stz-thankyou h2 { font-size: 3rem; }
+  .stz-overlay h2 { font-size: 2.4rem; }
+  .stz-chisiamo h2 { font-size: 3rem; }
+  .stz-header__logo img { height: 64px; }
+  .stz-nav ul { justify-content: flex-start; }
+}
