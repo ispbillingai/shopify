@@ -226,10 +226,69 @@ Hummingbird theme, installed with demo fixtures.
 | Back office | `https://shopify.ispledger.com/admin/` |
 | DB credentials | `app/config/parameters.php` — **gitignored**, server only |
 | Our admin skin | `modules/shopifylook/` |
+| Counter & warehouse | `modules/shopfloor/` |
 | Debranding | `docs/debrand.sql` |
 | Catalogue importer | `bin/import_shopify.php` |
 | Import source data | `/var/imports/shopify/` on the server — **outside the web root** |
 | Vendor base | everything else — treat as third-party |
+
+### Selling off the shop floor
+
+The shop is not only a website. `modules/shopfloor/` adds two back office areas
+under **Sell → Counter & Warehouse** (*Banco e Magazzino*):
+
+| Screen | Who | What it does |
+|---|---|---|
+| Counter sales / *Vendita al banco* | `AdminCounterSales` | Scan or search, build a ticket, take cash or card |
+| Warehouse / *Magazzino* | `AdminWarehouse` | Goods-in, stock takes, and a log of who moved what |
+
+Both are `ModuleAdminController`s, so **PrestaShop's own login, CSRF tokens and
+profile permissions guard them** — the module adds no authentication of its own.
+Install grants the `Salesman` profile the counter and the `Logistician` profile
+the warehouse; each employee lands on their own screen at login and cannot reach
+the other one, by menu or by URL.
+
+A counter sale is a **real order**, not a parallel ledger. The module builds a
+normal cart and calls `PaymentModule::validateOrder()`, so takings appear in the
+same Orders list and the same statistics as the storefront.
+
+Four things here that are load-bearing:
+
+- **Counter orders settle as `Delivered`, not `Payment accepted`.** At a till the
+  goods are paid for and handed over in one motion. It is also the only way
+  PrestaShop records a stock movement — `OrderDetail` writes one only when the
+  state is flagged `shipped` — so without it counter sales moved stock invisibly.
+- **The till prices against the counter address, not the employee's context.**
+  Tax follows the delivery address. Pricing against the shop's context showed one
+  number and charged another on any product with a country-specific tax rule.
+- **The counter's country is resolved at install, not assumed.** `PS_COUNTRY_DEFAULT`
+  is KE, which sits in zone 4, and no carrier covers zone 4 — carts built against
+  it would never convert. Install picks the first active country whose zone a free
+  carrier actually serves (today: FR, via the free *Click and collect*).
+- **Order confirmation emails are suppressed** for the duration of a counter sale,
+  via `actionEmailSendBefore`. Nobody emails a walk-in customer, and an SMTP
+  timeout between one customer and the next is a queue.
+
+Every movement is also written to `ps_shopfloor_movement` — employee, note, and
+the count before and after — alongside PrestaShop's native movement, because the
+native one records the arithmetic but not the reason.
+
+Two staff logins exist for demonstration, both with generated passwords:
+`magazzino@shopify.ispledger.com` (warehouse) and `banco@shopify.ispledger.com`
+(counter). Rename, re-password or delete them in **Advanced Parameters → Team**;
+they are ordinary employees, not module fixtures.
+
+#### Gotchas paid for once
+
+- `Db::getValue()` and `getRow()` **append their own `LIMIT 1`**. A query that
+  already ends in `LIMIT 1` becomes `LIMIT 1 LIMIT 1`, and the syntax error is
+  swallowed and returned as `false`.
+- `LINES` is reserved in MySQL 8, so `COUNT(*) AS lines` is a silent syntax error.
+- `Tools::displayPrice()` is gone in PrestaShop 9 — use
+  `$context->getCurrentLocale()->formatPrice($amount, $isoCode)`.
+- `Access::updateLgcAccess()` cascades a grant to child tabs unless its fifth
+  argument is `false`, which silently hands one employee another's screen.
+- `ServiceLocator` is **not** in the global namespace; legacy core files import it.
 
 ### The catalogue
 
@@ -257,6 +316,11 @@ Four things about this data that cost time to discover:
   stock. `sku()` in the importer strips it.
 - **Prices are EUR**, so EUR is the shop's default currency at rate 1.0 and KES is
   deactivated. Leaving KES active would quote euro amounts as shillings.
+  EUR arrived with an **empty `symbol`** in `ps_currency_lang`, so every price in
+  the shop rendered bare (`27.72`, no `€`) — storefront included. Repaired on
+  2026-08-15 with `Currency::refreshLocalizedCurrencyData()`, which pulls symbol
+  and pattern from CLDR. If a currency ever displays without its symbol again,
+  that is the call to make; note it takes language *rows*, not language ids.
 - **Stock lives in a separate export** split across two warehouses (Stizzo Borse,
   Stizzo Gioielleria). They are summed, because PrestaShop keeps one stock figure
   per product unless Advanced Stock Management is switched on.
