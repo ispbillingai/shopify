@@ -176,7 +176,7 @@ class ShopFloor extends PaymentModule
     {
         return (int) Db::getInstance()->getValue(
             'SELECT id_tab FROM `' . _DB_PREFIX_ . 'tab`
-             WHERE class_name = "SELL" AND id_parent = 0 LIMIT 1'
+             WHERE class_name = "SELL" AND id_parent = 0'
         );
     }
 
@@ -200,7 +200,7 @@ class ShopFloor extends PaymentModule
     {
         $idProfile = (int) Db::getInstance()->getValue(
             'SELECT id_profile FROM `' . _DB_PREFIX_ . 'profile_lang`
-             WHERE name = "' . pSQL($profileName) . '" LIMIT 1'
+             WHERE name = "' . pSQL($profileName) . '"'
         );
 
         if (!$idProfile) {
@@ -289,7 +289,7 @@ class ShopFloor extends PaymentModule
                  INNER JOIN `' . _DB_PREFIX_ . 'carrier_group` cg
                     ON cg.id_carrier = c.id_carrier AND cg.id_group = ' . $idGroup . '
                  WHERE c.active = 1 AND c.deleted = 0 AND c.is_free = 1
-                 ORDER BY c.id_carrier ASC LIMIT 1'
+                 ORDER BY c.id_carrier ASC'
             );
 
             if ($idCarrier) {
@@ -316,7 +316,7 @@ class ShopFloor extends PaymentModule
 
         $existing = (int) Db::getInstance()->getValue(
             'SELECT id_customer FROM `' . _DB_PREFIX_ . 'customer`
-             WHERE email = "' . pSQL($email) . '" AND deleted = 0 LIMIT 1'
+             WHERE email = "' . pSQL($email) . '" AND deleted = 0'
         );
 
         if ($existing) {
@@ -368,7 +368,7 @@ class ShopFloor extends PaymentModule
         if ($country->contains_states) {
             $address->id_state = (int) Db::getInstance()->getValue(
                 'SELECT id_state FROM `' . _DB_PREFIX_ . 'state`
-                 WHERE id_country = ' . $idCountry . ' AND active = 1 ORDER BY id_state ASC LIMIT 1'
+                 WHERE id_country = ' . $idCountry . ' AND active = 1 ORDER BY id_state ASC'
             );
         }
 
