@@ -417,7 +417,7 @@ class ShopFloor extends PaymentModule
 
     private function randomPassword(): string
     {
-        $plaintext = Tools::passwdGen(32, 'RANDOM');
+        $plaintext = Tools::passwdGen(32, Tools::PASSWORDGEN_FLAG_RANDOM);
 
         try {
             /** @var \PrestaShop\PrestaShop\Core\Crypto\Hashing $crypto */

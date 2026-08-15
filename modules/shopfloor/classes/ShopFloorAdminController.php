@@ -48,9 +48,15 @@ abstract class ShopFloorAdminController extends ModuleAdminController
         ]);
     }
 
+    /**
+     * PrestaShop 9 dropped Tools::displayPrice(); the locale formats money now.
+     */
     protected function money(float $amount): string
     {
-        return Tools::displayPrice($amount, (int) $this->context->currency->id);
+        return $this->context->getCurrentLocale()->formatPrice(
+            $amount,
+            (string) $this->context->currency->iso_code
+        );
     }
 
     /**
