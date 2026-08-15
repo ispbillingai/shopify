@@ -84,9 +84,14 @@ class ShopFloorSale
 
         $total = (float) $cart->getOrderTotal(true, Cart::BOTH);
 
+        // "Delivered", not "Payment accepted": at a counter the goods are paid for
+        // and in the customer's hands in the same instant. It is also the state
+        // that makes PrestaShop write a native stock movement — it only records one
+        // when the state is flagged shipped — so counter sales show up on the
+        // Stock > Movements page next to everything else.
         $module->validateOrderQuietly(
             (int) $cart->id,
-            (int) Configuration::get('PS_OS_PAYMENT'),
+            (int) Configuration::get('PS_OS_DELIVERED'),
             $total,
             self::paymentLabel($payment),
             $note,

@@ -189,8 +189,34 @@ class ShopFloorCatalog
             'ean13' => $ean13,
             'active' => $active,
             'quantity' => (int) StockAvailable::getQuantityAvailableByProduct($idProduct, $idProductAttribute, $idShop),
-            'price' => (float) Product::getPriceStatic($idProduct, true, $idProductAttribute ?: null, 2),
+            'price' => self::counterPrice($idProduct, $idProductAttribute),
         ];
+    }
+
+    /**
+     * The price the till will actually charge.
+     *
+     * Tax depends on the delivery address, and the counter's address is not the
+     * employee's browsing context. Pricing against the shop's own context showed
+     * one number on screen and charged another the moment the cart applied the
+     * counter address — so price against that address from the start.
+     */
+    private static function counterPrice(int $idProduct, int $idProductAttribute): float
+    {
+        return (float) Product::getPriceStatic(
+            $idProduct,
+            true,
+            $idProductAttribute ?: null,
+            2,
+            null,
+            false,
+            true,
+            1,
+            false,
+            (int) Configuration::get('SHOPFLOOR_ID_CUSTOMER') ?: null,
+            null,
+            (int) Configuration::get('SHOPFLOOR_ID_ADDRESS') ?: null
+        );
     }
 
     /**
