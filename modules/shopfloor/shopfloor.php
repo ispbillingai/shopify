@@ -140,9 +140,10 @@ class ShopFloor extends PaymentModule
 
             // The warehouse hand should reach the warehouse and nothing else; the
             // counter staff likewise. Both also need the parent, or the menu entry
-            // that contains their screen never renders.
+            // that contains their screen never renders — but granting the parent
+            // must not cascade, or each of them inherits the other's screen.
             $this->grantProfile($profileName, $idTab);
-            $this->grantProfile($profileName, $idParent);
+            $this->grantProfile($profileName, $idParent, false);
         }
 
         return true;
@@ -196,7 +197,11 @@ class ShopFloor extends PaymentModule
         return $names;
     }
 
-    private function grantProfile(string $profileName, int $idTab): void
+    /**
+     * @param bool $includeChildren Access::updateLgcAccess() cascades to child tabs
+     *                              by default, which is wrong for the parent here
+     */
+    private function grantProfile(string $profileName, int $idTab, bool $includeChildren = true): void
     {
         $idProfile = (int) Db::getInstance()->getValue(
             'SELECT id_profile FROM `' . _DB_PREFIX_ . 'profile_lang`
@@ -210,7 +215,7 @@ class ShopFloor extends PaymentModule
         $access = new Access();
 
         foreach (['view', 'add', 'edit', 'delete'] as $action) {
-            $access->updateLgcAccess($idProfile, $idTab, $action, true);
+            $access->updateLgcAccess($idProfile, $idTab, $action, true, $includeChildren);
         }
     }
 
