@@ -121,6 +121,34 @@ php_admin_value max_execution_time 600
 php_admin_value max_input_vars 10000
 ```
 
+It also carries **static asset caching**, added 2026-08-15. Nothing was cacheable
+before — no `Cache-Control`, no `Expires`, only `Last-Modified` — so every back
+office page revalidated the whole asset set, including the **3.2 MB Material
+Symbols font** the admin theme ships. That is what made the back office feel slow;
+the server itself answers in ~0.14 s.
+
+```apache
+<LocationMatch "\.(woff2?|ttf|otf|eot)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+</LocationMatch>
+<LocationMatch "\.(css|js|png|jpe?g|gif|svg|webp|ico|avif)$">
+    Header set Cache-Control "public, max-age=604800"
+</LocationMatch>
+```
+
+`mod_headers` is already enabled box-wide, so this needed no new Apache module,
+and it is scoped to this vhost — the other ~30 apps are unaffected. Fonts get a
+year because their filenames carry webpack content hashes; a changed font is a
+changed URL. PHP responses are untouched, so PrestaShop keeps sending its own
+`no-store` on actual pages.
+
+⚠️ **Because `.css` and `.js` are now cached for a week, our own module assets
+must be versioned** or an edit will not reach anyone already logged in.
+`shopifylook` and `shopfloor` both append `?v=<module version>`; bump the
+module's `$this->version` when you change its CSS or JS. `Media::getMediaPath()`
+checks `file_exists` against the path only and re-appends the query, so a version
+string is safe there.
+
 ---
 
 ## 2. Deploy
@@ -281,10 +309,11 @@ Every movement is also written to `ps_shopfloor_movement` — employee, note, an
 the count before and after — alongside PrestaShop's native movement, because the
 native one records the arithmetic but not the reason.
 
-Two staff logins exist for demonstration, both with generated passwords:
-`magazzino@shopify.ispledger.com` (warehouse) and `banco@shopify.ispledger.com`
-(counter). Rename, re-password or delete them in **Advanced Parameters → Team**;
-they are ordinary employees, not module fixtures.
+Two staff logins exist, deliberately as simple as the admin one (see the
+security note in section 4): `warehouse@upgradesrls.com` and
+`counter@upgradesrls.com`, both with password `admin`. They are ordinary
+employees, not module fixtures — rename, re-password or delete them in
+**Advanced Parameters → Team**.
 
 #### Gotchas paid for once
 
