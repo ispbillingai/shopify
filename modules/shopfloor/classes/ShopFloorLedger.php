@@ -158,9 +158,11 @@ class ShopFloorLedger
      */
     public static function todaySummary(): array
     {
+        // Not "AS lines": LINES is reserved in MySQL 8, and the syntax error it
+        // causes is swallowed by getRow(), which quietly reports a blank day.
         $row = Db::getInstance()->getRow(
             'SELECT
-                COUNT(*) AS lines,
+                COUNT(*) AS movement_count,
                 COALESCE(SUM(GREATEST(delta, 0)), 0) AS units_in,
                 COALESCE(SUM(GREATEST(-delta, 0)), 0) AS units_out
              FROM `' . self::tableName() . '`
@@ -168,7 +170,7 @@ class ShopFloorLedger
         );
 
         return [
-            'lines' => (int) ($row['lines'] ?? 0),
+            'lines' => (int) ($row['movement_count'] ?? 0),
             'units_in' => (int) ($row['units_in'] ?? 0),
             'units_out' => (int) ($row['units_out'] ?? 0),
         ];
