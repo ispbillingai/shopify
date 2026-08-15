@@ -415,18 +415,15 @@ class ShopFloor extends PaymentModule
         return $postcode;
     }
 
+    /**
+     * The counter customer never signs in, but it still gets a real hash rather
+     * than a guessable placeholder.
+     */
     private function randomPassword(): string
     {
-        $plaintext = Tools::passwdGen(32, Tools::PASSWORDGEN_FLAG_RANDOM);
+        $crypto = new \PrestaShop\PrestaShop\Core\Crypto\Hashing();
 
-        try {
-            /** @var \PrestaShop\PrestaShop\Core\Crypto\Hashing $crypto */
-            $crypto = ServiceLocator::get('\\PrestaShop\\PrestaShop\\Core\\Crypto\\Hashing');
-
-            return $crypto->hash($plaintext, _COOKIE_KEY_);
-        } catch (Throwable $exception) {
-            return md5(_COOKIE_KEY_ . $plaintext);
-        }
+        return $crypto->hash(Tools::passwdGen(32, Tools::PASSWORDGEN_FLAG_RANDOM), _COOKIE_KEY_);
     }
 
     // ------------------------------------------------------------------ sale
