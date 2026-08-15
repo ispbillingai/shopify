@@ -142,6 +142,14 @@ come from module install/upgrade scripts, not from `migrations/*.sql`.
   — no `systemctl reload apache2`, no cache flush.
 - If git complains about ownership, the box registers each app once:
   `git config --global --add safe.directory /var/www/html/shopify`
+- **Any PHP you run on the server as `root` — a one-off install or fix script —
+  rebuilds `var/cache/` owned by `root`, and the site then returns 500 for
+  everyone** (`Unable to create the cache directory …/var/cache/prod/admin/twig`).
+  Always finish such a script with `rm -rf var/cache/* && chown -R www-data:www-data .`,
+  and check the storefront afterwards. Booting PrestaShop from a standalone CLI
+  script also needs the Symfony kernel, not just `config.inc.php`: set the global
+  `$kernel` to a booted `AdminKernel`, or module installs die in
+  `Language::updateMultilangTables()`.
 
 **Work is not done until it is pulled, migrated and verified on the live server.**
 Push straight to `main`; we don't branch for this.
