@@ -19,7 +19,7 @@ class ShopifyLook extends Module
     {
         $this->name = 'shopifylook';
         $this->tab = 'administration';
-        $this->version = '1.0.0';
+        $this->version = '1.1.0';
         $this->author = 'ispledger';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = ['min' => '9.0.0', 'max' => _PS_VERSION_];
@@ -47,11 +47,18 @@ class ShopifyLook extends Module
      */
     public function hookActionAdminControllerSetMedia(): void
     {
+        // The ?v= is load-bearing: the vhost caches .css and .js for a week, so
+        // without it an edit to this skin would not reach anyone already using
+        // the back office until their cache expired.
         $this->context->controller->addCSS(
-            $this->_path . 'views/css/admin.css',
+            $this->_path . 'views/css/admin.css?v=' . $this->version,
             'all',
             null,
             false
         );
+
+        // Clears the icon-font holding pattern in admin.css as soon as the 3.2 MB
+        // Material Symbols file resolves.
+        $this->context->controller->addJS($this->_path . 'views/js/shopifylook.js?v=' . $this->version, false);
     }
 }

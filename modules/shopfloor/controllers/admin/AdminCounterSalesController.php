@@ -28,7 +28,7 @@ class AdminCounterSalesController extends ShopFloorAdminController
     {
         parent::setMedia($isNewTheme);
 
-        $this->addJS(_MODULE_DIR_ . 'shopfloor/views/js/counter.js');
+        $this->addJS(_MODULE_DIR_ . 'shopfloor/views/js/counter.js?v=' . $this->module->version);
     }
 
     public function renderView(): string

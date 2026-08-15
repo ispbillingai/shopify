@@ -65,6 +65,34 @@ body.ps-bo-rebrand #header_infos .link:hover {
     color: #ffffff;
 }
 
+/* Dropdowns hang off the dark bar but open onto white. Without this they inherit
+   the bar's light text and every entry — Quick Access, the employee menu, help —
+   reads as pale grey on white. */
+body.ps-bo-rebrand #header_infos .dropdown-menu {
+    background: var(--sl-surface);
+    border: 1px solid var(--sl-border);
+    border-radius: var(--sl-radius-sm);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    padding: 6px;
+}
+
+body.ps-bo-rebrand #header_infos .dropdown-menu a,
+body.ps-bo-rebrand #header_infos .dropdown-menu .link,
+body.ps-bo-rebrand #header_infos .dropdown-menu span,
+body.ps-bo-rebrand #header_infos .dropdown-menu i.material-icons,
+body.ps-bo-rebrand #header_infos .dropdown-menu .dropdown-item {
+    color: var(--sl-text);
+}
+
+body.ps-bo-rebrand #header_infos .dropdown-menu a:hover,
+body.ps-bo-rebrand #header_infos .dropdown-menu a:hover span,
+body.ps-bo-rebrand #header_infos .dropdown-menu a:hover i.material-icons,
+body.ps-bo-rebrand #header_infos .dropdown-menu .dropdown-item:hover {
+    color: var(--sl-text);
+    background: var(--sl-hover);
+    border-radius: 6px;
+}
+
 /* Search field — Shopify centres a rounded, slightly lighter input. */
 body.ps-bo-rebrand #header-search-container .component-search-body input,
 body.ps-bo-rebrand #header-search-container input[type="text"] {
@@ -379,4 +407,36 @@ body.ps-bo-rebrand .ps-mbo-recommended,
 body.ps-bo-rebrand [class*="prestashop-account"],
 body.ps-bo-rebrand .ps_account-block {
     display: none !important;
+}
+
+/* ---------- Icon font loading ---------- */
+
+/*
+ * The sidebar icons are Material Symbols *ligatures*: the markup literally reads
+ * <i class="material-icons">point_of_sale</i>. The vendor font is a 3.2 MB file
+ * declared font-display:swap, so until it arrives the browser paints those words.
+ * They are far wider than an icon, so the sidebar labels get squeezed into a
+ * one-letter-per-line column and the whole menu looks broken.
+ *
+ * While the font is still loading, clamp each icon to its own box and hide the
+ * placeholder text. shopifylook.js adds .sl-icons-ready as soon as the font
+ * resolves (and unconditionally after a moment, so a failed font can never leave
+ * the back office iconless), after which none of this applies and the vendor's
+ * own styling is untouched.
+ */
+html:not(.sl-icons-ready) .material-icons,
+html:not(.sl-icons-ready) .material-symbols-outlined {
+    display: inline-block;
+    width: 1em;
+    overflow: hidden;
+    visibility: hidden;
+    /* Self-healing: if the script never runs, or the font 404s, the icons
+       reveal themselves anyway rather than staying hidden forever. */
+    animation: sl-icon-reveal 0s linear 2.5s forwards;
+}
+
+@keyframes sl-icon-reveal {
+    to {
+        visibility: visible;
+    }
 }

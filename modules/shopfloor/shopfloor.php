@@ -477,7 +477,8 @@ class ShopFloor extends PaymentModule
             return;
         }
 
-        $this->context->controller->addCSS($this->_path . 'views/css/shopfloor.css', 'all', null, false);
+        // Versioned because the vhost caches .css for a week.
+        $this->context->controller->addCSS($this->_path . 'views/css/shopfloor.css?v=' . $this->version, 'all', null, false);
     }
 
     /**
