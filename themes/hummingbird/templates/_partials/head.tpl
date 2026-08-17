@@ -70,7 +70,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@0;1&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{$urls.theme_assets}css/stizzo.css?v=2" type="text/css" media="all">
+  <link rel="stylesheet" href="{$urls.theme_assets}css/stizzo.css?v=3" type="text/css" media="all">
 {/block}
 
 {block name='javascript_head'}

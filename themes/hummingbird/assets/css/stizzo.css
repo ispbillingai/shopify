@@ -443,11 +443,19 @@ h1, h2, h3, h4, h5 {
   display: block;
 }
 
+/*
+ * The tall portrait frame is what makes the grid read as editorial, but every
+ * product image in this catalogue is square (250x250, 261x261, …). Cropping
+ * them to 3:4 would take a quarter off each photo and behead the rings and
+ * pendants, so the frame stays tall and the photo is contained inside it,
+ * centred on the wash. Nothing is cut; the whitespace does the work.
+ */
 .product-miniature__image {
   width: 100%;
   height: auto;
   aspect-ratio: 3 / 4;
-  object-fit: cover;
+  object-fit: contain;
+  background: var(--stz-wash);
   display: block;
   transition: opacity 250ms ease;
 }
@@ -853,10 +861,12 @@ input:focus {
   gap: 2px;
 }
 
+/* Same reasoning as the category grid: contain, never crop the jewellery. */
 .stz-product img {
   width: 100%;
+  height: auto;
   aspect-ratio: 3 / 4;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   background: var(--stz-wash);
   transition: opacity 250ms ease;
