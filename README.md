@@ -262,11 +262,44 @@ Hummingbird theme, installed with demo fixtures.
 | Back office | `https://shopify.ispledger.com/admin/` |
 | DB credentials | `app/config/parameters.php` — **gitignored**, server only |
 | Our admin skin | `modules/shopifylook/` |
+| Our storefront skin | `themes/hummingbird/assets/css/stizzo.css` |
 | Counter & warehouse | `modules/shopfloor/` |
 | Debranding | `docs/debrand.sql` |
 | Catalogue importer | `bin/import_shopify.php` |
 | Import source data | `/var/imports/shopify/` on the server — **outside the web root** |
 | Vendor base | everything else — treat as third-party |
+
+### The storefront look
+
+The client's customer pointed at **zara.com** and asked for that design, so the
+storefront follows an editorial-minimal system. It lives in one file,
+`themes/hummingbird/assets/css/stizzo.css`, loaded by `_partials/head.tpl`, with
+`header.tpl`, `footer.tpl` and `index.tpl` supplying the markup.
+
+Four rules, in the order they matter:
+
+1. **Monochrome.** Black, white, grey. No accent colour — the previous gold and
+   pink skin was replaced outright, not tuned.
+2. **Nothing rounded, nothing shadowed.** Separation is whitespace or a hairline.
+3. **The photograph is the design.** Heroes and tiles run full bleed; the product
+   grid is four tall columns with 2px gutters and no card chrome. Quick view,
+   star ratings and coloured badges are *removed*, because the reference has none.
+4. **Type is small, light, widely tracked.** 11px uppercase labels at .12em,
+   headings at weight 300, price the same size as the product name.
+
+Two things worth keeping in mind before editing it:
+
+- **Product images are square** (250x250, 261x261, …), but the grid frame is 3:4.
+  The image is therefore `object-fit: contain` on a wash, never `cover` — a cover
+  crop takes a quarter off every photo and cuts the tops off rings and pendants.
+- **Bump the `?v=` in `head.tpl`** whenever this file changes. The vhost caches
+  `.css` for a week (section 1), so without it nobody sees the change. PrestaShop
+  also compiles the templates, so a markup change needs `rm -rf var/cache/*`
+  followed by the usual `chown`.
+
+The CSS targets the real Hummingbird DOM — `article.product-miniature` with its
+`__image-container` / `__title` / `__price` children, `.products` as the grid — so
+read the rendered HTML, not the theme sources, before adding selectors.
 
 ### Selling off the shop floor
 
