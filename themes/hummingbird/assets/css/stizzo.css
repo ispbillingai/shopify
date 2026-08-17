@@ -304,6 +304,7 @@ h1, h2, h3, h4, h5 {
 /* The homepage hero ignores the rails and runs edge to edge. */
 .stz-hero,
 .stz-tiles,
+.zr-banner,
 .stz-thankyou,
 .stz-overlay,
 .stz-chisiamo,
@@ -1427,5 +1428,60 @@ input:focus {
 
   .stz-announce {
     padding: 8px 16px;
+  }
+}
+
+
+/* ---------- Category banner ---------- */
+
+/*
+ * The rail categories link into search, so this is the landing image for
+ * "Donna", "Bambino" and the rest. Same treatment as the homepage hero: the
+ * photograph runs full bleed and the term sits low and left over it, small.
+ */
+.zr-banner {
+  position: relative;
+  overflow: hidden;
+  background: var(--stz-wash);
+  margin-bottom: 46px;
+}
+
+.zr-banner img {
+  width: 100%;
+  height: 56vh;
+  min-height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.zr-banner__caption {
+  position: absolute;
+  left: calc(var(--zr-rail) + 26px);
+  bottom: 34px;
+  color: var(--stz-white);
+}
+
+.zr-banner__caption h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--stz-white);
+}
+
+@media (max-width: 1100px) {
+  .zr-banner img {
+    height: 34vh;
+    min-height: 200px;
+  }
+
+  .zr-banner__caption {
+    left: 16px;
+    bottom: 18px;
+  }
+
+  .zr-banner__caption h1 {
+    font-size: 15px;
   }
 }
