@@ -57,7 +57,7 @@
         {* ---------- Product carousel ---------- *}
         <section class="stz-collection">
           <div class="stz-collection__head">
-            <h2>&#8249;&nbsp;&nbsp;ANELLI CHANTECLER&nbsp;&nbsp;&#8250;</h2>
+            <h2>Anelli Chantecler</h2>
             <a href="{$urls.pages.search}?s=Chantecler">Visualizza tutto</a>
           </div>
           <div class="stz-products">
@@ -81,7 +81,7 @@
 
         {* ---------- Thank you ---------- *}
         <section class="stz-thankyou" style="background-image:url('{$stzImg}/thankyou.jpg')">
-          <h2>Thank you for<br>the trust &#10084;&#65039;</h2>
+          <h2>Thank you<br>for the trust</h2>
         </section>
 
         {* ---------- Brands ---------- *}

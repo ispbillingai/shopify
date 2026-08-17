@@ -1,235 +1,1121 @@
-/* Stizzo Gioielleria front-end skin */
+/*
+ * Stizzo storefront skin — editorial minimal, after the Zara reference.
+ *
+ * The rules of this look, in order of how much they matter:
+ *
+ *   1. Only black, white and grey. No gold, no accent colour, no gradients.
+ *   2. Nothing is rounded and nothing casts a shadow. Separation is whitespace,
+ *      or a hairline.
+ *   3. The photograph is the design. Images run full bleed and edge to edge;
+ *      chrome around them is removed rather than styled.
+ *   4. Type is small, light and widely tracked. Labels are uppercase at 11px;
+ *      headings are thin, not bold. Nothing shouts.
+ *
+ * Written against the real Hummingbird DOM: article.product-miniature with its
+ * __image-container / __title / __price children, .products as the grid, and
+ * .columns-container.container as the page wrapper.
+ *
+ * NOTE: head.tpl loads this with a ?v= query, and the vhost now caches .css for
+ * a week. Bump that version when you edit this file or nobody will see it.
+ */
+
 :root {
-  --stz-gold: #6e5b1e;
-  --stz-gold-dark: #5e4d17;
-  --stz-pink: #f6dcdc;
-  --stz-ink: #2b2b2b;
-  --stz-font-serif: 'Cormorant Garamond', Georgia, serif;
-  --stz-font-script: 'Tangerine', cursive;
+  --stz-black: #000000;
+  --stz-white: #ffffff;
+  --stz-ink: #000000;
+  --stz-muted: #6b6b6b;
+  --stz-hair: rgba(0, 0, 0, 0.14);
+  --stz-wash: #f4f4f4;
+  --stz-sale: #c00;
+
+  --stz-font: "Helvetica Neue", Helvetica, Arial, -apple-system,
+              BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --stz-track: 0.12em;
+  --stz-header-h: 56px;
 }
 
-body { color: var(--stz-ink); }
+/* ---------- Global reset of the vendor's decoration ---------- */
 
-/* ---------- Announcement bar ---------- */
+body {
+  color: var(--stz-ink);
+  font-family: var(--stz-font);
+  font-weight: 400;
+  background: var(--stz-white);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Flat, per the house rule — and flat is the whole point of this look. */
+.card,
+.btn,
+.form-control,
+.custom-select,
+.modal-content,
+.dropdown-menu,
+.alert,
+.badge,
+.product-miniature,
+.product-miniature__inner,
+.product-miniature__image-container,
+.product-miniature__image-link,
+.thumbnail-container,
+img {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: inherit;
+}
+
+h1, h2, h3, h4, h5 {
+  font-weight: 300;
+  letter-spacing: var(--stz-track);
+  color: var(--stz-ink);
+}
+
+/* A single uppercase label style, used everywhere something is labelled. */
+.stz-label,
+.stz-nav a,
+.stz-header__actions a,
+.stz-footer a,
+.stz-footer h4 {
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+/* ---------- Announcement ---------- */
+
 .stz-announce {
-  background: var(--stz-gold);
-  border-top: 4px solid #e83e8c;
-  color: #fff;
+  background: var(--stz-white);
+  color: var(--stz-ink);
+  border: 0;
+  border-bottom: 1px solid var(--stz-hair);
   text-align: center;
-  font-family: var(--stz-font-serif);
-  font-size: 1.35rem;
-  padding: .45rem 1rem;
-  letter-spacing: .02em;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 9px 16px;
 }
 
 /* ---------- Header ---------- */
-.stz-header { background: #fff; }
+
+.stz-header {
+  background: var(--stz-white);
+  position: sticky;
+  top: 0;
+  z-index: 900;
+}
+
 .stz-header__row {
-  display: flex; align-items: center;
-  max-width: 1880px; margin: 0 auto; padding: .75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: none;
+  margin: 0;
+  padding: 14px 24px;
 }
-.stz-header__search, .stz-header__actions { flex: 1; display: flex; align-items: center; gap: 1.25rem; }
-.stz-header__actions { justify-content: flex-end; }
-.stz-header__search a, .stz-header__actions a {
-  color: var(--stz-ink); text-decoration: none; font-size: .8rem; display: inline-flex; align-items: center; gap: .4rem;
-}
-.stz-header__search a:hover, .stz-header__actions a:hover { color: var(--stz-gold); }
-.stz-header__search svg { width: 22px; height: 22px; }
-.stz-header__logo { flex: 0 0 auto; text-align: center; }
-.stz-header__logo img { height: 92px; width: auto; display: block; margin: 0 auto; }
-.stz-header__logo h1 { margin: 0; line-height: 0; }
-.stz-cart-link svg { width: 26px; height: 26px; }
 
-/* ---------- Gold nav ---------- */
-.stz-nav { background: var(--stz-gold); }
+/* Zara anchors the wordmark hard to the top left and lets it breathe. */
+.stz-header__logo {
+  flex: 0 0 auto;
+  text-align: left;
+}
+
+.stz-header__logo h1 {
+  margin: 0;
+  line-height: 0;
+}
+
+.stz-header__logo img {
+  height: 46px;
+  width: auto;
+  display: block;
+  margin: 0;
+  /* The supplied mark is gold; this look is monochrome, so it is desaturated
+     rather than replaced — the shop keeps its own logo file. */
+  filter: grayscale(100%) contrast(115%);
+}
+
+.stz-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex: 0 0 auto;
+}
+
+.stz-header__actions a {
+  color: var(--stz-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+}
+
+.stz-header__actions a:hover {
+  border-bottom-color: var(--stz-ink);
+}
+
+.stz-header__actions svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* ---------- Navigation ---------- */
+
+.stz-nav {
+  background: var(--stz-white);
+  border-bottom: 1px solid var(--stz-hair);
+}
+
 .stz-nav ul {
-  list-style: none; margin: 0 auto; padding: 0;
-  display: flex; justify-content: center; flex-wrap: nowrap; overflow-x: auto;
-  max-width: 1600px;
+  list-style: none;
+  margin: 0;
+  padding: 0 24px 14px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 22px;
+  max-width: none;
 }
+
 .stz-nav a {
-  display: block; color: #fff; text-decoration: none;
-  padding: 1.05rem 1.15rem; font-size: .875rem; white-space: nowrap;
+  display: inline-block;
+  color: var(--stz-ink);
+  padding: 0;
+  white-space: nowrap;
+  border-bottom: 1px solid transparent;
 }
-.stz-nav a:hover { color: #fff; opacity: .8; }
 
-/* ---------- Homepage generic ---------- */
-.page-content--home { margin: 0; padding: 0; }
-#center-column.page { max-width: none; padding: 0; }
-.stz-home section { margin: 0; }
-.stz-btn {
-  display: inline-block; background: var(--stz-gold); color: #fff;
-  padding: .8rem 1.6rem; font-size: .875rem; text-decoration: none; border: 0; cursor: pointer;
+.stz-nav a:hover {
+  opacity: 1;
+  color: var(--stz-ink);
+  border-bottom-color: var(--stz-ink);
 }
-.stz-btn:hover { background: var(--stz-gold-dark); color: #fff; }
-.stz-btn--light { background: #fff; color: var(--stz-ink); }
-.stz-btn--light:hover { background: #eee; color: var(--stz-ink); }
-.stz-title { text-align: center; font-size: 1.5rem; letter-spacing: .08em; font-weight: 400; }
 
-/* ---------- Hero slider ---------- */
-.stz-hero { position: relative; overflow: hidden; }
-.stz-hero__track { display: flex; transition: transform .6s ease; }
-.stz-hero__slide { min-width: 100%; position: relative; }
-.stz-hero__slide img { width: 100%; height: auto; display: block; max-height: 88vh; object-fit: cover; }
+/* ---------- Page frame ---------- */
+
+.columns-container.container,
+#center-column.page {
+  max-width: none;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.page-content--home {
+  margin: 0;
+  padding: 0;
+}
+
+.stz-home section {
+  margin: 0;
+}
+
+/* ---------- Buttons ---------- */
+
+.stz-btn,
+.btn-primary,
+.btn.btn-primary {
+  display: inline-block;
+  background: var(--stz-black);
+  color: var(--stz-white);
+  border: 1px solid var(--stz-black);
+  padding: 13px 30px;
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.stz-btn:hover,
+.btn-primary:hover {
+  background: var(--stz-white);
+  color: var(--stz-black);
+  border-color: var(--stz-black);
+}
+
+.stz-btn--light {
+  background: var(--stz-white);
+  color: var(--stz-black);
+  border-color: var(--stz-white);
+}
+
+.stz-btn--light:hover {
+  background: transparent;
+  color: var(--stz-white);
+  border-color: var(--stz-white);
+}
+
+/* The signature quiet call to action: a word with a rule under it. */
+.stz-underline {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+}
+
+/* ---------- Hero ---------- */
+
+.stz-hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--stz-wash);
+}
+
+.stz-hero__track {
+  display: flex;
+  transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stz-hero__slide {
+  min-width: 100%;
+  position: relative;
+}
+
+.stz-hero__slide img {
+  width: 100%;
+  height: calc(100vh - var(--stz-header-h));
+  min-height: 460px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Text sits low and left, small, never centred in a box. */
 .stz-hero__cta {
-  position: absolute; right: 4%; top: 60%; text-align: center; color: #fff;
+  position: absolute;
+  left: 40px;
+  right: auto;
+  bottom: 48px;
+  top: auto;
+  text-align: left;
+  color: var(--stz-white);
 }
-.stz-hero__cta .stz-hero__kicker {
-  display: block; font-size: .72rem; letter-spacing: .12em; margin-bottom: .8rem;
-  color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.4); font-weight: 600;
+
+.stz-hero__kicker {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  color: var(--stz-white);
+  text-shadow: none;
+  font-weight: 400;
 }
+
 .stz-hero__arrow {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  background: none; border: 0; color: #fff; font-size: 3rem; line-height: 1;
-  cursor: pointer; z-index: 2; text-shadow: 0 1px 6px rgba(0,0,0,.35); padding: 0 1rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  color: var(--stz-white);
+  font-size: 34px;
+  line-height: 1;
+  padding: 12px 18px;
+  cursor: pointer;
+  opacity: 0.85;
 }
-.stz-hero__arrow--prev { left: .5rem; }
-.stz-hero__arrow--next { right: .5rem; }
 
-/* ---------- Category tiles ---------- */
+.stz-hero__arrow:hover {
+  opacity: 1;
+}
+
+.stz-hero__arrow--prev { left: 6px; }
+.stz-hero__arrow--next { right: 6px; }
+
+/* ---------- Editorial tiles ---------- */
+
 .stz-tiles {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
-  max-width: 1500px; margin: 0 auto; padding: 3.5rem 1.5rem;
-}
-.stz-tile { text-align: center; }
-.stz-tile img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; }
-.stz-tile h3 { font-weight: 400; font-size: 1.4rem; color: var(--stz-gold); margin: 1.2rem 0 1rem; }
-
-/* ---------- Product carousel ---------- */
-.stz-collection { background: #f7f7f7; padding: 3rem 0 3.5rem; }
-.stz-collection__head { text-align: center; margin-bottom: 2rem; }
-.stz-collection__head h2 { font-size: 1.5rem; letter-spacing: .08em; font-weight: 400; margin: 0 0 .4rem; }
-.stz-collection__head a { color: var(--stz-ink); font-size: .85rem; }
-.stz-products {
-  display: flex; gap: 1.5rem; overflow-x: auto; padding: 0 3rem; scroll-snap-type: x mandatory;
-}
-.stz-product { flex: 0 0 260px; scroll-snap-align: start; background: #fff; }
-.stz-product img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #fff; display: block; }
-.stz-product p { font-size: .85rem; margin: .8rem .5rem .2rem; }
-.stz-product .stz-price { font-size: .85rem; font-weight: 600; margin: 0 .5rem 1rem; }
-
-/* ---------- Thank you banner ---------- */
-.stz-thankyou {
-  position: relative; min-height: 620px; display: flex; align-items: center; justify-content: center;
-  background-size: cover; background-position: center; text-align: center;
-}
-.stz-thankyou h2 {
-  font-family: var(--stz-font-script); color: #fff; font-size: 5.5rem; line-height: 1.1;
-  text-shadow: 0 2px 10px rgba(0,0,0,.35); font-weight: 400; margin: 0; font-style: italic;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--stz-white);
 }
 
-/* ---------- Brand logos ---------- */
-.stz-brands { background: #f7f7f7; padding: 4rem 1.5rem; }
-.stz-brands h2 { text-align: center; font-size: 1.4rem; letter-spacing: .08em; font-weight: 400; margin-bottom: 3rem; }
-.stz-brands__grid {
-  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
-  gap: 4rem 6rem; max-width: 1500px; margin: 0 auto;
-}
-.stz-brands__grid img { max-height: 70px; max-width: 160px; object-fit: contain; filter: grayscale(20%); }
-
-/* ---------- Swarovski overlay ---------- */
-.stz-overlay {
-  position: relative; min-height: 640px; display: flex; align-items: flex-end; justify-content: center;
-  background-size: cover; background-position: center top; padding-bottom: 4rem; text-align: center;
-}
-.stz-overlay::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.25); }
-.stz-overlay > div { position: relative; color: #fff; }
-.stz-overlay .stz-kicker { font-size: .75rem; letter-spacing: .15em; font-weight: 600; display: block; margin-bottom: .8rem; }
-.stz-overlay h2 { font-size: 4.5rem; letter-spacing: .1em; font-weight: 400; margin: 0 0 1.5rem; }
-
-/* ---------- Review ---------- */
-.stz-review {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;
-  max-width: 1400px; margin: 0 auto; padding: 4.5rem 1.5rem;
-}
-.stz-review__stars { color: var(--stz-gold); letter-spacing: .3em; font-size: 1.1rem; margin-bottom: 1.5rem; }
-.stz-review blockquote {
-  font-size: 1.8rem; line-height: 1.35; color: var(--stz-gold); border: 0; margin: 0 0 1.5rem; padding: 0; font-weight: 400;
-}
-.stz-review figcaption { font-size: .8rem; letter-spacing: .12em; color: #555; }
-.stz-review__img img { width: 100%; display: block; }
-.stz-review__img a { display: block; margin-top: 1rem; font-size: .8rem; letter-spacing: .1em; color: var(--stz-ink); }
-
-/* ---------- Chi siamo ---------- */
-.stz-chisiamo {
-  position: relative; min-height: 640px; display: flex; align-items: center; justify-content: center;
-  background-size: cover; background-position: center; text-align: center;
-}
-.stz-chisiamo::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.45); }
-.stz-chisiamo > div { position: relative; color: #fff; }
-.stz-chisiamo .stz-kicker { font-size: .75rem; letter-spacing: .18em; font-weight: 600; display: block; margin-bottom: 1rem; }
-.stz-chisiamo h2 { font-family: var(--stz-font-script); font-size: 5rem; font-style: italic; font-weight: 400; margin: 0 0 1.5rem; }
-
-/* ---------- Quote banner ---------- */
-.stz-quote {
-  position: relative; min-height: 560px; display: flex; align-items: center; justify-content: center;
-  background-size: cover; background-position: center; text-align: center; padding: 2rem;
-}
-.stz-quote::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.35); }
-.stz-quote p {
-  position: relative; color: #fff; max-width: 720px; margin: 0;
-  font-size: 1.05rem; letter-spacing: .05em; line-height: 1.9; text-transform: uppercase;
+.stz-tile {
+  position: relative;
+  overflow: hidden;
 }
 
-/* ---------- Newsletter (pink) ---------- */
-.stz-newsletter { background: var(--stz-pink); text-align: center; padding: 4rem 1.5rem; }
-.stz-newsletter h2 {
-  font-family: var(--stz-font-script); color: var(--stz-gold); font-size: 3.2rem; font-style: italic;
-  letter-spacing: .15em; font-weight: 400; margin: 0 0 1rem;
-}
-.stz-newsletter p { font-family: var(--stz-font-serif); font-style: italic; font-size: 1.05rem; margin-bottom: 1.5rem; }
-.stz-newsletter form { display: flex; justify-content: center; gap: .6rem; flex-wrap: wrap; }
-.stz-newsletter input[type=email] {
-  width: 320px; max-width: 80vw; padding: .8rem 1rem; border: 1px solid #ccc; background: #fff; font-size: .9rem;
+.stz-tile img {
+  width: 100%;
+  height: 78vh;
+  min-height: 420px;
+  object-fit: cover;
+  display: block;
 }
 
-/* ---------- Services row ---------- */
-.stz-services {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
-  max-width: 1500px; margin: 0 auto; padding: 2.2rem 1.5rem; text-align: center;
+.stz-tile h3 {
+  position: absolute;
+  left: 24px;
+  bottom: 62px;
+  margin: 0;
+  color: var(--stz-white);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
-.stz-services .material-icons { font-size: 28px; color: var(--stz-ink); }
-.stz-services p { margin: .5rem 0 0; font-size: .95rem; }
+
+.stz-tile .stz-btn {
+  position: absolute;
+  left: 24px;
+  bottom: 26px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--stz-white);
+  color: var(--stz-white);
+  padding: 0 0 2px;
+}
+
+.stz-tile .stz-btn:hover {
+  background: none;
+  color: var(--stz-white);
+  opacity: 0.75;
+}
+
+/* ---------- Section headings ---------- */
+
+.stz-title,
+.stz-collection__head h2 {
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 72px 0 28px;
+  color: var(--stz-ink);
+}
+
+/* ---------- Product grid ---------- */
+
+/*
+ * The grid is the heart of it: four tall portraits, hairline-free, with the
+ * name and price sitting quietly underneath. Everything the vendor theme puts
+ * on a card — borders, quick view, star ratings, hover lifts — is removed.
+ */
+.products,
+#js-product-list .products {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px 2px;
+  margin: 0;
+  padding: 0;
+}
+
+.product-miniature {
+  border: 0;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+.product-miniature__inner {
+  border: 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-miniature__image-container,
+.thumbnail-container {
+  background: var(--stz-wash);
+  border: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.product-miniature__image-link {
+  display: block;
+}
+
+.product-miniature__image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  transition: opacity 250ms ease;
+}
+
+.product-miniature:hover .product-miniature__image {
+  opacity: 0.86;
+}
+
+.product-miniature__bottom {
+  padding: 12px 10px 34px;
+}
+
+.product-miniature__infos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.product-miniature__title {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--stz-ink);
+  line-height: 1.45;
+  display: block;
+}
+
+.product-miniature__title:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.product-miniature__prices {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.product-miniature__price {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--stz-ink);
+  letter-spacing: 0.02em;
+}
+
+.product-miniature__discount-price:empty {
+  display: none;
+}
+
+/* Chrome the reference does not have. */
+.product-miniature__quickview-button,
+.product-miniature__quickview-touch,
+.product-miniature__actions,
+.product-list-review,
+.product-miniature .grade-stars,
+.product-miniature .product-list-comments-number {
+  display: none !important;
+}
+
+/* Flags become a plain word, not a coloured pill. */
+.product-flags {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  padding: 10px;
+  list-style: none;
+}
+
+.product-flags .badge,
+.product-flags li {
+  background: none !important;
+  color: var(--stz-ink) !important;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 400;
+  padding: 0;
+  border: 0;
+}
+
+.product-miniature__top {
+  position: relative;
+}
+
+/* ---------- Listing header, sort and pagination ---------- */
+
+.products__selection,
+.products__count {
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  color: var(--stz-muted);
+  padding: 18px 24px;
+  border: 0;
+}
+
+#js-product-list-header,
+.block-category {
+  padding: 40px 24px 8px;
+  border: 0;
+  background: transparent;
+}
+
+#js-product-list-header h1,
+.block-category h1 {
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.pagination,
+.products__pagination {
+  border: 0;
+  padding: 40px 24px 80px;
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+}
+
+.pagination__number a,
+.pagination__nav a {
+  color: var(--stz-ink);
+}
+
+.pagination .current a,
+.pagination__number.current a {
+  border-bottom: 1px solid var(--stz-ink);
+}
+
+/* ---------- Product page ---------- */
+
+.product-cover img,
+.product__cover img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+h1.product__name,
+.product-detail h1,
+.page-product h1 {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.product__prices .current-price,
+.product-prices .current-price {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Forms ---------- */
+
+.form-control,
+input[type="text"],
+input[type="email"],
+input[type="search"],
+select {
+  border: 0;
+  border-bottom: 1px solid var(--stz-hair);
+  background: transparent;
+  padding: 10px 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.form-control:focus,
+input:focus {
+  outline: none;
+  border-bottom-color: var(--stz-ink);
+  box-shadow: none !important;
+}
 
 /* ---------- Footer ---------- */
-.stz-footer { background: var(--stz-gold); color: #fff; }
-.stz-footer a { color: #fff; text-decoration: none; }
-.stz-footer a:hover { text-decoration: underline; color: #fff; }
-.stz-footer__grid {
-  display: grid; grid-template-columns: 1.3fr 1fr 1.2fr 1fr; gap: 3rem;
-  max-width: 1700px; margin: 0 auto; padding: 3.5rem 2rem 2rem;
-}
-.stz-footer__grid h4 { color: #fff; font-size: 1rem; letter-spacing: .2em; font-weight: 600; margin-bottom: 1.2rem; }
-.stz-footer__grid .stz-store-text { font-style: italic; font-weight: 600; font-size: .92rem; line-height: 1.7; }
-.stz-footer__grid ul { list-style: none; padding: 0; margin: 0; }
-.stz-footer__grid li { margin-bottom: .7rem; font-size: .9rem; }
-.stz-footer__news p { font-weight: 600; font-size: .92rem; line-height: 1.7; margin-bottom: 1.2rem; }
-.stz-footer__news input[type=email] {
-  width: 100%; padding: .85rem 1rem; border: 0; font-size: .9rem; background: #fff; color: var(--stz-ink);
-}
-.stz-footer__news button { background: none; border: 0; color: #fff; margin-top: 1rem; cursor: pointer; font-size: .9rem; padding: 0; }
-.stz-footer__bottom {
-  border-top: 1px solid rgba(255,255,255,.25);
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
-  max-width: 1700px; margin: 0 auto; padding: 1.5rem 2rem;
-}
-.stz-footer__bottom .stz-copy { font-size: .8rem; }
-.stz-payments { display: flex; gap: .4rem; flex-wrap: wrap; }
-.stz-payments img { height: 24px; border-radius: 3px; }
 
-/* hide default hummingbird footer/header leftovers on all pages */
-.header-banner, .header-top, .header-bottom, .header-nav-full-width { display: none !important; }
-.footer.footer__main .footer__main-top, .footer.footer__main .footer__main-bottom { display: none !important; }
+.stz-services {
+  display: none;
+}
+
+.footer.stz-footer,
+.stz-footer {
+  background: var(--stz-white);
+  border-top: 1px solid var(--stz-hair);
+  color: var(--stz-ink);
+  padding: 64px 24px 28px;
+  margin-top: 80px;
+}
+
+.stz-footer__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  max-width: none;
+}
+
+.stz-footer h4 {
+  margin: 0 0 16px;
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.stz-footer p,
+.stz-store-text {
+  font-size: 11px;
+  line-height: 1.9;
+  color: var(--stz-muted);
+  letter-spacing: 0.03em;
+}
+
+.stz-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stz-footer li {
+  margin-bottom: 10px;
+}
+
+.stz-footer a {
+  color: var(--stz-ink);
+  border-bottom: 1px solid transparent;
+}
+
+.stz-footer a:hover {
+  border-bottom-color: var(--stz-ink);
+}
+
+.stz-footer__news form {
+  display: flex;
+  gap: 0;
+  margin-top: 14px;
+  border-bottom: 1px solid var(--stz-hair);
+}
+
+.stz-footer__news input[type="email"] {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  padding: 8px 0;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.stz-footer__news button {
+  background: none;
+  border: 0;
+  color: var(--stz-ink);
+  font-size: 10px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 8px 0 8px 14px;
+}
+
+.stz-footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 56px;
+  padding-top: 22px;
+  border-top: 1px solid var(--stz-hair);
+}
+
+.stz-copy {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--stz-muted);
+}
+
+.stz-payments {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stz-payments img {
+  height: 18px;
+  width: auto;
+  filter: grayscale(100%);
+  opacity: 0.55;
+}
 
 /* ---------- Responsive ---------- */
-@media (max-width: 991px) {
-  .stz-tiles { grid-template-columns: 1fr; }
-  .stz-review { grid-template-columns: 1fr; }
-  .stz-footer__grid { grid-template-columns: 1fr; gap: 2rem; }
-  .stz-services { grid-template-columns: repeat(2, 1fr); }
-  .stz-thankyou h2 { font-size: 3rem; }
-  .stz-overlay h2 { font-size: 2.4rem; }
-  .stz-chisiamo h2 { font-size: 3rem; }
-  .stz-header__logo img { height: 64px; }
-  .stz-nav ul { justify-content: flex-start; }
+
+@media (max-width: 1200px) {
+  .products,
+  #js-product-list .products {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .stz-tiles {
+    grid-template-columns: 1fr;
+  }
+
+  .stz-tile img {
+    height: 58vh;
+  }
+
+  .stz-footer__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .products,
+  #js-product-list .products {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+  }
+
+  .stz-header__row {
+    padding: 12px 16px;
+  }
+
+  .stz-header__logo img {
+    height: 34px;
+  }
+
+  .stz-header__actions {
+    gap: 14px;
+  }
+
+  .stz-nav ul {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0 16px 12px;
+    gap: 18px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stz-nav::-webkit-scrollbar,
+  .stz-nav ul::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stz-hero__cta {
+    left: 16px;
+    bottom: 28px;
+  }
+
+  .stz-footer__grid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+}
+
+/* ---------- Homepage editorial blocks ---------- */
+
+/*
+ * The rest of the homepage the shop already had — a product row, brand marks,
+ * two full-bleed statements, a testimonial and the newsletter. Same rules
+ * throughout: photograph full bleed, text small and uppercase, sitting low and
+ * left over the image rather than centred in a panel.
+ */
+
+.stz-kicker {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* Product row */
+.stz-collection {
+  padding: 0 0 40px;
+}
+
+.stz-collection__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 24px 20px;
+}
+
+.stz-collection__head h2 {
+  margin: 72px 0 0;
+  text-align: left;
+}
+
+.stz-collection__head a {
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--stz-ink);
+  padding-bottom: 2px;
+}
+
+.stz-products {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+}
+
+.stz-product img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  background: var(--stz-wash);
+  transition: opacity 250ms ease;
+}
+
+.stz-product:hover img {
+  opacity: 0.86;
+}
+
+.stz-product p {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+  margin: 12px 10px 0;
+  color: var(--stz-ink);
+}
+
+/* Full-bleed statements */
+.stz-thankyou,
+.stz-overlay,
+.stz-chisiamo,
+.stz-quote {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 74vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 48px 40px;
+  color: var(--stz-white);
+  margin-top: 2px;
+}
+
+.stz-thankyou h2,
+.stz-overlay h2,
+.stz-chisiamo h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--stz-white);
+  line-height: 1.35;
+}
+
+.stz-overlay > div,
+.stz-chisiamo > div {
+  max-width: 640px;
+}
+
+.stz-overlay .stz-btn {
+  margin-top: 18px;
+}
+
+.stz-quote {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 52vh;
+}
+
+.stz-quote p {
+  max-width: 780px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 2;
+  letter-spacing: 0.06em;
+  color: var(--stz-white);
+}
+
+/* Brand marks */
+.stz-brands {
+  padding: 84px 24px;
+  text-align: center;
+}
+
+.stz-brands h2 {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 0 0 44px;
+}
+
+.stz-brands__grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  align-items: center;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stz-brands__grid img {
+  width: 100%;
+  height: auto;
+  filter: grayscale(100%);
+  opacity: 0.5;
+  transition: opacity 200ms ease;
+}
+
+.stz-brands__grid img:hover {
+  opacity: 1;
+}
+
+/* Testimonial */
+.stz-review {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0;
+  margin-top: 2px;
+}
+
+.stz-review figure {
+  margin: 0;
+  padding: 60px 48px;
+  text-align: center;
+}
+
+.stz-review__stars {
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  margin-bottom: 22px;
+}
+
+.stz-review blockquote {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 2;
+  letter-spacing: 0.04em;
+  border: 0;
+  padding: 0;
+}
+
+.stz-review figcaption {
+  margin-top: 24px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--stz-muted);
+}
+
+.stz-review__img {
+  position: relative;
+}
+
+.stz-review__img img {
+  width: 100%;
+  height: 68vh;
+  min-height: 380px;
+  object-fit: cover;
+  display: block;
+}
+
+.stz-review__img a {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  color: var(--stz-white);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--stz-white);
+  padding-bottom: 2px;
+}
+
+/* Newsletter */
+.stz-newsletter {
+  text-align: center;
+  padding: 96px 24px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.stz-newsletter h2 {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 0 0 16px;
+}
+
+.stz-newsletter p {
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--stz-muted);
+  margin: 0 0 28px;
+}
+
+.stz-newsletter form {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+  justify-content: center;
+  border-bottom: 1px solid var(--stz-ink);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.stz-newsletter input[type="email"] {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  padding: 10px 0;
+}
+
+.stz-newsletter .stz-btn {
+  border: 0;
+  background: none;
+  color: var(--stz-ink);
+  padding: 10px 0 10px 16px;
+}
+
+.stz-newsletter .stz-btn:hover {
+  background: none;
+  color: var(--stz-muted);
+}
+
+@media (max-width: 1200px) {
+  .stz-products {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stz-brands__grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .stz-products {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+  }
+
+  .stz-brands__grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+
+  .stz-review {
+    grid-template-columns: 1fr;
+  }
+
+  .stz-thankyou,
+  .stz-overlay,
+  .stz-chisiamo,
+  .stz-quote {
+    padding: 28px 18px;
+    min-height: 56vh;
+  }
+
+  .stz-thankyou h2,
+  .stz-overlay h2,
+  .stz-chisiamo h2 {
+    font-size: 17px;
+  }
 }
