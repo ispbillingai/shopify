@@ -714,6 +714,8 @@ h1, h2, h3, h4, h5 {
   list-style: none;
 }
 
+.product-miniature .product-flags .badge:not(.discount),
+.product-miniature .product-flags .badge.discount,
 .product-miniature .product-flags .badge,
 .product-miniature .product-flags li,
 .product-flags .badge,
@@ -727,7 +729,7 @@ h1, h2, h3, h4, h5 {
   text-transform: uppercase;
   font-weight: 400;
   padding: 0;
-  border: 0;
+  border: 0 !important;
 }
 
 .product-miniature__top {
@@ -1681,33 +1683,52 @@ input:focus {
 /* ---------- Listing controls ---------- */
 
 /*
- * The sort control ships as a bordered Bootstrap select, which is the loudest
- * thing on an otherwise silent page. Reduced to a word and a caret.
+ * The sort control is not a <select> — the theme builds a Bootstrap dropdown
+ * button in JavaScript, so it never appears in the served HTML. Styling it
+ * needs these classes, read out of the post-JavaScript DOM.
  */
-.products__selection select,
-.products-sort-order select,
-#sort-by-select,
-.products__selection .custom-select {
-  border: 0;
-  border-bottom: 1px solid var(--stz-ink);
-  border-radius: 0;
-  background: transparent;
-  padding: 6px 22px 6px 0;
+.products__sort-dropdown-button,
+.products__sort-dropdown-button.btn,
+.products__sort-dropdown-button.btn-outline-tertiary {
+  border: 0 !important;
+  border-bottom: 1px solid var(--stz-ink) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 5px 0 !important;
   font-size: 11px;
   letter-spacing: var(--stz-track);
   text-transform: uppercase;
-  font-family: inherit;
+  font-weight: 400;
   color: var(--stz-ink);
-  height: auto;
-  box-shadow: none;
 }
 
-.products__selection label,
-.products-sort-order label {
+.products__sort-label {
   font-size: 11px;
   letter-spacing: var(--stz-track);
   text-transform: uppercase;
   color: var(--stz-muted);
+}
+
+.products__sort .dropdown-menu {
+  border: 1px solid var(--stz-hair);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 4px;
+}
+
+.products__sort .dropdown-item {
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  padding: 8px 10px;
+  color: var(--stz-ink);
+}
+
+.products__sort .dropdown-item.current,
+.products__sort .dropdown-item:hover {
+  background: var(--stz-wash);
+  color: var(--stz-ink);
 }
 
 /*
