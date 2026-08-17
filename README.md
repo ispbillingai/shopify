@@ -272,34 +272,56 @@ Hummingbird theme, installed with demo fixtures.
 ### The storefront look
 
 The client's customer pointed at **zara.com** and asked for that design, so the
-storefront follows an editorial-minimal system. It lives in one file,
-`themes/hummingbird/assets/css/stizzo.css`, loaded by `_partials/head.tpl`, with
-`header.tpl`, `footer.tpl` and `index.tpl` supplying the markup.
+storefront follows an editorial-minimal system built from their screenshots of
+the real category page. It lives in
+`themes/hummingbird/assets/css/stizzo.css` + `assets/js/stizzo.js`, loaded by
+`_partials/head.tpl`, with `header.tpl`, `footer.tpl`, `index.tpl`,
+`catalog/listing/search.tpl` and `catalog/_partials/miniatures/product.tpl`
+supplying the markup.
 
-Four rules, in the order they matter:
+**There is no header bar.** Two rails are fixed to the viewport edges and the
+page scrolls between them:
 
-1. **Monochrome.** Black, white, grey. No accent colour — the previous gold and
-   pink skin was replaced outright, not tuned.
-2. **Nothing rounded, nothing shadowed.** Separation is whitespace or a hairline.
-3. **The photograph is the design.** Heroes and tiles run full bleed; the product
-   grid is four tall columns with 2px gutters and no card chrome. Quick view,
-   star ratings and coloured badges are *removed*, because the reference has none.
-4. **Type is small, light, widely tracked.** 11px uppercase labels at .12em,
-   headings at weight 300, price the same size as the product name.
+| | |
+|---|---|
+| Left rail | menu mark (top) · numbered categories + `FILTERS` (centred) · `VIEW 1 2 3` (bottom) |
+| Right rail | `SEARCH` (top) · bag with count, account, help (centred) |
 
-Two things worth keeping in mind before editing it:
+Content is inset by `--zr-rail`; full-bleed sections break back out with a
+negative margin of the same variable. **Below 1100px the rails stop being
+rails** — zeroing `--zr-rail` collapses the inset and every breakout in one move.
 
-- **Product images are square** (250x250, 261x261, …), but the grid frame is 3:4.
-  The image is therefore `object-fit: contain` on a wash, never `cover` — a cover
-  crop takes a quarter off every photo and cuts the tops off rings and pendants.
-- **Bump the `?v=` in `head.tpl`** whenever this file changes. The vhost caches
-  `.css` for a week (section 1), so without it nobody sees the change. PrestaShop
-  also compiles the templates, so a markup change needs `rm -rf var/cache/*`
-  followed by the usual `chown`.
+The rest of the system:
 
-The CSS targets the real Hummingbird DOM — `article.product-miniature` with its
-`__image-container` / `__title` / `__price` children, `.products` as the grid — so
-read the rendered HTML, not the theme sources, before adding selectors.
+1. **Monochrome.** Black, white, grey. No accent colour.
+2. **Nothing rounded, nothing shadowed.** Whitespace or a hairline.
+3. **Two large columns, not four.** A dense grid reads as a catalogue; the
+   reference leads with very few, very large images. The rail switch offers 1/2/3
+   and remembers the choice in `localStorage`.
+4. **Type small, light, widely tracked.** 11px uppercase labels at .12em,
+   headings weight 300, price the same size as the name.
+
+Four things to know before editing:
+
+- **Product images are square** (250x250, 261x261, …) but the grid frame is 3:4,
+  so the image is `object-fit: contain` on a wash, never `cover`. A cover crop
+  takes a quarter off every photo and beheads the rings.
+- **The card is a theme template override**, not CSS. The vendor markup puts the
+  flags *inside* the image container, so no amount of reordering moves them
+  under the photo — `miniatures/product.tpl` rebuilds the card instead. It keeps
+  `data-ps-ref="add-to-cart"`, which is what `theme.js` binds the `+` to.
+- **The rail categories link into search**, so `search.tpl` is the real category
+  landing page. It opens on a campaign image chosen from the search term. The
+  lookup is an **exact lowercase match, not a substring test** — PrestaShop's
+  Smarty security policy does not expose `strpos()` to templates — so any new
+  rail term needs a key adding to `$zrBanners`.
+- **Bump the `?v=` in `head.tpl`** for both the CSS and the JS on every change
+  (the vhost caches them for a week, section 1), and `rm -rf var/cache/*` after
+  any template edit, because PrestaShop compiles Smarty.
+
+The CSS targets the real Hummingbird DOM — `article.product-miniature`,
+`.products` as the grid, `.columns-container.container` as the wrapper — so read
+the rendered HTML, not the theme sources, before adding selectors.
 
 ### Selling off the shop floor
 
