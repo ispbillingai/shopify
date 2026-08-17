@@ -323,6 +323,45 @@ The CSS targets the real Hummingbird DOM — `article.product-miniature`,
 `.products` as the grid, `.columns-container.container` as the wrapper — so read
 the rendered HTML, not the theme sources, before adding selectors.
 
+#### The `@layer` trap
+
+**The theme's stylesheet uses a CSS cascade layer, and that inverts `!important`.**
+A layered `!important` beats an unlayered one *regardless of specificity*, so no
+rule in `stizzo.css` can override one — a four-class selector with `!important`
+still loses to the theme's three-class one.
+
+This cost real time on the product flags, which the theme paints with
+`.product-flags .badge:not(.discount){background-color:blue!important}`. The fix
+is never to out-specify it; it is to **stop matching the selector**.
+`product-flags.tpl` therefore emits `product-flag product-flag--<type>` and drops
+Bootstrap's `badge` class entirely, after which the styling needs no `!important`
+at all.
+
+If an override refuses to apply no matter how specific it is, this is why. Check
+for `@layer` in the theme CSS before assuming a specificity problem, and prefer
+changing the markup over escalating the selector.
+
+#### Verify by rendering, not by grepping
+
+Chromium is on the server and headless screenshots caught six faults that markup
+checks had passed clean — a control pinned to the wrong end of a rail, content
+inset twice, a `+` stacked under the price because the theme set
+`flex-direction:column`, a hero crop that cut the wordmark out of its own
+artwork, white captions on cream, and a sort control that is built in JavaScript
+and so appears in no served HTML at all.
+
+```bash
+# snap confinement blocks /tmp, so write somewhere else
+chromium-browser --headless --disable-gpu --no-sandbox --hide-scrollbars   --window-size=390,1400 --virtual-time-budget=9000   --screenshot=/root/shots/m.png 'https://shopify.ispledger.com/search?s=Bambino'
+
+# post-JavaScript DOM, for markup the server never sends
+chromium-browser --headless --disable-gpu --no-sandbox   --virtual-time-budget=9000 --dump-dom '<url>' > dom.html
+```
+
+An isolated harness — a bare HTML file loading both stylesheets and a copy of the
+markup — is the fastest way to settle whether a rule is losing on the cascade or
+simply not matching.
+
 ### Selling off the shop floor
 
 The shop is not only a website. `modules/shopfloor/` adds two back office areas
