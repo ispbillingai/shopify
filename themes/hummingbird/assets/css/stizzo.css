@@ -1323,88 +1323,169 @@ input:focus {
   text-underline-offset: 4px;
 }
 
-/* ---------- Rails collapse ---------- */
+/* ---------- Phone layout ---------- */
 
 /*
- * Below this width the fixed rails would eat most of the viewport, so they stop
- * being rails. Zeroing --zr-rail collapses the content inset and the full-bleed
- * negative margins in one move, because both are expressed in that variable.
+ * The compact bar and drawer are phone-only; the rails are desktop-only. Each
+ * is hidden in the other's regime rather than reflowed, because reflowing the
+ * rails put the nine categories *above* the search and bag (their source order)
+ * and squeezed them into a strip too small to tap.
  */
+
+.zr-bar,
+.zr-drawer {
+  display: none;
+}
+
 @media (max-width: 1100px) {
   :root {
+    /* Collapses the content inset and every full-bleed breakout in one move,
+       because both are expressed in this variable. */
     --zr-rail: 0px;
   }
 
-  .zr-rail {
-    position: static;
-    width: auto;
-    flex-direction: row;
+  .zr-rail,
+  .zr-mark {
+    display: none;
+  }
+
+  /* --- compact bar --- */
+
+  .zr-bar {
+    display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 16px;
-    pointer-events: auto;
+    gap: 12px;
+    padding: 8px 14px;
+    background: var(--stz-white);
+    border-bottom: 1px solid var(--stz-hair);
+    position: sticky;
+    top: 0;
+    z-index: 900;
   }
 
-  .zr-rail__mid {
-    position: static;
-    transform: none;
-    left: auto !important;
-    right: auto !important;
+  .zr-bar__logo img {
+    height: 34px;
+    width: auto;
+    display: block;
+    filter: grayscale(100%) contrast(115%);
   }
 
-  .zr-rail--left .zr-rail__mid,
-  .zr-rail--right .zr-rail__mid {
-    flex-direction: row;
+  .zr-bar__actions {
     display: flex;
     align-items: center;
-    gap: 18px;
-    width: 100%;
+    gap: 6px;
   }
 
-  .zr-rail--left {
-    border-bottom: 1px solid var(--stz-hair);
+  /* 44px minimum on every control in the bar — these are thumb targets, and
+     11px of text is not one. */
+  .zr-burger,
+  .zr-bar__actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 6px;
+    background: none;
+    border: 0;
+    color: var(--stz-ink);
+    font-size: 11px;
+    letter-spacing: var(--stz-track);
+    text-transform: uppercase;
+    cursor: pointer;
   }
 
-  .zr-nav {
-    display: flex;
-    gap: 18px;
-    overflow-x: auto;
-    width: 100%;
+  .zr-burger {
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  .zr-burger span {
+    display: block;
+    width: 22px;
+    height: 1px;
+    background: var(--stz-ink);
+  }
+
+  .zr-bar__actions svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  /* --- drawer --- */
+
+  .zr-drawer {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--stz-white);
+    padding: 74px 22px 40px;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  .zr-nav::-webkit-scrollbar {
+  .zr-drawer[hidden] {
     display: none;
   }
 
-  .zr-nav li {
-    margin-bottom: 0;
+  body.zr-menu-open {
+    overflow: hidden;
   }
 
-  .zr-nav__num {
-    display: none;
+  .zr-drawer__search {
+    border-bottom: 1px solid var(--stz-ink);
+    margin-bottom: 26px;
   }
 
-  .zr-filters {
-    margin-top: 0;
-    white-space: nowrap;
+  .zr-drawer__search input {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    padding: 10px 0;
+    font-size: 13px;
+    letter-spacing: var(--stz-track);
+    text-transform: uppercase;
+    font-family: inherit;
   }
 
-  .zr-mark {
-    position: static;
-    margin: 14px 16px 4px;
+  .zr-drawer__search input:focus {
+    outline: none;
   }
 
-  .zr-rail__top {
-    margin-left: 0;
+  .zr-drawer__nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
-  .zr-search input {
-    width: 120px;
-    text-align: left;
+  .zr-drawer__nav a,
+  .zr-drawer__foot a {
+    display: block;
+    padding: 15px 0;
+    font-size: 14px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stz-ink);
+    border-bottom: 1px solid var(--stz-hair);
   }
 
-  /* The density switch is a desktop affordance; phones get two columns. */
+  .zr-drawer__foot {
+    margin-top: 26px;
+  }
+
+  .zr-drawer__foot a {
+    font-size: 11px;
+    color: var(--stz-muted);
+    border-bottom: 0;
+    padding: 9px 0;
+  }
+
+  /* --- listing --- */
+
+  /* The density switch is a pointer affordance; phones get two columns. */
   .zr-view {
     display: none !important;
   }
@@ -1414,7 +1495,87 @@ input:focus {
   .products.zr-cols-1,
   .products.zr-cols-3 {
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px 12px;
+    gap: 26px 10px;
+  }
+
+  .product-miniature__bottom {
+    padding-top: 9px;
+    gap: 8px;
+  }
+
+  .product-miniature__title,
+  .product-miniature__price {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  /* The "+" is the only tappable thing on a card besides the photo. */
+  .product-miniature__add {
+    min-width: 30px;
+    min-height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  #js-product-list-header,
+  .block-category {
+    padding: 22px 14px 4px;
+  }
+
+  .products__selection,
+  .products__count {
+    padding: 12px 14px;
+  }
+
+  .pagination,
+  .products__pagination {
+    padding: 26px 14px 56px;
+  }
+
+  .columns-container.container,
+  #center-column.page {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  /* Full-bleed sections cancel that 14px inset rather than the rail width. */
+  .stz-hero,
+  .stz-tiles,
+  .zr-banner,
+  .stz-thankyou,
+  .stz-overlay,
+  .stz-chisiamo,
+  .stz-quote {
+    margin-left: -14px;
+    margin-right: -14px;
+  }
+
+  .stz-announce {
+    padding: 8px 14px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+  }
+
+  /* A single stray wide element should never make the whole page pan sideways. */
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .stz-hero__slide img {
+    height: 62vh;
+    min-height: 320px;
+  }
+
+  .stz-hero__cta {
+    left: 14px;
+    bottom: 22px;
+  }
+
+  .stz-footer {
+    padding: 40px 14px 24px;
+    margin-top: 46px;
   }
 }
 
@@ -1423,14 +1584,9 @@ input:focus {
   #js-product-list .products,
   .products.zr-cols-1,
   .products.zr-cols-3 {
-    gap: 24px 8px;
-  }
-
-  .stz-announce {
-    padding: 8px 16px;
+    gap: 22px 8px;
   }
 }
-
 
 /* ---------- Category banner ---------- */
 

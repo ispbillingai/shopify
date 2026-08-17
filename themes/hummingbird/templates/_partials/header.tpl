@@ -1,15 +1,19 @@
 {**
- * Stizzo storefront chrome — the fixed-rail layout of the Zara reference.
+ * Stizzo storefront chrome.
  *
- * There is no header bar. Two rails are pinned to the viewport edges and the
- * content scrolls between them:
+ * Two layouts from one category list ($zrNav, defined once below):
  *
- *   left   menu mark (top) · numbered categories + filters (centred) · view toggle (bottom)
- *   right  search (top) · bag, account, help (centred)
+ *   Desktop (>1100px) — the reference's fixed rails. No header bar; the rails
+ *   are pinned to the viewport edges and the content scrolls between them.
  *
- * The rails are pointer-events:none so their empty space never swallows a click
- * on the page behind; only the links themselves are interactive.
+ *   Phone (<=1100px) — the rails are hidden entirely and replaced by a compact
+ *   sticky bar (menu, logo, search, bag) plus a full-screen drawer. Reflowing
+ *   the rails instead would have put the categories above the search and bag,
+ *   because that is their source order, and squeezed nine of them into a strip
+ *   too small to tap.
  *}
+{$stzImg = "{$urls.theme_assets}img/stizzo"}
+{$zrNav = ['Vedi tutto', 'Donna', 'Uomo', 'Bambino', 'Oro 18 Carati', 'Oro&Diamanti', 'Brand', 'Borse', 'Accessori']}
 
 {block name='header_banner'}
   <div class="stz-announce">
@@ -18,6 +22,57 @@
 {/block}
 
 {block name='header_bottom'}
+
+  {* ---------- phone: compact bar ---------- *}
+  <div class="zr-bar">
+    <button type="button" class="zr-burger js-zr-burger" aria-expanded="false"
+            aria-controls="zr-drawer" aria-label="{l s='Menu' d='Shop.Theme.Global'}">
+      <span></span><span></span>
+    </button>
+
+    <a class="zr-bar__logo" href="{$urls.base_url}" title="{$shop.name}">
+      <img src="{$stzImg}/logo.png" alt="{$shop.name}">
+    </a>
+
+    <div class="zr-bar__actions">
+      <a href="{$urls.pages.search}" aria-label="{l s='Search' d='Shop.Theme.Global'}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><line x1="15.8" y1="15.8" x2="21" y2="21"/></svg>
+      </a>
+      {if !$configuration.is_catalog}
+        <a href="{$urls.pages.cart}?action=show" aria-label="{l s='Bag' d='Shop.Theme.Checkout'}">
+          {l s='Bag' d='Shop.Theme.Checkout'}
+          <em class="zr-bag__count">{$cart.products_count|default:0}</em>
+        </a>
+      {/if}
+    </div>
+  </div>
+
+  {* ---------- phone: drawer ---------- *}
+  <div class="zr-drawer" id="zr-drawer" hidden>
+    <form class="zr-drawer__search" action="{$urls.pages.search}" method="get" role="search">
+      <input type="text" name="s" placeholder="{l s='Search' d='Shop.Theme.Global'}"
+             aria-label="{l s='Search' d='Shop.Theme.Global'}">
+    </form>
+
+    <nav aria-label="{l s='Categories' d='Shop.Theme.Global'}">
+      <ol class="zr-drawer__nav">
+        {foreach $zrNav as $item}
+          <li>
+            <a href="{if $item@first}{$urls.pages.prices_drop}{else}{$urls.pages.search}?s={$item|escape:'url'}{/if}">{$item}</a>
+          </li>
+        {/foreach}
+      </ol>
+    </nav>
+
+    <div class="zr-drawer__foot">
+      <a href="{$urls.pages.my_account}">
+        {if isset($customer.is_logged) && $customer.is_logged}{$customer.firstname}{else}{l s='Log in' d='Shop.Theme.Actions'}{/if}
+      </a>
+      <a href="{$urls.pages.contact}">{l s='Help' d='Shop.Theme.Global'}</a>
+    </div>
+  </div>
+
+  {* ---------- desktop: rails ---------- *}
   <a class="zr-mark" href="{$urls.base_url}" aria-label="{$shop.name}">
     <span></span><span></span>
   </a>
@@ -25,7 +80,6 @@
   <aside class="zr-rail zr-rail--left">
     <nav class="zr-rail__mid" aria-label="{l s='Categories' d='Shop.Theme.Global'}">
       <ol class="zr-nav">
-        {$zrNav = ['Vedi tutto', 'Donna', 'Uomo', 'Bambino', 'Oro 18 Carati', 'Oro&Diamanti', 'Brand', 'Borse', 'Accessori']}
         {foreach $zrNav as $item}
           <li>
             <span class="zr-nav__num">|{($item@iteration)|string_format:"%02d"}|</span>

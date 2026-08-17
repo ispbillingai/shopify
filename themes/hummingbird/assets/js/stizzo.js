@@ -109,7 +109,61 @@
     });
   }
 
+
+  function drawer() {
+    var button = document.querySelector('.js-zr-burger');
+    var panel = document.getElementById('zr-drawer');
+
+    if (!button || !panel) {
+      return;
+    }
+
+    function setOpen(open) {
+      panel.hidden = !open;
+      button.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.body.classList.toggle('zr-menu-open', open);
+    }
+
+    button.addEventListener('click', function () {
+      setOpen(panel.hidden);
+    });
+
+    // Escape closes it, for anyone on a phone with a keyboard attached.
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !panel.hidden) {
+        setOpen(false);
+      }
+    });
+
+    // Returning via the back button can restore the page with the drawer still
+    // marked open, which would leave <body> unscrollable. Reset on show.
+    window.addEventListener('pageshow', function () {
+      setOpen(false);
+    });
+
+    // Growing past the phone breakpoint while the drawer is open would hide it
+    // but leave the scroll lock on. MediaQueryList only gained addEventListener
+    // in Safari 14, and this function runs before the others — an exception here
+    // would take the column switch and the filters down with it.
+    if (window.matchMedia) {
+      var wide = window.matchMedia('(min-width: 1101px)');
+
+      var onChange = function (event) {
+        if (event.matches) {
+          setOpen(false);
+        }
+      };
+
+      if (wide.addEventListener) {
+        wide.addEventListener('change', onChange);
+      } else if (wide.addListener) {
+        wide.addListener(onChange);
+      }
+    }
+  }
+
   ready(function () {
+    drawer();
     columnSwitch();
     filterToggle();
     markActiveCategory();

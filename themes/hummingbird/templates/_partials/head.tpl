@@ -70,8 +70,8 @@
   {* The Cormorant Garamond / Tangerine webfonts the old gold skin used are gone:
      nothing references them any more, and they cost two blocking requests to a
      third-party host on every page. This look is set in the system sans. *}
-  <link rel="stylesheet" href="{$urls.theme_assets}css/stizzo.css?v=5" type="text/css" media="all">
-  <script src="{$urls.theme_assets}js/stizzo.js?v=5" defer></script>
+  <link rel="stylesheet" href="{$urls.theme_assets}css/stizzo.css?v=6" type="text/css" media="all">
+  <script src="{$urls.theme_assets}js/stizzo.js?v=6" defer></script>
 {/block}
 
 {block name='javascript_head'}
