@@ -705,7 +705,15 @@ h1, h2, h3, h4, h5 {
   display: none !important;
 }
 
-/* Flags become a plain word, not a coloured pill. */
+/*
+ * Flags are plain words, not coloured pills.
+ *
+ * These no longer carry Bootstrap's `badge` class — product-flags.tpl drops it
+ * deliberately, because the theme paints `.badge` inside a CSS @layer with
+ * !important, and layered !important outranks unlayered !important no matter
+ * how specific the unlayered selector is. Not matching that rule is the only
+ * reliable way to win, so none of the declarations below need !important.
+ */
 .product-flags {
   position: absolute;
   z-index: 2;
@@ -714,22 +722,21 @@ h1, h2, h3, h4, h5 {
   list-style: none;
 }
 
-.product-miniature .product-flags .badge:not(.discount),
-.product-miniature .product-flags .badge.discount,
-.product-miniature .product-flags .badge,
-.product-miniature .product-flags li,
-.product-flags .badge,
-.product-flags li {
-  background: none !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  color: var(--stz-ink) !important;
+.product-flag {
+  background: none;
+  color: var(--stz-ink);
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 400;
   padding: 0;
-  border: 0 !important;
+  border: 0;
+  list-style: none;
+  text-decoration: none;
+}
+
+.product-flag--out_of_stock {
+  color: var(--stz-muted);
 }
 
 .product-miniature__top {
