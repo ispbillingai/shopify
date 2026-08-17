@@ -1,11 +1,15 @@
 {**
- * Stizzo storefront header — editorial minimal.
+ * Stizzo storefront chrome — the fixed-rail layout of the Zara reference.
  *
- * Wordmark hard left, a short row of tiny uppercase actions opposite, and the
- * categories on their own line under a hairline. No search field on show: the
- * reference keeps search as a word until you ask for it.
+ * There is no header bar. Two rails are pinned to the viewport edges and the
+ * content scrolls between them:
+ *
+ *   left   menu mark (top) · numbered categories + filters (centred) · view toggle (bottom)
+ *   right  search (top) · bag, account, help (centred)
+ *
+ * The rails are pointer-events:none so their empty space never swallows a click
+ * on the page behind; only the links themselves are interactive.
  *}
-{$stzImg = "{$urls.theme_assets}img/stizzo"}
 
 {block name='header_banner'}
   <div class="stz-announce">
@@ -14,36 +18,54 @@
 {/block}
 
 {block name='header_bottom'}
-  <div class="stz-header">
-    <div class="stz-header__row">
-      <div class="stz-header__logo">
-        {if $page.page_name == 'index'}<h1>{/if}
-          <a href="{$urls.base_url}" title="{$shop.name}">
-            <img src="{$stzImg}/logo.png" alt="{$shop.name}">
-          </a>
-        {if $page.page_name == 'index'}</h1>{/if}
-      </div>
+  <a class="zr-mark" href="{$urls.base_url}" aria-label="{$shop.name}">
+    <span></span><span></span>
+  </a>
 
-      <div class="stz-header__actions">
-        <a href="{$urls.pages.search}" title="Cerca">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><line x1="15.8" y1="15.8" x2="21" y2="21"/></svg>
-          <span>Cerca</span>
-        </a>
-        <a href="{$urls.pages.my_account}">Accedi</a>
-        {if !$configuration.is_catalog}
-          <a href="{$urls.pages.cart}?action=show" class="stz-cart-link">
-            <span>Carrello</span>
-          </a>
-        {/if}
-      </div>
+  <aside class="zr-rail zr-rail--left">
+    <nav class="zr-rail__mid" aria-label="{l s='Categories' d='Shop.Theme.Global'}">
+      <ol class="zr-nav">
+        {$zrNav = ['Vedi tutto', 'Donna', 'Uomo', 'Bambino', 'Oro 18 Carati', 'Oro&Diamanti', 'Brand', 'Borse', 'Accessori']}
+        {foreach $zrNav as $item}
+          <li>
+            <span class="zr-nav__num">|{($item@iteration)|string_format:"%02d"}|</span>
+            <a href="{if $item@first}{$urls.pages.prices_drop}{else}{$urls.pages.search}?s={$item|escape:'url'}{/if}">{$item}</a>
+          </li>
+        {/foreach}
+      </ol>
+
+      <button type="button" class="zr-filters js-zr-filters" hidden>{l s='Filters' d='Shop.Theme.Global'}</button>
+    </nav>
+
+    <div class="zr-rail__bottom zr-view js-zr-view" hidden>
+      <span class="zr-view__label">View</span>
+      <span class="zr-view__opts">
+        <button type="button" data-cols="1">1</button>
+        <button type="button" data-cols="2">2</button>
+        <button type="button" data-cols="3">3</button>
+      </span>
     </div>
-  </div>
+  </aside>
 
-  <nav class="stz-nav">
-    <ul>
-      {foreach ['Donna', 'Uomo', 'Bambino', 'Oro 18 Carati', 'Oro 9 Carati', 'Oro&Diamanti', 'Brand', 'Borse', 'Accessori', 'Special Events', 'Super Saldi'] as $item}
-        <li><a href="{$urls.pages.search}?s={$item|escape:'url'}">{$item}</a></li>
-      {/foreach}
-    </ul>
-  </nav>
+  <aside class="zr-rail zr-rail--right">
+    <div class="zr-rail__top">
+      <form class="zr-search" action="{$urls.pages.search}" method="get" role="search">
+        <input type="text" name="s" placeholder="{l s='Search' d='Shop.Theme.Global'}"
+               aria-label="{l s='Search' d='Shop.Theme.Global'}">
+      </form>
+    </div>
+
+    <div class="zr-rail__mid">
+      {if !$configuration.is_catalog}
+        <a href="{$urls.pages.cart}?action=show">
+          {l s='Bag' d='Shop.Theme.Checkout'}
+          <em class="zr-bag__count">{$cart.products_count|default:0}</em>
+        </a>
+      {/if}
+      <a href="{$urls.pages.my_account}">
+        {if isset($customer.is_logged) && $customer.is_logged}{$customer.firstname}{else}{l s='Log in' d='Shop.Theme.Actions'}{/if}
+      </a>
+      <a href="{$urls.pages.contact}">{l s='Help' d='Shop.Theme.Global'}</a>
+    </div>
+  </aside>
 {/block}

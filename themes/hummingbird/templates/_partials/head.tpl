@@ -67,10 +67,11 @@
 
 {block name='stylesheets'}
   {include file='_partials/stylesheets.tpl' stylesheets=$stylesheets}
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@0;1&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{$urls.theme_assets}css/stizzo.css?v=3" type="text/css" media="all">
+  {* The Cormorant Garamond / Tangerine webfonts the old gold skin used are gone:
+     nothing references them any more, and they cost two blocking requests to a
+     third-party host on every page. This look is set in the system sans. *}
+  <link rel="stylesheet" href="{$urls.theme_assets}css/stizzo.css?v=4" type="text/css" media="all">
+  <script src="{$urls.theme_assets}js/stizzo.js?v=4" defer></script>
 {/block}
 
 {block name='javascript_head'}

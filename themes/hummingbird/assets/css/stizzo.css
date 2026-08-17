@@ -105,111 +105,217 @@ h1, h2, h3, h4, h5 {
   padding: 9px 16px;
 }
 
-/* ---------- Header ---------- */
+/* ---------- Fixed rails ---------- */
 
-.stz-header {
-  background: var(--stz-white);
-  position: sticky;
+/*
+ * The reference has no header bar. Two rails are pinned to the viewport edges
+ * and the page scrolls between them. Each rail is a full-height fixed column
+ * with three slots: top, an absolutely centred middle, and bottom. Centring the
+ * middle with space-between would only look centred when the top and bottom
+ * slots happen to match in height, so it is positioned explicitly.
+ *
+ * The rails are pointer-events:none so their large empty areas never intercept
+ * a click meant for the page; the controls inside opt back in.
+ */
+
+:root {
+  --zr-rail: 210px;
+}
+
+.zr-rail {
+  position: fixed;
   top: 0;
-  z-index: 900;
-}
-
-.stz-header__row {
+  bottom: 0;
+  width: var(--zr-rail);
+  padding: 26px 26px 30px;
+  z-index: 850;
+  pointer-events: none;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-between;
-  gap: 24px;
-  max-width: none;
-  margin: 0;
-  padding: 14px 24px;
 }
 
-/* Zara anchors the wordmark hard to the top left and lets it breathe. */
-.stz-header__logo {
-  flex: 0 0 auto;
-  text-align: left;
+.zr-rail > *,
+.zr-rail a,
+.zr-rail button,
+.zr-rail input {
+  pointer-events: auto;
 }
 
-.stz-header__logo h1 {
-  margin: 0;
-  line-height: 0;
+.zr-rail--left { left: 0; align-items: flex-start; text-align: left; }
+.zr-rail--right { right: 0; align-items: flex-end; text-align: right; }
+
+.zr-rail__mid {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-.stz-header__logo img {
-  height: 46px;
-  width: auto;
-  display: block;
-  margin: 0;
-  /* The supplied mark is gold; this look is monochrome, so it is desaturated
-     rather than replaced — the shop keeps its own logo file. */
-  filter: grayscale(100%) contrast(115%);
-}
+.zr-rail--left .zr-rail__mid { left: 26px; }
+.zr-rail--right .zr-rail__mid { right: 26px; }
 
-.stz-header__actions {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  flex: 0 0 auto;
-}
+.zr-rail__top { margin-left: auto; }
 
-.stz-header__actions a {
+.zr-rail a,
+.zr-rail button {
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  font-weight: 400;
   color: var(--stz-ink);
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding-bottom: 2px;
-  border-bottom: 1px solid transparent;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
 
-.stz-header__actions a:hover {
-  border-bottom-color: var(--stz-ink);
+/* The menu mark: two rules, top left, exactly as the reference. */
+.zr-mark {
+  position: fixed;
+  top: 30px;
+  left: 26px;
+  z-index: 900;
+  display: block;
+  width: 34px;
 }
 
-.stz-header__actions svg {
-  width: 17px;
-  height: 17px;
+.zr-mark span {
+  display: block;
+  height: 1px;
+  background: var(--stz-ink);
+  margin-bottom: 5px;
 }
 
-/* ---------- Navigation ---------- */
-
-.stz-nav {
-  background: var(--stz-white);
-  border-bottom: 1px solid var(--stz-hair);
-}
-
-.stz-nav ul {
+/* Numbered category list */
+.zr-nav {
   list-style: none;
   margin: 0;
-  padding: 0 24px 14px;
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: 22px;
-  max-width: none;
-}
-
-.stz-nav a {
-  display: inline-block;
-  color: var(--stz-ink);
   padding: 0;
-  white-space: nowrap;
-  border-bottom: 1px solid transparent;
+  counter-reset: zr;
 }
 
-.stz-nav a:hover {
-  opacity: 1;
+.zr-nav li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 9px;
+  white-space: nowrap;
+}
+
+.zr-nav__num {
+  font-size: 11px;
+  letter-spacing: 0.02em;
   color: var(--stz-ink);
+}
+
+.zr-nav a {
+  color: var(--stz-muted);
+}
+
+.zr-nav a:hover,
+.zr-nav li.is-active a {
+  color: var(--stz-ink);
+}
+
+.zr-nav li.is-active a { font-weight: 700; }
+
+.zr-filters {
+  margin-top: 30px;
+  color: var(--stz-ink) !important;
+}
+
+/* Column-density switch */
+.zr-view { display: flex; flex-direction: column; gap: 12px; }
+.zr-view[hidden] { display: none; }
+
+.zr-view__label {
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+}
+
+.zr-view__opts { display: flex; gap: 12px; }
+
+.zr-view__opts button {
+  font-size: 12px;
+  color: var(--stz-muted);
+  letter-spacing: 0;
+}
+
+.zr-view__opts button.is-active {
+  color: var(--stz-ink);
+  font-weight: 700;
+}
+
+/* Search sits alone at the top right, a rule with a word on it. */
+.zr-search input {
+  border: 0;
+  border-bottom: 1px solid var(--stz-ink);
+  background: transparent;
+  width: 160px;
+  padding: 4px 0;
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  text-align: right;
+  font-family: inherit;
+}
+
+.zr-search input::placeholder {
+  color: var(--stz-ink);
+  opacity: 1;
+}
+
+.zr-search input:focus {
+  outline: none;
   border-bottom-color: var(--stz-ink);
+}
+
+.zr-rail--right .zr-rail__mid {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  align-items: flex-end;
+}
+
+.zr-bag__count {
+  font-style: normal;
+  border: 1px solid var(--stz-ink);
+  padding: 0 4px;
+  margin-left: 5px;
+  font-size: 10px;
 }
 
 /* ---------- Page frame ---------- */
 
+/*
+ * Content lives between the rails. The inset is padding on the wrapper rather
+ * than on <body>, so a full-bleed section can still break out of it with a
+ * negative margin (see .stz-hero below).
+ */
 .columns-container.container,
 #center-column.page {
   max-width: none;
   width: 100%;
-  padding-left: 0;
-  padding-right: 0;
+  padding-left: var(--zr-rail);
+  padding-right: var(--zr-rail);
+}
+
+/* The homepage hero ignores the rails and runs edge to edge. */
+.stz-hero,
+.stz-tiles,
+.stz-thankyou,
+.stz-overlay,
+.stz-chisiamo,
+.stz-quote {
+  margin-left: calc(var(--zr-rail) * -1);
+  margin-right: calc(var(--zr-rail) * -1);
+}
+
+/* The announcement strip clears the rails so it never sits under the mark. */
+.stz-announce {
+  padding-left: var(--zr-rail);
+  padding-right: var(--zr-rail);
 }
 
 .page-content--home {
@@ -408,14 +514,23 @@ h1, h2, h3, h4, h5 {
  * name and price sitting quietly underneath. Everything the vendor theme puts
  * on a card — borders, quick view, star ratings, hover lifts — is removed.
  */
+/*
+ * Two columns by default, switchable to one or three from the rail. The
+ * reference leads with very large images and only a couple per row; a dense
+ * four-up reads as a catalogue, not an editorial.
+ */
 .products,
 #js-product-list .products {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2px 2px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 60px 46px;
   margin: 0;
   padding: 0;
 }
+
+.products.zr-cols-1 { grid-template-columns: 1fr; }
+.products.zr-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.products.zr-cols-3 { grid-template-columns: repeat(3, 1fr); gap: 46px 30px; }
 
 .product-miniature {
   border: 0;
@@ -464,14 +579,68 @@ h1, h2, h3, h4, h5 {
   opacity: 0.86;
 }
 
+/*
+ * Info block sits under the photograph: flag, name, price, swatches on the
+ * left; a bare "+" pushed to the far right. It is a row, not a stack, because
+ * the "+" has to hold the opposite edge.
+ */
 .product-miniature__bottom {
-  padding: 12px 10px 34px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0 0;
 }
 
 .product-miniature__infos {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
+  min-width: 0;
+}
+
+.product-miniature__actions {
+  display: block !important;
+  flex: 0 0 auto;
+}
+
+.product-miniature__add {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 17px;
+  line-height: 1;
+  color: var(--stz-ink);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.product-miniature__add:hover { opacity: 0.55; }
+
+/* The flag is a small word above the name, not a badge on the image. */
+.product-miniature .product-flags {
+  position: static;
+  padding: 0;
+  margin: 0 0 1px;
+  display: flex;
+  gap: 8px;
+}
+
+.product-miniature__variants {
+  display: flex;
+  gap: 5px;
+  margin-top: 7px;
+  list-style: none;
+  padding: 0;
+}
+
+.product-miniature__variants a,
+.product-miniature__variants li {
+  width: 9px;
+  height: 9px;
+  display: block;
+  border: 1px solid var(--stz-hair);
+  font-size: 0;
 }
 
 .product-miniature__title {
@@ -508,7 +677,6 @@ h1, h2, h3, h4, h5 {
 /* Chrome the reference does not have. */
 .product-miniature__quickview-button,
 .product-miniature__quickview-touch,
-.product-miniature__actions,
 .product-list-review,
 .product-miniature .grade-stars,
 .product-miniature .product-list-comments-number {
@@ -1127,5 +1295,137 @@ input:focus {
   .stz-overlay h2,
   .stz-chisiamo h2 {
     font-size: 17px;
+  }
+}
+
+/* ---------- Faceted filter panel ---------- */
+
+/*
+ * The filter module renders wherever the theme puts it; the rail button just
+ * reveals it in place. Hidden by default so the listing opens clean, as in the
+ * reference, where FILTERS is a word until you ask for it.
+ */
+.zr-filters-panel {
+  display: none;
+  margin: 0 0 40px;
+  padding: 24px 0;
+  border-top: 1px solid var(--stz-hair);
+  border-bottom: 1px solid var(--stz-hair);
+}
+
+.zr-filters-panel.is-open {
+  display: block;
+}
+
+.zr-filters.is-active {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ---------- Rails collapse ---------- */
+
+/*
+ * Below this width the fixed rails would eat most of the viewport, so they stop
+ * being rails. Zeroing --zr-rail collapses the content inset and the full-bleed
+ * negative margins in one move, because both are expressed in that variable.
+ */
+@media (max-width: 1100px) {
+  :root {
+    --zr-rail: 0px;
+  }
+
+  .zr-rail {
+    position: static;
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    pointer-events: auto;
+  }
+
+  .zr-rail__mid {
+    position: static;
+    transform: none;
+    left: auto !important;
+    right: auto !important;
+  }
+
+  .zr-rail--left .zr-rail__mid,
+  .zr-rail--right .zr-rail__mid {
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+  }
+
+  .zr-rail--left {
+    border-bottom: 1px solid var(--stz-hair);
+  }
+
+  .zr-nav {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .zr-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .zr-nav li {
+    margin-bottom: 0;
+  }
+
+  .zr-nav__num {
+    display: none;
+  }
+
+  .zr-filters {
+    margin-top: 0;
+    white-space: nowrap;
+  }
+
+  .zr-mark {
+    position: static;
+    margin: 14px 16px 4px;
+  }
+
+  .zr-rail__top {
+    margin-left: 0;
+  }
+
+  .zr-search input {
+    width: 120px;
+    text-align: left;
+  }
+
+  /* The density switch is a desktop affordance; phones get two columns. */
+  .zr-view {
+    display: none !important;
+  }
+
+  .products,
+  #js-product-list .products,
+  .products.zr-cols-1,
+  .products.zr-cols-3 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .products,
+  #js-product-list .products,
+  .products.zr-cols-1,
+  .products.zr-cols-3 {
+    gap: 24px 8px;
+  }
+
+  .stz-announce {
+    padding: 8px 16px;
   }
 }
