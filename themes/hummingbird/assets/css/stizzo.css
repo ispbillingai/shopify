@@ -156,6 +156,10 @@ h1, h2, h3, h4, h5 {
 
 .zr-rail__top { margin-left: auto; }
 
+/* The middle slot is absolutely positioned, so this is the only child left in
+   flow and space-between would pin it to the top, on top of the menu mark. */
+.zr-rail__bottom { margin-top: auto; }
+
 .zr-rail a,
 .zr-rail button {
   font-size: 11px;
@@ -293,18 +297,24 @@ h1, h2, h3, h4, h5 {
  * than on <body>, so a full-bleed section can still break out of it with a
  * negative margin (see .stz-hero below).
  */
-.columns-container.container,
-#center-column.page {
+.columns-container.container {
   max-width: none;
   width: 100%;
   padding-left: var(--zr-rail);
   padding-right: var(--zr-rail);
 }
 
+/* Must not repeat the inset — it nests inside the container above. */
+#center-column.page {
+  max-width: none;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
 /* The homepage hero ignores the rails and runs edge to edge. */
 .stz-hero,
 .stz-tiles,
-.zr-banner,
 .stz-thankyou,
 .stz-overlay,
 .stz-chisiamo,
@@ -410,6 +420,16 @@ h1, h2, h3, h4, h5 {
   top: auto;
   text-align: left;
   color: var(--stz-white);
+}
+
+/*
+ * These hero banners are cream and gold with the wordmark baked into the
+ * artwork, so white text on them is invisible. A flat panel behind the caption
+ * makes it legible on any photograph — flat, not a gradient, per the house rule.
+ */
+.stz-hero__cta {
+  background: rgba(0, 0, 0, 0.42);
+  padding: 14px 18px;
 }
 
 .stz-hero__kicker {
@@ -587,6 +607,7 @@ h1, h2, h3, h4, h5 {
  */
 .product-miniature__bottom {
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
@@ -693,9 +714,13 @@ h1, h2, h3, h4, h5 {
   list-style: none;
 }
 
+.product-miniature .product-flags .badge,
+.product-miniature .product-flags li,
 .product-flags .badge,
 .product-flags li {
   background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
   color: var(--stz-ink) !important;
   font-size: 10px;
   letter-spacing: 0.12em;
@@ -1563,9 +1588,19 @@ input:focus {
     overflow-x: hidden;
   }
 
+  /*
+   * The hero artwork is 3:2 with the Stizzo wordmark inside the image. Cropping
+   * it to a tall phone viewport cut the wordmark in half, so on phones the
+   * banner is shown whole at its own proportions.
+   */
   .stz-hero__slide img {
-    height: 62vh;
-    min-height: 320px;
+    height: auto;
+    min-height: 0;
+    object-fit: contain;
+  }
+
+  .stz-hero__cta {
+    padding: 10px 12px;
   }
 
   .stz-hero__cta {
@@ -1640,4 +1675,54 @@ input:focus {
   .zr-banner__caption h1 {
     font-size: 15px;
   }
+}
+
+
+/* ---------- Listing controls ---------- */
+
+/*
+ * The sort control ships as a bordered Bootstrap select, which is the loudest
+ * thing on an otherwise silent page. Reduced to a word and a caret.
+ */
+.products__selection select,
+.products-sort-order select,
+#sort-by-select,
+.products__selection .custom-select {
+  border: 0;
+  border-bottom: 1px solid var(--stz-ink);
+  border-radius: 0;
+  background: transparent;
+  padding: 6px 22px 6px 0;
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  font-family: inherit;
+  color: var(--stz-ink);
+  height: auto;
+  box-shadow: none;
+}
+
+.products__selection label,
+.products-sort-order label {
+  font-size: 11px;
+  letter-spacing: var(--stz-track);
+  text-transform: uppercase;
+  color: var(--stz-muted);
+}
+
+/*
+ * The reference carries no breadcrumb. Moved out of sight rather than removed,
+ * so the trail stays in the accessibility tree and in the structured data
+ * PrestaShop emits for search engines.
+ */
+.breadcrumb {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
