@@ -2020,8 +2020,16 @@ body#index .zr-view {
    * bar this size only the button and the price belong, so everything else in
    * it is hidden rather than named one class at a time.
    */
-  .zr-sticky-buy > *:not(.product__add-to-cart):not(.zr-sticky-buy__price) {
+  .zr-sticky-buy > *:not(.product__actions-qty-add):not(.zr-sticky-buy__price) {
     display: none;
+  }
+
+  .zr-sticky-buy .product__actions-qty-add {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
   }
 
   .zr-sticky-buy .quantity-button,
@@ -2029,7 +2037,8 @@ body#index .zr-view {
     display: none;
   }
 
-  .zr-sticky-buy .product__add-to-cart {
+  .zr-sticky-buy .product__add-to-cart,
+  .zr-sticky-buy form {
     flex: 1;
     margin: 0;
   }
@@ -2056,17 +2065,18 @@ body#index .zr-view {
 /* ---------- Product gallery ---------- */
 
 /* The selected thumbnail ships with a blue focus ring; this palette has no blue. */
-.product-images__item--selected,
-.product-images__item.selected,
-.js-thumb.selected,
-.product__thumb.selected,
-.thumb.selected {
-  border: 1px solid var(--stz-ink) !important;
+.product__thumbnail,
+.product__thumbnail-image {
+  border-radius: 0 !important;
   outline: 0 !important;
   box-shadow: none !important;
 }
 
-.product-images__item,
-.js-thumb {
+.product__thumbnail.active .product__thumbnail-image,
+.js-thumb-selected {
+  border: 1px solid var(--stz-ink);
+}
+
+.product__thumbnail-image {
   border: 1px solid transparent;
 }
