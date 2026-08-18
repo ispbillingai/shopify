@@ -40,6 +40,11 @@
 
 /* ---------- Global reset of the vendor's decoration ---------- */
 
+html,
+body {
+  overflow-x: hidden;
+}
+
 body {
   color: var(--stz-ink);
   font-family: var(--stz-font);
@@ -1828,6 +1833,18 @@ body#index .zr-rail--left .zr-rail__mid {
   height: 100vh;
   overflow: hidden;
   background: var(--stz-wash);
+  /* Measured from the viewport, not from the wrapper's padding: the negative
+     margin the other full-bleed sections use left a white strip down one edge
+     here, because this sits inside two nested paddings. */
+  width: 100vw;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+}
+
+/* No product grid on the homepage, so the density switch has nothing to act on
+   and would otherwise sit on top of the previous-frame arrow. */
+body#index .zr-view {
+  display: none !important;
 }
 
 .zr-stage__track {
@@ -1891,11 +1908,11 @@ body#index .zr-rail--left .zr-rail__mid {
  */
 .zr-stage__mark {
   position: absolute;
-  left: 54%;
-  bottom: 8%;
+  left: 44%;
+  bottom: 7%;
   margin: 0;
   font-family: Didot, "Bodoni MT", "Playfair Display", Georgia, "Times New Roman", serif;
-  font-size: clamp(96px, 20.5vw, 350px);
+  font-size: clamp(64px, 13.5vw, 240px);
   line-height: 0.8;
   letter-spacing: -0.005em;
   color: var(--stz-ink);
@@ -1945,9 +1962,9 @@ body#index .zr-rail--left .zr-rail__mid {
   }
 
   .zr-stage__mark {
-    left: 6%;
-    bottom: 10%;
-    font-size: clamp(66px, 29vw, 200px);
+    left: 5%;
+    bottom: 9%;
+    font-size: clamp(52px, 22.5vw, 150px);
   }
 
   .zr-stage__arrow--prev { left: 4px; }
