@@ -1970,3 +1970,59 @@ body#index .zr-view {
   .zr-stage__arrow--prev { left: 4px; }
   .zr-stage__arrow--next { right: 4px; }
 }
+
+
+/* ---------- Phone product page ---------- */
+
+@media (max-width: 1100px) {
+  /* Clears the pinned bar so it never covers the end of the description. */
+  body.zr-has-sticky-buy {
+    padding-bottom: 72px;
+  }
+
+  .zr-sticky-buy {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 950;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+    padding: 10px 14px;
+    background: var(--stz-white);
+    border-top: 1px solid var(--stz-hair);
+  }
+
+  /* Outlined, not filled — the reference's ADD is a white button with a rule. */
+  .zr-sticky-buy .product__add-to-cart-button,
+  .zr-sticky-buy .btn-primary {
+    flex: 1;
+    background: var(--stz-white);
+    color: var(--stz-ink);
+    border: 1px solid var(--stz-ink);
+    padding: 13px 16px;
+    font-size: 11px;
+    letter-spacing: var(--stz-track);
+    text-transform: uppercase;
+  }
+
+  .zr-sticky-buy__price {
+    flex: 0 0 auto;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  /* The quantity stepper has no place on a bar this size. */
+  .zr-sticky-buy .quantity-button,
+  .zr-sticky-buy .product__quantity {
+    display: none;
+  }
+
+  /* The page's own price block stays where it is; the bar carries a copy. */
+  .product__prices {
+    font-size: 15px;
+  }
+}

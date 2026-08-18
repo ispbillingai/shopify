@@ -162,8 +162,46 @@
     }
   }
 
+
+  /*
+   * Phone product page: the reference keeps ADD and the price on a bar pinned to
+   * the bottom of the screen, where a thumb is.
+   *
+   * The price and the button live in different containers, so a copy of the
+   * price is placed in the bar rather than the node itself — PrestaShop replaces
+   * that markup wholesale when a combination changes, which would throw away a
+   * moved node. A MutationObserver keeps the copy honest.
+   */
+  function stickyBuy() {
+    if (!window.matchMedia || !window.matchMedia('(max-width: 1100px)').matches) {
+      return;
+    }
+
+    var bar = document.querySelector('.js-product-add-to-cart');
+    var price = document.querySelector('.js-product-prices');
+
+    if (!bar || !price) {
+      return;
+    }
+
+    var shown = document.createElement('div');
+    shown.className = 'zr-sticky-buy__price';
+    shown.innerHTML = price.innerHTML;
+
+    bar.classList.add('zr-sticky-buy');
+    bar.appendChild(shown);
+    document.body.classList.add('zr-has-sticky-buy');
+
+    if (window.MutationObserver) {
+      new MutationObserver(function () {
+        shown.innerHTML = price.innerHTML;
+      }).observe(price, { childList: true, subtree: true, characterData: true });
+    }
+  }
+
   ready(function () {
     drawer();
+    stickyBuy();
     columnSwitch();
     filterToggle();
     markActiveCategory();
