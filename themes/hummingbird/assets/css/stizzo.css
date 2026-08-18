@@ -589,16 +589,22 @@ h1, h2, h3, h4, h5 {
 }
 
 /*
- * The tall portrait frame is what makes the grid read as editorial, but every
- * product image in this catalogue is square (250x250, 261x261, …). Cropping
- * them to 3:4 would take a quarter off each photo and behead the rings and
- * pendants, so the frame stays tall and the photo is contained inside it,
- * centred on the wash. Nothing is cut; the whitespace does the work.
+ * A square frame, because every product photograph in this catalogue is square.
+ *
+ * The 3:4 portrait frame the reference uses works there because their imagery is
+ * portrait. Here it made a card ~620px wide and ~830px tall, with a square photo
+ * floating in the middle of it and 200px of empty wash underneath — the product
+ * was genuinely hard to find on the page. Matching the frame to the source means
+ * the photograph fills it edge to edge with nothing wasted.
+ *
+ * max-height keeps it sane on very wide screens, where a 1fr column can
+ * otherwise grow past anything worth looking at.
  */
 .product-miniature__image {
   width: 100%;
   height: auto;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 1 / 1;
+  max-height: 620px;
   object-fit: contain;
   background: var(--stz-wash);
   display: block;
@@ -1073,11 +1079,11 @@ input:focus {
   gap: 2px;
 }
 
-/* Same reasoning as the category grid: contain, never crop the jewellery. */
+/* Same reasoning as the category grid: a square frame matching the source. */
 .stz-product img {
   width: 100%;
   height: auto;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 1 / 1;
   object-fit: contain;
   display: block;
   background: var(--stz-wash);
