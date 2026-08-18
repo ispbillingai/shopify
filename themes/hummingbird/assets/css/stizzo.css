@@ -2015,14 +2015,58 @@ body#index .zr-view {
     white-space: nowrap;
   }
 
-  /* The quantity stepper has no place on a bar this size. */
+  /*
+   * The container also holds the stock warning and the quantity stepper. On a
+   * bar this size only the button and the price belong, so everything else in
+   * it is hidden rather than named one class at a time.
+   */
+  .zr-sticky-buy > *:not(.product__add-to-cart):not(.zr-sticky-buy__price) {
+    display: none;
+  }
+
   .zr-sticky-buy .quantity-button,
   .zr-sticky-buy .product__quantity {
     display: none;
+  }
+
+  .zr-sticky-buy .product__add-to-cart {
+    flex: 1;
+    margin: 0;
+  }
+
+  /* "Add to cart" with a trolley glyph wrapped onto two lines; the reference
+     just says ADD. */
+  .zr-sticky-buy .product__add-to-cart-button i,
+  .zr-sticky-buy .product__add-to-cart-button .material-icons {
+    display: none;
+  }
+
+  .zr-sticky-buy .product__add-to-cart-button {
+    white-space: nowrap;
+    width: 100%;
   }
 
   /* The page's own price block stays where it is; the bar carries a copy. */
   .product__prices {
     font-size: 15px;
   }
+}
+
+
+/* ---------- Product gallery ---------- */
+
+/* The selected thumbnail ships with a blue focus ring; this palette has no blue. */
+.product-images__item--selected,
+.product-images__item.selected,
+.js-thumb.selected,
+.product__thumb.selected,
+.thumb.selected {
+  border: 1px solid var(--stz-ink) !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.product-images__item,
+.js-thumb {
+  border: 1px solid transparent;
 }
