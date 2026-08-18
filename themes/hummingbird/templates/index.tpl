@@ -13,29 +13,49 @@
     <div id="center-column" class="center-column page">
       <div id="content" class="page-content page-content--home stz-home">
 
-        {* ---------- Hero slider ---------- *}
-        <section class="stz-hero" id="stz-hero">
-          <div class="stz-hero__track">
+        {* ---------- Stage ----------
+         * Full-viewport slides, each a two-up split of portrait photography,
+         * with the wordmark set large across the lower right and the campaign
+         * line at top left. The hero-*.png files are deliberately not used here:
+         * they are landscape and already carry the Stizzo wordmark inside the
+         * artwork, which would collide with the one drawn over the top. They
+         * still serve the category banners, where that baked-in mark is wanted.
+         *}
+        <section class="zr-stage" id="zr-stage">
+          <div class="zr-stage__track">
             {$slides = [
-              ['img' => 'hero-1.png', 'label' => 'ORECCHINI A CERCHIO'],
-              ['img' => 'hero-2.png', 'label' => 'COLLANE DONNA'],
-              ['img' => 'hero-3.png', 'label' => 'BRACCIALI'],
-              ['img' => 'hero-4.png', 'label' => 'ANELLI'],
-              ['img' => 'hero-5.png', 'label' => 'GIOIELLI UOMO'],
-              ['img' => 'hero-6.png', 'label' => "NOVITA'"]
+              ['a' => 'tile-donna.webp',     'b' => 'swarovski-hero.png',
+               'kicker' => 'La collezione',  'line' => 'Gioielli da donna',
+               'sa' => 'Donna',              'sb' => 'Swarovski'],
+              ['a' => 'tile-uomo.jpg',       'b' => 'review-ring.jpg',
+               'kicker' => 'Il pezzo',       'line' => 'Anello filo della vita',
+               'sa' => 'Uomo',               'sb' => 'Anello'],
+              ['a' => 'tile-bimbo.jpg',      'b' => 'thankyou.jpg',
+               'kicker' => 'Le novita',      'line' => 'Gioielli bambino',
+               'sa' => 'Bambino',            'sb' => 'Novita']
             ]}
             {foreach $slides as $slide}
-              <div class="stz-hero__slide">
-                <img src="{$stzImg}/{$slide.img}" alt="{$slide.label}" {if !$slide@first}loading="lazy"{/if}>
-                <div class="stz-hero__cta">
-                  <span class="stz-hero__kicker">SCOPRI LA COLLEZIONE</span>
-                  <a class="stz-btn stz-btn--light" href="{$urls.pages.search}?s={$slide.label|escape:'url'}">{$slide.label}</a>
+              <article class="zr-stage__slide">
+                <a class="zr-stage__half" href="{$urls.pages.search}?s={$slide.sa|escape:'url'}">
+                  <img src="{$stzImg}/{$slide.a}" alt="{$slide.sa}" {if !$slide@first}loading="lazy"{/if}>
+                </a>
+                <a class="zr-stage__half zr-stage__half--b" href="{$urls.pages.search}?s={$slide.sb|escape:'url'}">
+                  <img src="{$stzImg}/{$slide.b}" alt="{$slide.sb}" loading="lazy">
+                </a>
+
+                <div class="zr-stage__editorial">
+                  <p class="zr-stage__kicker">{$slide.kicker}</p>
+                  <p class="zr-stage__line">{$slide.line}</p>
                 </div>
-              </div>
+              </article>
             {/foreach}
           </div>
-          <button class="stz-hero__arrow stz-hero__arrow--prev" aria-label="Precedente">&#8249;</button>
-          <button class="stz-hero__arrow stz-hero__arrow--next" aria-label="Successiva">&#8250;</button>
+
+          {* Drawn as text, not the 300px logo file, so it stays crisp at this size. *}
+          <span class="zr-stage__mark" aria-hidden="true">STIZZO</span>
+
+          <button class="zr-stage__arrow zr-stage__arrow--prev" aria-label="Precedente">&#8592;</button>
+          <button class="zr-stage__arrow zr-stage__arrow--next" aria-label="Successiva">&#8594;</button>
         </section>
 
         {* ---------- Category tiles ---------- *}
@@ -152,17 +172,17 @@
 
     <script>
     (function() {
-      var hero = document.getElementById('stz-hero');
+      var hero = document.getElementById('zr-stage');
       if (!hero) return;
-      var track = hero.querySelector('.stz-hero__track');
+      var track = hero.querySelector('.zr-stage__track');
       var count = track.children.length, i = 0, timer;
       function go(n) {
         i = (n + count) % count;
         track.style.transform = 'translateX(-' + (i * 100) + '%)';
       }
       function auto() { timer = setInterval(function() { go(i + 1); }, 6000); }
-      hero.querySelector('.stz-hero__arrow--prev').addEventListener('click', function() { clearInterval(timer); go(i - 1); auto(); });
-      hero.querySelector('.stz-hero__arrow--next').addEventListener('click', function() { clearInterval(timer); go(i + 1); auto(); });
+      hero.querySelector('.zr-stage__arrow--prev').addEventListener('click', function() { clearInterval(timer); go(i - 1); auto(); });
+      hero.querySelector('.zr-stage__arrow--next').addEventListener('click', function() { clearInterval(timer); go(i + 1); auto(); });
       auto();
     })();
     </script>

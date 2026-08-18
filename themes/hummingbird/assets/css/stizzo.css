@@ -27,6 +27,9 @@
   --stz-hair: rgba(0, 0, 0, 0.14);
   --stz-wash: #f4f4f4;
   --stz-sale: #c00;
+  /* Campaign accent, used only by the stage editorial line. One value to
+     change if the shop would rather that type were black. */
+  --stz-editorial: #c8102e;
 
   --stz-font: "Helvetica Neue", Helvetica, Arial, -apple-system,
               BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -313,6 +316,7 @@ h1, h2, h3, h4, h5 {
 }
 
 /* The homepage hero ignores the rails and runs edge to edge. */
+.zr-stage,
 .stz-hero,
 .stz-tiles,
 .stz-thankyou,
@@ -1489,21 +1493,64 @@ input:focus {
     outline: none;
   }
 
-  .zr-drawer__nav {
+  /* Audiences as large serif tabs, as in the reference's phone menu. */
+  .zr-drawer__tabs {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    margin-bottom: 22px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .zr-drawer__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .zr-drawer__tabs a {
+    font-family: Didot, "Bodoni MT", "Playfair Display", Georgia, serif;
+    font-size: 27px;
+    letter-spacing: 0.01em;
+    color: var(--stz-ink);
+    white-space: nowrap;
+    padding-bottom: 4px;
+  }
+
+  /* Number in its own column, links beside it. */
+  .zr-drawer__section {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .zr-drawer__num {
+    margin: 0;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--stz-ink);
+    line-height: 1.6;
+  }
+
+  .zr-drawer__num span {
+    color: var(--stz-muted);
+  }
+
+  .zr-drawer__section ul {
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  .zr-drawer__nav a,
+  .zr-drawer__section a,
   .zr-drawer__foot a {
     display: block;
-    padding: 15px 0;
-    font-size: 14px;
-    letter-spacing: 0.14em;
+    padding: 11px 0;
+    font-size: 13px;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--stz-ink);
-    border-bottom: 1px solid var(--stz-hair);
+    border-bottom: 0;
   }
 
   .zr-drawer__foot {
@@ -1753,4 +1800,156 @@ input:focus {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+
+/* ---------- Homepage stage ---------- */
+
+/*
+ * The homepage is one full-viewport frame at a time, each a two-up split of
+ * photography, with the wordmark set large across the lower right and the
+ * campaign line at top left. Nothing is inset and nothing is centred in a box.
+ *
+ * On the homepage the category rail is hidden — the reference shows only the
+ * menu mark there — and the announcement strip is dropped so the first frame
+ * really does fill the window.
+ */
+
+body#index .stz-announce {
+  display: none;
+}
+
+body#index .zr-rail--left .zr-rail__mid {
+  display: none;
+}
+
+.zr-stage {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--stz-wash);
+}
+
+.zr-stage__track {
+  display: flex;
+  height: 100%;
+  transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.zr-stage__slide {
+  position: relative;
+  min-width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.zr-stage__half {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+}
+
+.zr-stage__half img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.zr-stage__editorial {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 22px 28px;
+  max-width: 58%;
+  pointer-events: none;
+}
+
+.zr-stage__kicker {
+  margin: 0;
+  font-size: clamp(38px, 8.4vw, 130px);
+  line-height: 0.92;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--stz-editorial);
+}
+
+.zr-stage__line {
+  margin: 4px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--stz-editorial);
+}
+
+/*
+ * Set as text rather than the logo file: that asset is 300px wide and would be
+ * a blur at this size. Allowed to run past the right edge, which the reference
+ * does too — the stage clips it.
+ */
+.zr-stage__mark {
+  position: absolute;
+  left: 54%;
+  bottom: 8%;
+  margin: 0;
+  font-family: Didot, "Bodoni MT", "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: clamp(96px, 20.5vw, 350px);
+  line-height: 0.8;
+  letter-spacing: -0.005em;
+  color: var(--stz-ink);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.zr-stage__arrow {
+  position: absolute;
+  bottom: 20px;
+  background: none;
+  border: 0;
+  padding: 10px 14px;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--stz-ink);
+  cursor: pointer;
+  z-index: 3;
+}
+
+.zr-stage__arrow--prev { left: 18px; }
+.zr-stage__arrow--next { right: 18px; }
+
+@media (max-width: 1100px) {
+  /* One image per frame on a phone; a half-width crop of a portrait photograph
+     is too narrow to read as anything. */
+  .zr-stage {
+    height: calc(100vh - 60px);
+    min-height: 460px;
+  }
+
+  .zr-stage__slide {
+    grid-template-columns: 1fr;
+  }
+
+  .zr-stage__half--b {
+    display: none;
+  }
+
+  .zr-stage__editorial {
+    padding: 14px 16px;
+    max-width: 94%;
+  }
+
+  .zr-stage__kicker {
+    font-size: clamp(34px, 13vw, 76px);
+  }
+
+  .zr-stage__mark {
+    left: 6%;
+    bottom: 10%;
+    font-size: clamp(66px, 29vw, 200px);
+  }
+
+  .zr-stage__arrow--prev { left: 4px; }
+  .zr-stage__arrow--next { right: 4px; }
 }

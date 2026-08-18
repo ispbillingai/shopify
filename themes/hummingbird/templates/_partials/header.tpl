@@ -47,21 +47,42 @@
     </div>
   </div>
 
-  {* ---------- phone: drawer ---------- *}
+  {* ---------- phone: drawer ----------
+   * Shaped after the reference's phone menu: the audiences as large serif tabs
+   * across the top, then the catalogue in numbered sections with the number in
+   * its own left column.
+   *}
   <div class="zr-drawer" id="zr-drawer" hidden>
+    <div class="zr-drawer__tabs">
+      {foreach ['Donna', 'Uomo', 'Bambino'] as $tab}
+        <a href="{$urls.pages.search}?s={$tab|escape:'url'}">{$tab}</a>
+      {/foreach}
+    </div>
+
     <form class="zr-drawer__search" action="{$urls.pages.search}" method="get" role="search">
       <input type="text" name="s" placeholder="{l s='Search' d='Shop.Theme.Global'}"
              aria-label="{l s='Search' d='Shop.Theme.Global'}">
     </form>
 
     <nav aria-label="{l s='Categories' d='Shop.Theme.Global'}">
-      <ol class="zr-drawer__nav">
-        {foreach $zrNav as $item}
-          <li>
-            <a href="{if $item@first}{$urls.pages.prices_drop}{else}{$urls.pages.search}?s={$item|escape:'url'}{/if}">{$item}</a>
-          </li>
-        {/foreach}
-      </ol>
+      {$zrSections = [
+        ['title' => 'Novita',    'items' => ['Vedi tutto', 'Special Events', 'Super Saldi']],
+        ['title' => 'Collezione', 'items' => ['Oro 18 Carati', 'Oro 9 Carati', 'Oro&Diamanti', 'Brand', 'Borse', 'Accessori']]
+      ]}
+      {foreach $zrSections as $section}
+        <div class="zr-drawer__section">
+          <p class="zr-drawer__num">
+            |{($section@iteration)|string_format:"%02d"}| <span>{$section.title}</span>
+          </p>
+          <ul>
+            {foreach $section.items as $item}
+              <li>
+                <a href="{if $item == 'Vedi tutto'}{$urls.pages.prices_drop}{else}{$urls.pages.search}?s={$item|escape:'url'}{/if}">{$item}</a>
+              </li>
+            {/foreach}
+          </ul>
+        </div>
+      {/foreach}
     </nav>
 
     <div class="zr-drawer__foot">
