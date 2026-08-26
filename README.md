@@ -144,10 +144,12 @@ changed URL. PHP responses are untouched, so PrestaShop keeps sending its own
 
 ⚠️ **Because `.css` and `.js` are now cached for a week, our own module assets
 must be versioned** or an edit will not reach anyone already logged in.
-`shopifylook` and `shopfloor` both append `?v=<module version>`; bump the
-module's `$this->version` when you change its CSS or JS. `Media::getMediaPath()`
-checks `file_exists` against the path only and re-appends the query, so a version
-string is safe there.
+Both admin modules append a `?v=`: `shopifylook` uses its `$this->version`, and
+`shopfloor` uses a dedicated `ShopFloor::ASSET_V` constant — bumping a module's
+version makes PrestaShop hunt for an upgrade script, which that module has no
+need of. The storefront skin is versioned by hand in `head.tpl`.
+`Media::getMediaPath()` checks `file_exists` against the path only and re-appends
+the query, so a version string is safe there.
 
 ---
 
