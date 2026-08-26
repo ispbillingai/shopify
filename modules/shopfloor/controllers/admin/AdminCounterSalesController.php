@@ -19,7 +19,7 @@ class AdminCounterSalesController extends ShopFloorAdminController
 {
     public function initPageHeaderToolbar(): void
     {
-        $this->page_header_toolbar_title = $this->trans('Counter sales', [], 'Modules.Shopfloor.Admin');
+        $this->page_header_toolbar_title = ShopFloorLang::get('counter_title');
 
         parent::initPageHeaderToolbar();
     }
@@ -28,7 +28,7 @@ class AdminCounterSalesController extends ShopFloorAdminController
     {
         parent::setMedia($isNewTheme);
 
-        $this->addJS(_MODULE_DIR_ . 'shopfloor/views/js/counter.js?v=' . $this->module->version);
+        $this->addJS(_MODULE_DIR_ . 'shopfloor/views/js/counter.js?v=' . ShopFloor::ASSET_V);
     }
 
     public function renderView(): string
@@ -49,13 +49,13 @@ class AdminCounterSalesController extends ShopFloorAdminController
         $lines = json_decode((string) Tools::getValue('lines', '[]'), true);
 
         if (!is_array($lines) || $lines === []) {
-            $this->fail($this->trans('The ticket is empty.', [], 'Modules.Shopfloor.Admin'));
+            $this->fail(ShopFloorLang::get('err_ticket_empty'));
         }
 
         $payment = (string) Tools::getValue('payment', ShopFloorSale::PAYMENT_CASH);
 
         if (!in_array($payment, [ShopFloorSale::PAYMENT_CASH, ShopFloorSale::PAYMENT_CARD], true)) {
-            $this->fail($this->trans('Unknown payment method.', [], 'Modules.Shopfloor.Admin'));
+            $this->fail(ShopFloorLang::get('err_unknown_payment'));
         }
 
         $clean = [];

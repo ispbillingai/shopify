@@ -21,6 +21,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+require_once __DIR__ . '/classes/ShopFloorLang.php';
 require_once __DIR__ . '/classes/ShopFloorLedger.php';
 require_once __DIR__ . '/classes/ShopFloorCatalog.php';
 require_once __DIR__ . '/classes/ShopFloorSale.php';
@@ -30,6 +31,16 @@ class ShopFloor extends PaymentModule
     public const CONF_CUSTOMER = 'SHOPFLOOR_ID_CUSTOMER';
     public const CONF_ADDRESS = 'SHOPFLOOR_ID_ADDRESS';
     public const CONF_CARRIER = 'SHOPFLOOR_ID_CARRIER';
+
+    /**
+     * Cache-buster for this module's CSS and JS.
+     *
+     * Deliberately not $this->version: the vhost caches .css and .js for a week,
+     * so every asset edit needs a new URL, but bumping the module version makes
+     * PrestaShop look for an upgrade script that does not exist. Bump this
+     * instead whenever the stylesheet or a script changes.
+     */
+    public const ASSET_V = '2';
 
     /**
      * Raised for the duration of a counter sale so the order confirmation email
@@ -231,12 +242,7 @@ class ShopFloor extends PaymentModule
         $route = $this->resolveCounterRoute();
 
         if ($route === null) {
-            $this->_errors[] = $this->trans(
-                'No free carrier is available for any active country, so counter sales '
-                . 'could not be set up. Create a free "pick up in store" carrier, then install this module again.',
-                [],
-                'Modules.Shopfloor.Admin'
-            );
+            $this->_errors[] = ShopFloorLang::get('err_carrier');
 
             return false;
         }
@@ -342,7 +348,7 @@ class ShopFloor extends PaymentModule
         $customer->active = true;
 
         if (!$customer->add()) {
-            $this->_errors[] = $this->trans('The counter customer could not be created.', [], 'Modules.Shopfloor.Admin');
+            $this->_errors[] = ShopFloorLang::get('err_customer');
 
             return null;
         }
@@ -378,7 +384,7 @@ class ShopFloor extends PaymentModule
         }
 
         if (!$address->add()) {
-            $this->_errors[] = $this->trans('The counter address could not be created.', [], 'Modules.Shopfloor.Admin');
+            $this->_errors[] = ShopFloorLang::get('err_address');
 
             return null;
         }
@@ -478,7 +484,7 @@ class ShopFloor extends PaymentModule
         }
 
         // Versioned because the vhost caches .css for a week.
-        $this->context->controller->addCSS($this->_path . 'views/css/shopfloor.css?v=' . $this->version, 'all', null, false);
+        $this->context->controller->addCSS($this->_path . 'views/css/shopfloor.css?v=' . self::ASSET_V, 'all', null, false);
     }
 
     /**

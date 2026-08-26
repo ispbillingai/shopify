@@ -17,6 +17,33 @@
 
     var endpoint = root.dataset.endpoint;
 
+    /*
+     * Copy for the parts of the screen the browser builds. The map arrives on
+     * the root element's data-lang, put there by the template, so the strings
+     * come from the same lang/<iso>.php file as the server-rendered ones and
+     * there is no second place to translate.
+     */
+    var L = (function () {
+        try {
+            return JSON.parse(root.dataset.lang || '{}');
+        } catch (error) {
+            return {};
+        }
+    }());
+
+    function t(key, fallback, replace) {
+        var text = L[key] || fallback;
+
+        if (replace) {
+            Object.keys(replace).forEach(function (token) {
+                text = text.split(token).join(replace[token]);
+            });
+        }
+
+        return text;
+    }
+
+
     var searchInput = document.getElementById('shopfloor-search');
     var resultsBox = document.getElementById('shopfloor-results');
     var selectedBox = document.getElementById('shopfloor-selected');
@@ -75,7 +102,7 @@
                 try {
                     return JSON.parse(text);
                 } catch (error) {
-                    throw new Error('The server did not answer properly. Reload the page and sign in again.');
+                    throw new Error(t('err_server', 'The server did not answer properly. Reload the page and sign in again.'));
                 }
             });
         });
@@ -88,7 +115,8 @@
         resultsBox.innerHTML = '';
 
         if (!rows.length) {
-            resultsBox.innerHTML = '<p class="shopfloor__empty">Nothing found.</p>';
+            resultsBox.innerHTML = '<p class="shopfloor__empty"></p>';
+            resultsBox.firstChild.textContent = t('nothing_found', 'Nothing found.');
 
             return;
         }
@@ -107,7 +135,7 @@
             if (!row.active) {
                 var badge = document.createElement('span');
                 badge.className = 'shopfloor__badge';
-                badge.textContent = 'not online';
+                badge.textContent = t('not_online', 'not online');
                 left.appendChild(badge);
             }
 
@@ -121,7 +149,7 @@
 
             var stock = document.createElement('span');
             stock.className = 'shopfloor__result-stock' + (row.quantity <= 0 ? ' is-empty' : '');
-            stock.textContent = row.quantity + ' in stock';
+            stock.textContent = row.quantity + ' ' + t('in_stock', 'in stock');
             right.appendChild(stock);
 
             button.appendChild(left);
@@ -137,7 +165,8 @@
     function search(term) {
         if (term.trim().length < 2) {
             lastResults = [];
-            resultsBox.innerHTML = '<p class="shopfloor__empty">Results appear here.</p>';
+            resultsBox.innerHTML = '<p class="shopfloor__empty"></p>';
+            resultsBox.firstChild.textContent = t('results_here', 'Results appear here.');
 
             return;
         }
@@ -204,7 +233,7 @@
         var quantity = parseInt(quantityInput.value, 10);
 
         if (isNaN(quantity) || quantity < 0) {
-            showError('Enter a quantity.');
+            showError(t('err_enter_quantity', 'Enter a quantity.'));
 
             return;
         }
@@ -267,7 +296,7 @@
             var cell = document.createElement('td');
             cell.colSpan = 8;
             cell.className = 'shopfloor__empty';
-            cell.textContent = 'Nothing loaded yet.';
+            cell.textContent = t('nothing_loaded', 'Nothing loaded yet.');
             empty.appendChild(cell);
             body.appendChild(empty);
 
@@ -281,7 +310,7 @@
                 movement.date_display + ' ' + movement.time_display,
                 movement.product_name,
                 movement.reference,
-                movement.type
+                movement.type_display || movement.type
             ].forEach(function (value) {
                 var cell = document.createElement('td');
                 cell.textContent = value;

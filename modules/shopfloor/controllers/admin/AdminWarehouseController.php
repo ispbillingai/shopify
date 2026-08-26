@@ -22,7 +22,7 @@ class AdminWarehouseController extends ShopFloorAdminController
 
     public function initPageHeaderToolbar(): void
     {
-        $this->page_header_toolbar_title = $this->trans('Warehouse', [], 'Modules.Shopfloor.Admin');
+        $this->page_header_toolbar_title = ShopFloorLang::get('warehouse_title');
 
         parent::initPageHeaderToolbar();
     }
@@ -31,7 +31,7 @@ class AdminWarehouseController extends ShopFloorAdminController
     {
         parent::setMedia($isNewTheme);
 
-        $this->addJS(_MODULE_DIR_ . 'shopfloor/views/js/warehouse.js?v=' . $this->module->version);
+        $this->addJS(_MODULE_DIR_ . 'shopfloor/views/js/warehouse.js?v=' . ShopFloor::ASSET_V);
     }
 
     public function renderView(): string
@@ -52,7 +52,7 @@ class AdminWarehouseController extends ShopFloorAdminController
         $quantity = (int) Tools::getValue('quantity', 0);
 
         if ($quantity < 1 || $quantity > self::MAX_UNITS) {
-            $this->fail($this->trans('Enter how many units arrived.', [], 'Modules.Shopfloor.Admin'));
+            $this->fail(ShopFloorLang::get('err_enter_arrived'));
         }
 
         $this->applyAndRespond($quantity, ShopFloorLedger::TYPE_INTAKE);
@@ -67,7 +67,7 @@ class AdminWarehouseController extends ShopFloorAdminController
         $target = (int) Tools::getValue('quantity', -1);
 
         if ($target < 0 || $target > self::MAX_UNITS) {
-            $this->fail($this->trans('Enter the quantity actually on the shelf.', [], 'Modules.Shopfloor.Admin'));
+            $this->fail(ShopFloorLang::get('err_enter_shelf'));
         }
 
         [$idProduct, $idProductAttribute] = $this->requireProduct();
@@ -79,7 +79,7 @@ class AdminWarehouseController extends ShopFloorAdminController
         );
 
         if ($current === $target) {
-            $this->fail($this->trans('That is already the recorded quantity.', [], 'Modules.Shopfloor.Admin'));
+            $this->fail(ShopFloorLang::get('err_same_quantity'));
         }
 
         $this->applyAndRespond($target - $current, ShopFloorLedger::TYPE_CORRECTION);
@@ -115,7 +115,7 @@ class AdminWarehouseController extends ShopFloorAdminController
         $idProductAttribute = (int) Tools::getValue('id_product_attribute', 0);
 
         if ($idProduct <= 0 || ShopFloorCatalog::find($idProduct, $idProductAttribute) === null) {
-            $this->fail($this->trans('Pick a product first.', [], 'Modules.Shopfloor.Admin'));
+            $this->fail(ShopFloorLang::get('err_pick_product'));
         }
 
         return [$idProduct, $idProductAttribute];
@@ -130,6 +130,8 @@ class AdminWarehouseController extends ShopFloorAdminController
     {
         return array_map(static function (array $movement): array {
             $movement['delta_display'] = ((int) $movement['delta'] > 0 ? '+' : '') . (int) $movement['delta'];
+            // 'intake' / 'correction' / 'sale' are storage values, not labels.
+            $movement['type_display'] = ShopFloorLang::get('type_' . (string) $movement['type']);
             $movement['time_display'] = date('H:i', strtotime((string) $movement['date_add']));
             $movement['date_display'] = date('d/m/Y', strtotime((string) $movement['date_add']));
 

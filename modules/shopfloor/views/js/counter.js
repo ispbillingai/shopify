@@ -19,6 +19,33 @@
     var endpoint = root.dataset.endpoint;
     var currency = root.dataset.currency || '';
 
+    /*
+     * Copy for the parts of the screen the browser builds. The map arrives on
+     * the root element's data-lang, put there by the template, so the strings
+     * come from the same lang/<iso>.php file as the server-rendered ones and
+     * there is no second place to translate.
+     */
+    var L = (function () {
+        try {
+            return JSON.parse(root.dataset.lang || '{}');
+        } catch (error) {
+            return {};
+        }
+    }());
+
+    function t(key, fallback, replace) {
+        var text = L[key] || fallback;
+
+        if (replace) {
+            Object.keys(replace).forEach(function (token) {
+                text = text.split(token).join(replace[token]);
+            });
+        }
+
+        return text;
+    }
+
+
     var searchInput = document.getElementById('shopfloor-search');
     var resultsBox = document.getElementById('shopfloor-results');
     var ticketBox = document.getElementById('shopfloor-ticket');
@@ -80,7 +107,7 @@
                     return JSON.parse(text);
                 } catch (error) {
                     // A PHP notice or an expired session lands here as HTML.
-                    throw new Error('The server did not answer properly. Reload the page and sign in again.');
+                    throw new Error(t('err_server', 'The server did not answer properly. Reload the page and sign in again.'));
                 }
             });
         });
@@ -93,7 +120,8 @@
         resultsBox.innerHTML = '';
 
         if (!rows.length) {
-            resultsBox.innerHTML = '<p class="shopfloor__empty">Nothing found.</p>';
+            resultsBox.innerHTML = '<p class="shopfloor__empty"></p>';
+            resultsBox.firstChild.textContent = t('nothing_found', 'Nothing found.');
 
             return;
         }
@@ -116,7 +144,7 @@
             if (!row.active) {
                 var badge = document.createElement('span');
                 badge.className = 'shopfloor__badge';
-                badge.textContent = 'not online';
+                badge.textContent = t('not_online', 'not online');
                 left.appendChild(badge);
             }
 
@@ -135,7 +163,9 @@
 
             var stock = document.createElement('span');
             stock.className = 'shopfloor__result-stock' + (row.quantity <= 0 ? ' is-empty' : '');
-            stock.textContent = row.quantity > 0 ? row.quantity + ' in stock' : 'out of stock';
+            stock.textContent = row.quantity > 0
+                ? row.quantity + ' ' + t('in_stock', 'in stock')
+                : t('out_of_stock', 'out of stock');
             right.appendChild(stock);
 
             button.appendChild(left);
@@ -151,7 +181,8 @@
     function search(term) {
         if (term.trim().length < 2) {
             lastResults = [];
-            resultsBox.innerHTML = '<p class="shopfloor__empty">Results appear here.</p>';
+            resultsBox.innerHTML = '<p class="shopfloor__empty"></p>';
+            resultsBox.firstChild.textContent = t('results_here', 'Results appear here.');
 
             return;
         }
@@ -171,7 +202,7 @@
 
     function addToTicket(row) {
         if (row.quantity <= 0) {
-            showError(row.label + ' is out of stock.');
+            showError(t('err_out_of_stock', '%p is out of stock.', {'%p': row.label}));
 
             return;
         }
@@ -183,7 +214,7 @@
 
         if (existing) {
             if (existing.quantity + 1 > row.quantity) {
-                showError('Only ' + row.quantity + ' of ' + row.label + ' in stock.');
+                showError(t('err_only_n_of', 'Only %n of %p in stock.', {'%n': row.quantity, '%p': row.label}));
 
                 return;
             }
@@ -212,7 +243,7 @@
         var next = line.quantity + delta;
 
         if (next > line.available) {
-            showError('Only ' + line.available + ' of ' + line.label + ' in stock.');
+            showError(t('err_only_n_of', 'Only %n of %p in stock.', {'%n': line.available, '%p': line.label}));
 
             return;
         }
@@ -231,7 +262,8 @@
         ticketBox.innerHTML = '';
 
         if (!ticket.length) {
-            ticketBox.innerHTML = '<p class="shopfloor__empty">Nothing on the ticket yet.</p>';
+            ticketBox.innerHTML = '<p class="shopfloor__empty"></p>';
+            ticketBox.firstChild.textContent = t('ticket_empty', 'Nothing on the ticket yet.');
         }
 
         ticket.forEach(function (line, index) {
@@ -279,7 +311,7 @@
             remove.type = 'button';
             remove.className = 'shopfloor__remove';
             remove.textContent = '×';
-            remove.setAttribute('aria-label', 'Remove');
+            remove.setAttribute('aria-label', t('remove', 'Remove'));
             remove.addEventListener('click', function () {
                 ticket.splice(index, 1);
                 renderTicket();
@@ -302,7 +334,8 @@
         searchInput.value = '';
         searchInput.focus();
         lastResults = [];
-        resultsBox.innerHTML = '<p class="shopfloor__empty">Results appear here.</p>';
+        resultsBox.innerHTML = '<p class="shopfloor__empty"></p>';
+            resultsBox.firstChild.textContent = t('results_here', 'Results appear here.');
     }
 
     // ------------------------------------------------------------- payment
@@ -325,8 +358,8 @@
         var due = total();
 
         changeOut.textContent = tendered >= due
-            ? 'Change ' + money(tendered - due)
-            : 'Short by ' + money(due - tendered);
+            ? t('change', 'Change') + ' ' + money(tendered - due)
+            : t('short_by', 'Short by') + ' ' + money(due - tendered);
     }
 
     // ------------------------------------------------------------ checkout
@@ -371,7 +404,7 @@
 
     function showReceipt(data) {
         document.getElementById('shopfloor-receipt-reference').textContent =
-            'Order ' + data.reference;
+            t('order', 'Order') + ' ' + data.reference;
 
         var lines = document.getElementById('shopfloor-receipt-lines');
         lines.innerHTML = '';

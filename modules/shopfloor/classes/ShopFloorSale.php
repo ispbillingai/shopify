@@ -30,7 +30,7 @@ class ShopFloorSale
     public static function ring(ShopFloor $module, array $lines, string $payment, string $note = ''): array
     {
         if ($lines === []) {
-            throw new RuntimeException('The ticket is empty.');
+            throw new RuntimeException(ShopFloorLang::get('err_ticket_empty'));
         }
 
         $context = Context::getContext();
@@ -40,9 +40,7 @@ class ShopFloorSale
         $idCarrier = (int) Configuration::get(ShopFloor::CONF_CARRIER);
 
         if (!Validate::isLoadedObject($customer) || !Validate::isLoadedObject($address) || !$idCarrier) {
-            throw new RuntimeException(
-                'The counter is not set up. Reinstall the "Counter sales & warehouse" module.'
-            );
+            throw new RuntimeException(ShopFloorLang::get('err_not_setup'));
         }
 
         $cart = self::buildCart($context, $customer, $address, $idCarrier);
@@ -62,7 +60,7 @@ class ShopFloorSale
             $quantity = (int) $line['quantity'];
 
             if ($idProduct <= 0 || $quantity <= 0) {
-                throw new RuntimeException('A ticket line is missing a product or a quantity.');
+                throw new RuntimeException(ShopFloorLang::get('err_line_incomplete'));
             }
 
             $key = $idProduct . '-' . $idProductAttribute;
@@ -101,7 +99,7 @@ class ShopFloorSale
         $idOrder = (int) $module->currentOrder;
 
         if (!$idOrder) {
-            throw new RuntimeException('PrestaShop did not return an order for this ticket.');
+            throw new RuntimeException(ShopFloorLang::get('err_no_order'));
         }
 
         self::recordLines($lines, $stockBefore, (int) $cart->id_shop, $idOrder, $note);
@@ -133,7 +131,7 @@ class ShopFloorSale
         $cart->secure_key = $customer->secure_key;
 
         if (!$cart->add()) {
-            throw new RuntimeException('The till could not open a cart for this sale.');
+            throw new RuntimeException(ShopFloorLang::get('err_cart'));
         }
 
         return $cart;
@@ -150,21 +148,16 @@ class ShopFloorSale
         $available = (int) StockAvailable::getQuantityAvailableByProduct($idProduct, $idProductAttribute, $idShop);
 
         if ($available < $quantity) {
-            return sprintf(
-                '%s: only %d in stock, %d asked for. Load the goods in the warehouse first, or reduce the quantity.',
-                $name,
-                $available,
-                $quantity
-            );
+            return $name . ': ' . ShopFloorLang::get('err_only_in_stock', ['%n' => $available, '%w' => $quantity]);
         }
 
         $product = new Product($idProduct);
 
         if (!$product->available_for_order) {
-            return sprintf('%s is flagged "not available for order" in the catalogue, so it cannot be sold.', $name);
+            return ShopFloorLang::get('err_not_orderable', ['%p' => $name]);
         }
 
-        return sprintf('%s could not be added to the ticket.', $name);
+        return ShopFloorLang::get('err_not_added', ['%p' => $name]);
     }
 
     /**
@@ -199,6 +192,6 @@ class ShopFloorSale
 
     private static function paymentLabel(string $payment): string
     {
-        return $payment === self::PAYMENT_CARD ? 'Counter sale — card' : 'Counter sale — cash';
+        return ShopFloorLang::get($payment === self::PAYMENT_CARD ? 'payment_card' : 'payment_cash');
     }
 }

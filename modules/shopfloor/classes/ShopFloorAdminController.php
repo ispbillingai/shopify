@@ -14,6 +14,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+require_once _PS_MODULE_DIR_ . 'shopfloor/classes/ShopFloorLang.php';
 require_once _PS_MODULE_DIR_ . 'shopfloor/classes/ShopFloorCatalog.php';
 require_once _PS_MODULE_DIR_ . 'shopfloor/classes/ShopFloorLedger.php';
 require_once _PS_MODULE_DIR_ . 'shopfloor/classes/ShopFloorSale.php';
@@ -93,6 +94,10 @@ abstract class ShopFloorAdminController extends ModuleAdminController
     protected function renderTemplate(string $template, array $variables): string
     {
         $this->context->smarty->assign($variables + [
+            // L for the templates, the same map as JSON for the strings the
+            // screens build in JavaScript.
+            'L' => ShopFloorLang::all(),
+            'shopfloor_lang_json' => ShopFloorLang::toJson(),
             'shopfloor_token' => $this->token,
             'shopfloor_link' => self::$currentIndex,
             'shopfloor_css' => _MODULE_DIR_ . 'shopfloor/views/css/shopfloor.css',
