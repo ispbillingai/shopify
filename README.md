@@ -422,17 +422,41 @@ one file rather than a second place to translate.
 
 Two things that follow from this:
 
-- **An employee's `id_lang` decides the language.** Both staff accounts were
-  created with the shop default (English) and had to be switched to Italian; a
-  new employee needs the same.
+- **An employee's `id_lang` decides the language.** All three accounts had to be
+  switched to Italian; a new employee needs the same, or they get English.
 - **Bump `ShopFloor::ASSET_V`, not `$this->version`, when the module's CSS or JS
   changes.** The vhost caches those for a week so the URL must change, but
   bumping the module version sends PrestaShop hunting for an upgrade script that
   does not exist.
 
+#### The back office language, and the login page
+
+Two separate mechanisms, which is why the shop could show an Italian menu and an
+English login page at the same time:
+
+- **Menu entries are database rows** (`ps_tab_lang`), so they were Italian all
+  along, translated per language when each tab was created.
+- **Everything the framework renders** — the login page, buttons, form labels —
+  comes from Symfony catalogues in `translations/it-IT/`.
+
+`UserLocaleSubscriber` picks the locale from the signed-in employee. **The login
+page has no employee**, so it falls back to `PS_LANG_DEFAULT`, which was English.
+That is now Italian (`id_lang` 3), which also makes the storefront serve Italian
+by default — correct for this shop, and safe here because product names and
+slugs are fully populated in both languages (0 products differ by slug, so no URL
+changed). There is no language prefix on URLs and no `hreflang`, so nothing
+needed redirecting.
+
+⚠️ **`translations/*/` and `translations/*.zip` are gitignored**, so the
+`it-IT` catalogue lives only on the server and a `git pull` will never restore
+it. If the tree is ever rebuilt from the repo, reinstall the language pack —
+either from **International → Translations** in the back office, or by
+unzipping `translations/sf-it-IT.zip` into `translations/` and clearing
+`var/cache`.
+
 Two staff logins exist, deliberately as simple as the admin one (see the
-security note in section 4): `warehouse@upgradesrls.com` and
-`counter@upgradesrls.com`, both with password `admin`. They are ordinary
+security note in section 4): `magazzino@upgradesrls.com` and
+`cassa@upgradesrls.com`, both with password `admin`. They are ordinary
 employees, not module fixtures — rename, re-password or delete them in
 **Advanced Parameters → Team**.
 
