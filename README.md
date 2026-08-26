@@ -403,6 +403,31 @@ Every movement is also written to `ps_shopfloor_movement` — employee, note, an
 the count before and after — alongside PrestaShop's native movement, because the
 native one records the arithmetic but not the reason.
 
+#### Copy and language
+
+The two screens do **not** use PrestaShop's translation catalogues. Those live in
+the database and expect somebody to type the Italian into the back office after
+installing, so a fresh install speaks English until they do. The copy ships with
+the code instead, in `modules/shopfloor/lang/en.php` and `lang/it.php`, which is
+the house convention anyway.
+
+`ShopFloorLang` picks the file matching the **signed-in employee's** language —
+not the shop's, so the warehouse hand and the person at the till each get their
+own — and merges over English key by key, so a missing string degrades to English
+rather than to a blank label. The same map reaches the browser on the root
+element's `data-lang`, so the strings the screens build in JavaScript come from
+one file rather than a second place to translate.
+
+Two things that follow from this:
+
+- **An employee's `id_lang` decides the language.** Both staff accounts were
+  created with the shop default (English) and had to be switched to Italian; a
+  new employee needs the same.
+- **Bump `ShopFloor::ASSET_V`, not `$this->version`, when the module's CSS or JS
+  changes.** The vhost caches those for a week so the URL must change, but
+  bumping the module version sends PrestaShop hunting for an upgrade script that
+  does not exist.
+
 Two staff logins exist, deliberately as simple as the admin one (see the
 security note in section 4): `warehouse@upgradesrls.com` and
 `counter@upgradesrls.com`, both with password `admin`. They are ordinary
