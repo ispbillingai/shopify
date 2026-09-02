@@ -460,6 +460,27 @@ security note in section 4): `magazzino@upgradesrls.com` and
 employees, not module fixtures — rename, re-password or delete them in
 **Advanced Parameters → Team**.
 
+#### Staff logins are not shop logins
+
+Two separate account systems, and confusing them has already cost time:
+
+| | | |
+|---|---|---|
+| **Back office** | `https://shopify.ispledger.com/admin/` | employees — `ps_employee` |
+| **Storefront** | `https://shopify.ispledger.com/login` | shoppers — `ps_customer` |
+
+The three staff accounts are employees. They will **never** work on the
+storefront's ACCEDI link, which signs in customers. If someone reports "the
+login does not work", check which of the two they are on before anything else —
+the access log tells you immediately, because the storefront login is
+`GET /login?back=my-account` and the back office is `POST /admin/login`.
+
+For testing the shop as a customer: **`cliente@upgradesrls.com` / `stizzo2026`**
+(verified: signs in and reaches *Il mio account*). `pub@prestashop.com` is a
+leftover demo fixture and is still active, but nobody here knows its password.
+`counter@shopify.ispledger.com` is the till's walk-in customer — it has a random
+hash and is never meant to sign in; see the counter section below.
+
 #### Gotchas paid for once
 
 - `Db::getValue()` and `getRow()` **append their own `LIMIT 1`**. A query that
