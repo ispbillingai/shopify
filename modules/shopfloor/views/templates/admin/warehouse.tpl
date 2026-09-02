@@ -38,7 +38,7 @@
                     {$L.browse_catalogue|escape:'html':'UTF-8'}
                 </a>
                 {if $can_edit_products}
-                    <a class="shopfloor__secondary" href="{$new_product_link|escape:'html':'UTF-8'}">
+                    <a class="shopfloor__secondary shopfloor__secondary--strong" href="{$new_product_link|escape:'html':'UTF-8'}">
                         + {$L.new_product|escape:'html':'UTF-8'}
                     </a>
                 {/if}

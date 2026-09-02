@@ -24,7 +24,30 @@ class AdminWarehouseController extends ShopFloorAdminController
     {
         $this->page_header_toolbar_title = ShopFloorLang::get('warehouse_title');
 
+        // Must come after the parent call: the base controller empties the button
+        // list there, to drop the vendor's "back" and "add" that point at nothing.
         parent::initPageHeaderToolbar();
+
+        $idProfile = (int) $this->context->employee->id_profile;
+
+        // The page header toolbar is where a PrestaShop user looks for "add new".
+        // The same links exist inside the screen, but as quiet text beside a
+        // statistic they were missed entirely.
+        if (Access::isGranted('ROLE_MOD_TAB_ADMINPRODUCTS_CREATE', $idProfile)) {
+            $this->page_header_toolbar_btn['shopfloor_new_product'] = [
+                'href' => $this->context->link->getAdminLink('AdminProducts', true, ['route' => 'admin_products_create']),
+                'desc' => ShopFloorLang::get('new_product'),
+                'icon' => 'process-icon-new',
+            ];
+        }
+
+        if (Access::isGranted('ROLE_MOD_TAB_ADMINPRODUCTS_READ', $idProfile)) {
+            $this->page_header_toolbar_btn['shopfloor_products'] = [
+                'href' => $this->context->link->getAdminLink('AdminProducts'),
+                'desc' => ShopFloorLang::get('browse_catalogue'),
+                'icon' => 'process-icon-preview',
+            ];
+        }
     }
 
     public function setMedia($isNewTheme = false)

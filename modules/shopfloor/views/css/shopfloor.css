@@ -598,3 +598,18 @@
         gap: 14px;
     }
 }
+
+
+/* The one action on this screen that creates something, so it is filled. */
+.shopfloor__secondary--strong {
+    background: var(--sf-accent);
+    border-color: var(--sf-accent);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.shopfloor__secondary--strong:hover,
+.shopfloor__secondary--strong:focus {
+    background: #000000;
+    color: #ffffff;
+}
