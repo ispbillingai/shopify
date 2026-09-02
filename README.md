@@ -181,6 +181,28 @@ come from module install/upgrade scripts, not from `migrations/*.sql`.
   `$kernel` to a booted `AdminKernel`, or module installs die in
   `Language::updateMultilangTables()`.
 
+- **`git pull` on the server intermittently fails with `could not read Username
+  for 'https://github.com'`.** The repo is public and the box can reach GitHub —
+  `GET /info/refs` returns 200, and `git ls-remote` works — but the follow-up
+  `POST /git-upload-pack` comes back `401` with `www-authenticate: Basic realm="GitHub"`.
+  It is anonymous rate limiting, and it clears on its own. When it will not, ship
+  the commits over SSH instead of waiting:
+
+  ```bash
+  # locally, from the server's current HEAD
+  git bundle create /tmp/up.bundle <server-sha>..HEAD
+  scp /tmp/up.bundle root@213.199.45.30:/tmp/
+  # on the server
+  cd /var/www/html/shopify && git pull /tmp/up.bundle HEAD
+  ```
+
+  That keeps history identical to `main`, so the next successful `git pull`
+  fast-forwards cleanly. `protocol.version = 0` is set on the server's clone,
+  which made `ls-remote` reliable again.
+- `rm -rf var/cache/*` occasionally reports `Directory not empty` when Apache is
+  writing Smarty compiles at the same moment. Run it twice, or the `&&` chain
+  after it silently stops.
+
 **Work is not done until it is pulled, migrated and verified on the live server.**
 Push straight to `main`; we don't branch for this.
 
