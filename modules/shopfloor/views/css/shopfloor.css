@@ -600,16 +600,11 @@
 }
 
 
-/* The one action on this screen that creates something, so it is filled. */
-.shopfloor__secondary--strong {
-    background: var(--sf-accent);
-    border-color: var(--sf-accent);
-    color: #ffffff;
-    font-weight: 600;
-}
-
-.shopfloor__secondary--strong:hover,
-.shopfloor__secondary--strong:focus {
-    background: #000000;
-    color: #ffffff;
-}
+/*
+ * No filled variant of .shopfloor__secondary.
+ *
+ * One was tried for "new product" and rendered as a black box with an invisible
+ * label: the admin theme wins the colour of an <a> inside its cascade layer, so
+ * the white text came back out dark on dark. Emphasis for that action lives in
+ * the page header toolbar instead, which the theme styles itself and gets right.
+ */
