@@ -24,10 +24,10 @@ class AuthController extends AuthControllerCore
         if (Tools::isSubmit('submitLogin') && !Tools::getValue('back')) {
             $account = $this->context->link->getPageLink('my-account', true);
 
+            // Both, because Tools::getValue() reads $_POST and $_GET, and the
+            // parent re-reads it after this returns.
             $_POST['back'] = $account;
             $_REQUEST['back'] = $account;
-
-            PrestaShopLogger::addLog('ShopFloor probe: auth override set back=' . $account, 1);
         }
 
         parent::initContent();
