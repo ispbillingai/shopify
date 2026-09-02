@@ -11,7 +11,8 @@
 
 <div class="shopfloor" id="shopfloor-warehouse"
      data-endpoint="{$shopfloor_link|escape:'html':'UTF-8'}&amp;token={$shopfloor_token|escape:'html':'UTF-8'}"
-     data-lang="{$shopfloor_lang_json|escape:'html':'UTF-8'}">
+     data-lang="{$shopfloor_lang_json|escape:'html':'UTF-8'}"
+     data-product-edit="{$product_edit_base|escape:'html':'UTF-8'}">
 
     <div class="shopfloor__bar">
         <div>
@@ -20,12 +21,28 @@
                 {$L.loading_as|escape:'html':'UTF-8'} {$employee_name|escape:'html':'UTF-8'}
             </p>
         </div>
-        <div class="shopfloor__stat">
-            <span class="shopfloor__stat-value" id="shopfloor-units-in">+{$today.units_in|intval}</span>
-            <span class="shopfloor__stat-label">
-                {$L.units_loaded_today|escape:'html':'UTF-8'} &middot;
-                <span id="shopfloor-lines">{$today.lines|intval}</span> {$L.movements|escape:'html':'UTF-8'}
-            </span>
+        <div class="shopfloor__bar-right">
+            <div class="shopfloor__stat">
+                <span class="shopfloor__stat-value" id="shopfloor-units-in">+{$today.units_in|intval}</span>
+                <span class="shopfloor__stat-label">
+                    {$L.units_loaded_today|escape:'html':'UTF-8'} &middot;
+                    <span id="shopfloor-lines">{$today.lines|intval}</span> {$L.movements|escape:'html':'UTF-8'}
+                </span>
+            </div>
+
+            {* Seeing, changing and adding products is PrestaShop's own product
+               form — a second editor here would have to keep pace with
+               combinations, prices, images and SEO. *}
+            <div class="shopfloor__bar-actions">
+                <a class="shopfloor__secondary" href="{$catalogue_link|escape:'html':'UTF-8'}">
+                    {$L.browse_catalogue|escape:'html':'UTF-8'}
+                </a>
+                {if $can_edit_products}
+                    <a class="shopfloor__secondary" href="{$new_product_link|escape:'html':'UTF-8'}">
+                        + {$L.new_product|escape:'html':'UTF-8'}
+                    </a>
+                {/if}
+            </div>
         </div>
     </div>
 
@@ -56,6 +73,11 @@
                     {$L.in_stock_now|escape:'html':'UTF-8'}
                     <strong id="shopfloor-selected-stock">0</strong>
                 </p>
+                {if $can_edit_products}
+                    <a class="shopfloor__link" id="shopfloor-edit-product" href="#" target="_blank" rel="noopener">
+                        {$L.edit_product|escape:'html':'UTF-8'} &rarr;
+                    </a>
+                {/if}
             </div>
 
             <p class="shopfloor__empty" id="shopfloor-selected-empty">
@@ -98,9 +120,11 @@
     <section class="shopfloor__panel shopfloor__panel--log">
         <h3 class="shopfloor__panel-title">
             {$L.recent_movements|escape:'html':'UTF-8'}
-            <a class="shopfloor__link" href="{$stock_link|escape:'html':'UTF-8'}">
-                {$L.full_stock_page|escape:'html':'UTF-8'}
-            </a>
+            {if $stock_link}
+                <a class="shopfloor__link" href="{$stock_link|escape:'html':'UTF-8'}">
+                    {$L.full_stock_page|escape:'html':'UTF-8'}
+                </a>
+            {/if}
         </h3>
 
         <table class="shopfloor__table" id="shopfloor-log">

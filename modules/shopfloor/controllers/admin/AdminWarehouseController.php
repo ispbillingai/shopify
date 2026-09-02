@@ -40,7 +40,19 @@ class AdminWarehouseController extends ShopFloorAdminController
             'today' => ShopFloorLedger::todaySummary(),
             'movements' => $this->decorate(ShopFloorLedger::recent(25)),
             'employee_name' => trim($this->context->employee->firstname . ' ' . $this->context->employee->lastname),
-            'stock_link' => $this->context->link->getAdminLink('AdminStockManagement'),
+            // Only offered when this employee may actually open it. The default
+            // Logistician profile has products but not stock management, and a
+            // link that answers 403 is worse than no link.
+            'stock_link' => Access::isGranted('ROLE_MOD_TAB_ADMINSTOCKMANAGEMENT_READ', $this->context->employee->id_profile)
+                ? $this->context->link->getAdminLink('AdminStockManagement')
+                : '',
+            // Seeing, changing and adding products is PrestaShop's own product
+            // form. Rebuilding it here would mean a second, worse editor to keep
+            // in step with combinations, prices, images and SEO.
+            'catalogue_link' => $this->context->link->getAdminLink('AdminProducts'),
+            'new_product_link' => $this->context->link->getAdminLink('AdminProducts', true, ['route' => 'admin_products_create']),
+            'can_edit_products' => Access::isGranted('ROLE_MOD_TAB_ADMINPRODUCTS_UPDATE', $this->context->employee->id_profile),
+            'product_edit_base' => $this->context->link->getAdminLink('AdminProducts'),
         ]);
     }
 

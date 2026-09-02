@@ -64,6 +64,13 @@ return [
     'full_stock_page' => 'Pagina giacenze completa',
     'nothing_loaded' => 'Nessun movimento registrato.',
 
+    // Azioni catalogo — il magazzino modifica i prodotti nella scheda prodotto di
+    // PrestaShop, non in un secondo editor costruito qui.
+    'browse_catalogue' => 'Sfoglia tutti i prodotti',
+    'new_product' => 'Nuovo prodotto',
+    'edit_product' => 'Modifica prodotto',
+    'edit' => 'Modifica',
+
     // Colonne del registro
     'col_when' => 'Quando',
     'col_product' => 'Prodotto',

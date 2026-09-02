@@ -16,6 +16,7 @@
     }
 
     var endpoint = root.dataset.endpoint;
+    var productEditBase = root.dataset.productEdit || '';
 
     /*
      * Copy for the parts of the screen the browser builds. The map arrives on
@@ -191,6 +192,16 @@
         document.getElementById('shopfloor-selected-meta').textContent =
             [row.variant, row.reference].filter(Boolean).join(' · ');
         document.getElementById('shopfloor-selected-stock').textContent = row.quantity;
+
+        // Deep link into PrestaShop's product form for this exact product.
+        var editLink = document.getElementById('shopfloor-edit-product');
+
+        if (editLink && productEditBase) {
+            editLink.href = productEditBase
+                + (productEditBase.indexOf('?') === -1 ? '?' : '&')
+                + 'id_product=' + encodeURIComponent(row.id_product)
+                + '&updateproduct';
+        }
 
         selectedBox.hidden = false;
         selectedEmpty.hidden = true;

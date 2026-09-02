@@ -40,7 +40,7 @@ class ShopFloor extends PaymentModule
      * PrestaShop look for an upgrade script that does not exist. Bump this
      * instead whenever the stylesheet or a script changes.
      */
-    public const ASSET_V = '2';
+    public const ASSET_V = '3';
 
     /**
      * Raised for the duration of a counter sale so the order confirmation email

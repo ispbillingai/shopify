@@ -70,6 +70,13 @@ return [
     'full_stock_page' => 'Full stock page',
     'nothing_loaded' => 'Nothing loaded yet.',
 
+    // Catalogue actions — the warehouse edits products in PrestaShop's own
+    // product form rather than a second one built here.
+    'browse_catalogue' => 'Browse all products',
+    'new_product' => 'New product',
+    'edit_product' => 'Edit product',
+    'edit' => 'Edit',
+
     // Movement log columns
     'col_when' => 'When',
     'col_product' => 'Product',
