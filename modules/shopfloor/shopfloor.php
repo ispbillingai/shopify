@@ -40,7 +40,7 @@ class ShopFloor extends PaymentModule
      * PrestaShop look for an upgrade script that does not exist. Bump this
      * instead whenever the stylesheet or a script changes.
      */
-    public const ASSET_V = '6';
+    public const ASSET_V = '5';
 
     /**
      * Raised for the duration of a counter sale so the order confirmation email
@@ -60,14 +60,13 @@ class ShopFloor extends PaymentModule
     private const TABS = [
         'AdminCounterSales' => ['Counter sales', 'Vendita al banco', 'Salesman'],
         'AdminWarehouse' => ['Warehouse', 'Magazzino', 'Logistician'],
-        'AdminArticles' => ['Warehouse articles', 'Articoli magazzino', 'Logistician'],
     ];
 
     public function __construct()
     {
         $this->name = 'shopfloor';
         $this->tab = 'administration';
-        $this->version = '1.1.0';
+        $this->version = '1.0.0';
         $this->author = 'ispledger';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = ['min' => '9.0.0', 'max' => _PS_VERSION_];

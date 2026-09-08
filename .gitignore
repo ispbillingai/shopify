@@ -64,5 +64,5 @@
 # tree after every deploy. Directory listing is already off in the vhost.
 /modules/*/src/**/index.php
 
-# Gestionale article exports: data, not code. Kept in /var/imports on the server.
+# Spreadsheet exports are data, not code.
 /*.xlsx

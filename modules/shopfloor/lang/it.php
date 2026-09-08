@@ -71,15 +71,6 @@ return [
     'edit_product' => 'Modifica prodotto',
     'edit' => 'Modifica',
 
-    // Articoli di magazzino dal gestionale.
-    'articles_title' => 'Articoli magazzino',
-    'articles_total' => 'articoli',
-    'articles_in_stock' => 'in giacenza',
-    'stock_value' => 'valore a costo',
-    'locations' => 'ubicazioni',
-    'scan_label_article' => 'Scansiona un codice a barre, oppure scrivi un codice o una descrizione',
-    'service_line' => 'servizio',
-
     // Colonne del registro
     'col_when' => 'Quando',
     'col_product' => 'Prodotto',

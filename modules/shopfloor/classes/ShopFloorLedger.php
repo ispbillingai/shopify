@@ -39,11 +39,6 @@ class ShopFloorLedger
                 `id_employee` INT UNSIGNED NOT NULL DEFAULT 0,
                 `employee_name` VARCHAR(255) NOT NULL DEFAULT "",
                 `id_product` INT UNSIGNED NOT NULL,
-                -- Warehouse articles from the gestionale are not products, so a
-                -- movement names one or the other: id_product for shop stock,
-                -- id_article for gestionale stock. One history covers both, so
-                -- "who touched what" is answerable in a single place.
-                `id_article` INT UNSIGNED NOT NULL DEFAULT 0,
                 `id_product_attribute` INT UNSIGNED NOT NULL DEFAULT 0,
                 `product_name` VARCHAR(255) NOT NULL DEFAULT "",
                 `reference` VARCHAR(64) NOT NULL DEFAULT "",
@@ -56,97 +51,10 @@ class ShopFloorLedger
                 `date_add` DATETIME NOT NULL,
                 PRIMARY KEY (`id_shopfloor_movement`),
                 KEY `idx_product` (`id_product`, `id_product_attribute`),
-                KEY `idx_article` (`id_article`),
                 KEY `idx_date_add` (`date_add`),
                 KEY `idx_employee` (`id_employee`)
             ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4'
         );
-    }
-
-    /**
-     * MySQL 8 has no ADD COLUMN IF NOT EXISTS, so the column is checked for
-     * first. Needed because the ledger table predates warehouse articles.
-     */
-    public static function ensureArticleColumn(): void
-    {
-        $exists = (int) Db::getInstance()->getValue(
-            'SELECT COUNT(*) FROM information_schema.COLUMNS
-             WHERE TABLE_SCHEMA = DATABASE()
-               AND TABLE_NAME = "' . pSQL(self::tableName()) . '"
-               AND COLUMN_NAME = "id_article"'
-        );
-
-        if (!$exists) {
-            Db::getInstance()->execute(
-                'ALTER TABLE `' . self::tableName() . '`
-                 ADD COLUMN `id_article` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `id_product`,
-                 ADD KEY `idx_article` (`id_article`)'
-            );
-        }
-    }
-
-    /**
-     * A movement against a gestionale article rather than a shop product.
-     *
-     * Stock lives on the article row here, not in StockAvailable, so this both
-     * writes the new quantity and records why it changed.
-     *
-     * @return array{quantity_before: float, quantity_after: float}
-     */
-    public static function applyArticleChange(
-        int $idArticle,
-        float $delta,
-        string $type,
-        string $note = ''
-    ): array {
-        $article = ShopFloorArticle::find($idArticle);
-
-        if ($article === null) {
-            return ['quantity_before' => 0.0, 'quantity_after' => 0.0];
-        }
-
-        $before = (float) $article['quantity'];
-        $after = $before + $delta;
-
-        ShopFloorArticle::setQuantity($idArticle, $after);
-
-        $context = Context::getContext();
-        $employee = $context->employee;
-
-        Db::getInstance()->insert('shopfloor_movement', [
-            'id_shop' => (int) $context->shop->id,
-            'id_employee' => $employee ? (int) $employee->id : 0,
-            'employee_name' => pSQL($employee ? trim($employee->firstname . ' ' . $employee->lastname) : ''),
-            'id_product' => 0,
-            'id_article' => $idArticle,
-            'id_product_attribute' => 0,
-            'product_name' => pSQL(Tools::substr((string) $article['description'], 0, 255)),
-            'reference' => pSQL((string) $article['code']),
-            'type' => pSQL($type),
-            'delta' => (int) round($delta),
-            'quantity_before' => (int) round($before),
-            'quantity_after' => (int) round($after),
-            'id_order' => 0,
-            'note' => pSQL(Tools::substr($note, 0, 500)),
-            'date_add' => date('Y-m-d H:i:s'),
-        ]);
-
-        return ['quantity_before' => $before, 'quantity_after' => $after];
-    }
-
-    /**
-     * Recent movements against warehouse articles only.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    public static function recentArticles(int $limit = 25): array
-    {
-        return Db::getInstance()->executeS(
-            'SELECT * FROM `' . self::tableName() . '`
-             WHERE id_article > 0
-             ORDER BY id_shopfloor_movement DESC
-             LIMIT ' . max(1, min($limit, 200))
-        ) ?: [];
     }
 
     /**
