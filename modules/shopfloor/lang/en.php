@@ -77,6 +77,15 @@ return [
     'edit_product' => 'Edit product',
     'edit' => 'Edit',
 
+    // Warehouse articles from the gestionale.
+    'articles_title' => 'Warehouse articles',
+    'articles_total' => 'articles',
+    'articles_in_stock' => 'in stock',
+    'stock_value' => 'stock value at cost',
+    'locations' => 'locations',
+    'scan_label_article' => 'Scan a barcode, or type a code or description',
+    'service_line' => 'service',
+
     // Movement log columns
     'col_when' => 'When',
     'col_product' => 'Product',
